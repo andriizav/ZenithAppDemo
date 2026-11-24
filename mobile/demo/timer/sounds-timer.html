@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Звуки для таймера</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #181818;
+    color: #f2f2f2;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  main {
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 28px 0 44px;
+  }
+  header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 22px;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .trash-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid #3a3a3a;
+    background: #222;
+    color: #888;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all .15s;
+  }
+  .trash-btn:hover { background: #2c2c2c; color: #ddd; border-color: #555; }
+  .trash-btn svg, .export-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .trash-btn .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #e57373;
+    color: #fff;
+    font-size: 10px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+  .trash-btn .badge:empty { display: none; }
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.15;
+    font-weight: 720;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .sound {
+    border: 1px solid #303030;
+    background: #202020;
+    border-radius: 8px;
+    padding: 14px;
+    display: grid;
+    gap: 12px;
+    cursor: grab;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .sound:active { cursor: grabbing; }
+  .sound.dragging { opacity: .4; border-color: #3f7ee8; }
+  .sound.drag-over { border-color: #3f7ee8; box-shadow: 0 0 0 1px rgba(63,126,232,.4); }
+  .sound.active {
+    border-color: #73a7ff;
+    box-shadow: 0 0 0 1px rgba(115, 167, 255, 0.35);
+  }
+  .top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  h2 {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.25;
+    font-weight: 650;
+  }
+  .tag {
+    flex: 0 0 auto;
+    border: 1px solid #3a3a3a;
+    border-radius: 999px;
+    padding: 4px 8px;
+    color: #b9b9b9;
+    font-size: 11px;
+  }
+  .notes {
+    min-height: 36px;
+    color: #ababab;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+  .delete-btn {
+    height: 36px;
+    width: 36px;
+    padding: 0;
+    border: 1px solid #3a3a3a;
+    background: #222;
+    color: #888;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .15s;
+  }
+  .delete-btn:hover {
+    background: #2c2c2c;
+    color: #bbb;
+    border-color: #555;
+  }
+  .tag-checks {
+    display: flex;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+  .tag-check {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    color: #999;
+    cursor: pointer;
+    padding: 2px 5px;
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    background: #2a2a2a;
+    transition: all .15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .tag-check:hover { border-color: #555; color: #ccc; }
+  .tag-check.on { background: #3f7ee8; border-color: #3f7ee8; color: #fff; }
+  .tag-check input { display: none; }
+  .hidden-count { color: #666; font-size: 12px; }
+  .trash-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .trash-overlay.open { display: flex; }
+  .trash-modal {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 12px;
+    width: min(500px, calc(100% - 32px));
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .trash-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid #333;
+  }
+  .trash-header h3 { margin: 0; font-size: 16px; }
+  .trash-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: #888;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  .trash-close:hover { background: #333; color: #fff; }
+  .trash-body {
+    padding: 14px 18px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .trash-empty { color: #666; font-size: 14px; text-align: center; padding: 30px 0; }
+  .trash-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border: 1px solid #2a2a2a;
+    background: #222;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  .trash-item-name { font-size: 14px; color: #ccc; }
+  .trash-item-tag { font-size: 11px; color: #666; margin-left: 8px; }
+  .trash-restore {
+    height: 30px;
+    padding: 0 12px;
+    border: 1px solid #3a6a3a;
+    background: #1a2a1a;
+    color: #81c784;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .trash-restore:hover { background: #2a3a2a; border-color: #81c784; }
+  .trash-footer {
+    padding: 12px 18px;
+    border-top: 1px solid #333;
+    display: flex;
+    gap: 8px;
+  }
+  .trash-footer button {
+    flex: 1;
+    height: 34px;
+    border: 1px solid #3a3a3a;
+    background: #2a2a2a;
+    color: #ccc;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .trash-footer button:hover { background: #333; }
+  .trash-footer button.danger { border-color: #5c2a2a; color: #e57373; }
+  .trash-footer button.danger:hover { background: #2a1a1a; }
+  button {
+    height: 36px;
+    border: 1px solid #3a3a3a;
+    background: #2b2b2b;
+    color: #f3f3f3;
+    border-radius: 8px;
+    padding: 0 13px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #333;
+    border-color: #5c5c5c;
+  }
+  button.primary {
+    background: #3f7ee8;
+    border-color: #3f7ee8;
+    color: #fff;
+    width: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  button.primary:hover { background: #4d8cf3; }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .filter {
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #3a3a3a;
+    background: #222;
+    color: #bbb;
+    border-radius: 999px;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .filter:hover { background: #2c2c2c; color: #ddd; }
+  .filter.active { background: #3f7ee8; border-color: #3f7ee8; color: #fff; }
+
+  @media (max-width: 640px) {
+    header { align-items: stretch; flex-direction: column; }
+  }
+  .export-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid #3a3a3a;
+    background: #222;
+    color: #888;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .15s;
+  }
+  .export-btn:hover { background: #2c2c2c; color: #ddd; border-color: #555; }
+  .export-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .export-overlay.open { display: flex; }
+  .export-modal {
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 12px;
+    width: min(700px, calc(100% - 32px));
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .export-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid #333;
+  }
+  .export-header h3 { margin: 0; font-size: 16px; }
+  .export-close {
+    width: 32px; height: 32px; border: none; background: transparent;
+    color: #888; font-size: 20px; cursor: pointer; border-radius: 6px;
+  }
+  .export-close:hover { background: #333; color: #fff; }
+  .export-body { padding: 16px 18px; overflow-y: auto; flex: 1; }
+  .export-body textarea {
+    width: 100%;
+    height: 300px;
+    background: #111;
+    color: #ccc;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 12px;
+    font-family: monospace;
+    font-size: 12px;
+    resize: vertical;
+    outline: none;
+  }
+  .export-body textarea:focus { border-color: #3f7ee8; }
+  .export-footer {
+    padding: 12px 18px;
+    border-top: 1px solid #333;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .export-copy {
+    height: 34px; padding: 0 16px; border: none; border-radius: 8px;
+    background: #3f7ee8; color: #fff; font: inherit; font-size: 13px;
+    cursor: pointer; transition: background .15s;
+  }
+  .export-copy:hover { background: #4d8cf3; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="header-left">
+      <h1>Звуки для таймера</h1>
+      <button class="export-btn" id="exportBtn" title="Експорт змін"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg></button>
+      <button class="trash-btn" id="trashBtn" title="Корзина">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        <span class="badge" id="trashBadge"></span>
+      </button>
+    </div>
+  </header>
+  <nav class="filters" id="filters">
+    <button class="filter active" data-tag="усі">Усі</button>
+    <button class="filter" data-tag="відлік">Відлік</button>
+    <button class="filter" data-tag="кінець">Кінець</button>
+    <button class="filter" data-tag="завершення">Завершення</button>
+  </nav>
+
+  <section class="grid" id="soundGrid"></section>
+</main>
+
+<div class="trash-overlay" id="trashOverlay">
+  <div class="trash-modal">
+    <div class="trash-header">
+      <h3>Корзина</h3>
+      <button class="trash-close" id="trashClose">&times;</button>
+    </div>
+    <div class="trash-body" id="trashBody"></div>
+    <div class="trash-footer">
+      <button id="trashRestoreAll">Відновити всі</button>
+      <button class="danger" id="trashClear">Очистити корзину</button>
+    </div>
+  </div>
+</div>
+
+<div class="export-overlay" id="exportOverlay">
+  <div class="export-modal">
+    <div class="export-header">
+      <h3>Експорт змін</h3>
+      <button class="export-close" id="exportClose">&times;</button>
+    </div>
+    <div class="export-body">
+      <p style="color:#888;font-size:13px;margin:0 0 12px;">Збережіть файл та замініть <code>timer/sounds-data.js</code>:</p>
+      <textarea id="exportCode" readonly></textarea>
+    </div>
+    <div class="export-footer">
+      <button class="export-copy" id="exportCopy">Зберегти файл</button>
+    </div>
+  </div>
+</div>
+
+<script src="sounds-data.js"></script>
+<script>
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+
+function ensureAudio() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  if (audioCtx.state === "suspended") audioCtx.resume();
+}
+
+function playTone(freq, startOffset, duration, volume, type = "sine", release = 0.16) {
+  ensureAudio();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  const start = audioCtx.currentTime + startOffset;
+  const end = start + duration;
+  const attack = 0.012;
+  const holdUntil = Math.max(start + attack, end - release);
+
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, start);
+  gain.gain.setValueAtTime(0.0001, start);
+  gain.gain.exponentialRampToValueAtTime(volume, start + attack);
+  gain.gain.setValueAtTime(volume, holdUntil);
+  gain.gain.exponentialRampToValueAtTime(0.0001, end);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(start);
+  osc.stop(end + 0.02);
+}
+
+function playSound(sound) {
+  sound.notes.forEach((note) => {
+    playTone(
+      note.freq,
+      note.delay / 1000,
+      note.duration / 1000,
+      note.volume,
+      note.type || sound.type || "sine",
+      (note.release ?? sound.release ?? 140) / 1000
+    );
+  });
+}
+
+const sounds = SOUNDS_DATA;
+
+function normalizeTags(raw) {
+  let tag = raw;
+  if (Array.isArray(tag)) tag = tag.flat(Infinity).filter((x) => typeof x === "string");
+  else tag = tag ? [tag] : [];
+  return tag;
+}
+
+function getDeletedIds() {
+  try { return JSON.parse(localStorage.getItem("timerSoundLabDeleted") || "[]"); }
+  catch { return []; }
+}
+function saveDeletedIds(ids) {
+  localStorage.setItem("timerSoundLabDeleted", JSON.stringify(ids));
+}
+
+function getCustomTags() {
+  try { return JSON.parse(localStorage.getItem("timerSoundLabTags") || "{}"); }
+  catch { return {}; }
+}
+function saveCustomTags(obj) {
+  localStorage.setItem("timerSoundLabTags", JSON.stringify(obj));
+}
+function getCustomOrder() {
+  try { return JSON.parse(localStorage.getItem("timerSoundLabOrder") || "[]"); }
+  catch { return []; }
+}
+function saveCustomOrder(arr) {
+  localStorage.setItem("timerSoundLabOrder", JSON.stringify(arr));
+}
+
+function getVisibleSounds() {
+  const deleted = getDeletedIds();
+  const customTags = getCustomTags();
+  const customOrder = getCustomOrder();
+  let list = sounds
+    .filter((s) => !deleted.includes(s.id))
+    .map((s) => {
+      const t = customTags[s.id];
+      const tag = normalizeTags(t !== undefined && t !== null ? t : s.tag);
+      return { ...s, tag };
+    });
+  if (customOrder.length) {
+    const orderMap = {};
+    customOrder.forEach((id, i) => orderMap[id] = i);
+    list.sort((a, b) => (orderMap[a.id] ?? 999) - (orderMap[b.id] ?? 999));
+  }
+  return list;
+}
+
+let activeTag = localStorage.getItem("timerSoundLabFilter") || "усі";
+
+function applyFilters() {
+  const visible = getVisibleSounds();
+  document.querySelectorAll(".sound").forEach((card) => {
+    const id = card.dataset.id;
+    const s = visible.find((x) => x.id === id);
+    if (!s) { card.style.display = "none"; return; }
+    const tagOk = activeTag === "усі" || s.tag.includes(activeTag);
+    card.style.display = tagOk ? "" : "none";
+  });
+}
+
+document.getElementById("filters").addEventListener("click", (e) => {
+  const btn = e.target.closest(".filter");
+  if (!btn) return;
+  document.querySelectorAll(".filter").forEach((b) => b.classList.remove("active"));
+  btn.classList.add("active");
+  activeTag = btn.dataset.tag;
+  localStorage.setItem("timerSoundLabFilter", activeTag);
+  applyFilters();
+});
+
+
+
+function renderGrid() {
+  const grid = document.getElementById("soundGrid");
+  const deleted = getDeletedIds();
+  const visible = getVisibleSounds();
+
+  grid.innerHTML = "";
+  visible.forEach((sound, idx) => {
+    const card = document.createElement("article");
+    card.className = "sound";
+    card.dataset.id = sound.id;
+    card.draggable = true;
+
+    const tags = ["відлік", "кінець", "завершення"];
+    const tagChecks = tags.map((t) => {
+      const on = sound.tag.includes(t) ? " on" : "";
+      return `<label class="tag-check${on}" data-tag="${t}"><input type="checkbox" ${sound.tag.includes(t) ? "checked" : ""}>${t}</label>`;
+    }).join("");
+
+    card.innerHTML = `
+      <div class="top">
+        <h2>${sound.name}</h2>
+        <div class="tag-checks">${tagChecks}</div>
+      </div>
+      <div class="notes">${sound.description}</div>
+      <div class="actions">
+        <button class="primary" type="button" title="Слухати"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg></button>
+        <button class="delete-btn" type="button" title="Видалити"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+      </div>
+    `;
+
+    const [playBtn, deleteBtn] = card.querySelectorAll("button");
+    playBtn.addEventListener("click", (e) => { e.stopPropagation(); playSound(sound); });
+    deleteBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const d = getDeletedIds();
+      d.push(sound.id);
+      saveDeletedIds(d);
+      renderGrid();
+    });
+
+    card.querySelectorAll(".tag-check").forEach((lbl) => {
+      lbl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const cb = lbl.querySelector("input");
+        cb.checked = !cb.checked;
+        lbl.classList.toggle("on", cb.checked);
+        const customTags = getCustomTags();
+        const checked = [...card.querySelectorAll(".tag-check.on")].map((l) => l.dataset.tag);
+        customTags[sound.id] = checked.length ? checked : [sound.tag[0]];
+        saveCustomTags(customTags);
+        applyFilters();
+      });
+    });
+
+    card.addEventListener("dragstart", (e) => {
+      card.classList.add("dragging");
+      e.dataTransfer.setData("text/plain", sound.id);
+      e.dataTransfer.effectAllowed = "move";
+    });
+    card.addEventListener("dragend", () => card.classList.remove("dragging"));
+    card.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      card.classList.add("drag-over");
+    });
+    card.addEventListener("dragleave", () => card.classList.remove("drag-over"));
+    card.addEventListener("drop", (e) => {
+      e.preventDefault();
+      card.classList.remove("drag-over");
+      const fromId = e.dataTransfer.getData("text/plain");
+      const toId = sound.id;
+      if (fromId === toId) return;
+      const order = getVisibleSounds().map((s) => s.id);
+      const fromIdx = order.indexOf(fromId);
+      const toIdx = order.indexOf(toId);
+      if (fromIdx === -1 || toIdx === -1) return;
+      order.splice(fromIdx, 1);
+      order.splice(toIdx, 0, fromId);
+      saveCustomOrder(order);
+      renderGrid();
+    });
+
+    grid.appendChild(card);
+  });
+
+  document.getElementById("trashBadge").textContent = deleted.length || "";
+  applyFilters();
+}
+
+function renderTrash() {
+  const body = document.getElementById("trashBody");
+  const deleted = getDeletedIds();
+  if (deleted.length === 0) {
+    body.innerHTML = '<div class="trash-empty">Корзина порожня</div>';
+    return;
+  }
+  body.innerHTML = deleted.map((id) => {
+    const s = sounds.find((x) => x.id === id);
+    if (!s) return "";
+    return `
+      <div class="trash-item">
+        <div>
+          <span class="trash-item-name">${s.name}</span>
+          <span class="trash-item-tag">${s.tag}</span>
+        </div>
+        <button class="trash-restore" data-id="${s.id}">Відновити</button>
+      </div>
+    `;
+  }).join("");
+
+  body.querySelectorAll(".trash-restore").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const d = getDeletedIds().filter((x) => x !== btn.dataset.id);
+      saveDeletedIds(d);
+      renderGrid();
+      renderTrash();
+    });
+  });
+}
+
+document.getElementById("trashBtn").addEventListener("click", () => {
+  renderTrash();
+  document.getElementById("trashOverlay").classList.add("open");
+});
+
+document.getElementById("trashClose").addEventListener("click", () => {
+  document.getElementById("trashOverlay").classList.remove("open");
+});
+
+document.getElementById("trashOverlay").addEventListener("click", (e) => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove("open");
+});
+
+document.getElementById("trashRestoreAll").addEventListener("click", () => {
+  saveDeletedIds([]);
+  renderGrid();
+  renderTrash();
+});
+
+document.getElementById("trashClear").addEventListener("click", () => {
+  if (confirm("Очистити корзину? Відновити звуки буде неможливо.")) {
+    saveDeletedIds([]);
+    renderGrid();
+    renderTrash();
+  }
+});
+
+const grid = document.getElementById("soundGrid");
+document.querySelectorAll(".filter").forEach((b) => b.classList.toggle("active", b.dataset.tag === activeTag));
+renderGrid();
+
+document.getElementById("exportBtn").addEventListener("click", async () => {
+  const deleted = getDeletedIds();
+  const customTags = getCustomTags();
+  const customOrder = getCustomOrder();
+  let list = sounds.filter((s) => !deleted.includes(s.id));
+  list = list.map((s) => {
+    const t = customTags[s.id];
+    const tag = normalizeTags(t !== undefined && t !== null ? t : s.tag);
+    return { ...s, tag };
+  });
+  if (customOrder.length) {
+    const orderMap = {};
+    customOrder.forEach((id, i) => orderMap[id] = i);
+    list.sort((a, b) => (orderMap[a.id] ?? 999) - (orderMap[b.id] ?? 999));
+  }
+  const lines = list.map((s) => {
+    const tagStr = Array.isArray(s.tag) ? JSON.stringify(s.tag) : `"${s.tag}"`;
+    const notesStr = JSON.stringify(s.notes);
+    const parts = [`    { id: "${s.id}", name: "${s.name.replace(/"/g, '\\"')}", tag: ${tagStr}`];
+    if (s.description) parts[0] += `, description: "${s.description.replace(/"/g, '\\"')}"`;
+    parts.push(`      notes: ${notesStr}`);
+    if (s.release) parts.push(`      release: ${s.release}`);
+    if (s.type) parts.push(`      type: "${s.type}"`);
+    return parts.join(",\n") + ` },`;
+  });
+  const code = `const SOUNDS_DATA = [\n${lines.join("\n")}\n];`;
+  document.getElementById("exportCode").value = code;
+  document.getElementById("exportOverlay").classList.add("open");
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: "sounds-data.js",
+        types: [{ description: "JavaScript", accept: { "text/javascript": [".js"] } }],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(code);
+      await writable.close();
+    } catch (e) {
+      if (e.name !== "AbortError") throw e;
+    }
+  } else {
+    const blob = new Blob([code], { type: "text/javascript" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "sounds-data.js";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+});
+
+document.getElementById("exportClose").addEventListener("click", () => {
+  document.getElementById("exportOverlay").classList.remove("open");
+});
+
+document.getElementById("exportOverlay").addEventListener("click", (e) => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove("open");
+});
+
+document.getElementById("exportCopy").addEventListener("click", async () => {
+  const code = document.getElementById("exportCode").value;
+  const btn = document.getElementById("exportCopy");
+  if (window.showSaveFilePicker) {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: "sounds-data.js",
+        types: [{ description: "JavaScript", accept: { "text/javascript": [".js"] } }],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(code);
+      await writable.close();
+      btn.textContent = "Збережено!";
+      setTimeout(() => btn.textContent = "Зберегти файл", 1500);
+    } catch (e) {
+      if (e.name !== "AbortError") {
+        btn.textContent = "Помилка";
+        setTimeout(() => btn.textContent = "Зберегти файл", 1500);
+      }
+    }
+  } else {
+    const blob = new Blob([code], { type: "text/javascript" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "sounds-data.js";
+    a.click();
+    URL.revokeObjectURL(url);
+    btn.textContent = "Збережено!";
+    setTimeout(() => btn.textContent = "Зберегти файл", 1500);
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tasks-segmented — плитки 2×2 (матриця Ейзенхауера)</title>
+<style>
+  :root{
+    --bg-page:#161616;
+    --bg-card:#1e1e1e;
+    --bg-tile:#1a1a1a;
+    --bg-hover:#262626;
+    --border:#2e2e2e;
+    --text-primary:#ededed;
+    --text-secondary:#9a9a9a;
+    --text-muted:#6b6b6b;
+    --radius:14px;
+    --c1:#e05555; --c2:#f0a040; --c3:#5b9cf5; --c4:#8a8a8a;
+  }
+  :root[data-theme="light"]{
+    --bg-page:#f4f4f5;
+    --bg-card:#ffffff;
+    --bg-tile:#f7f7f8;
+    --bg-hover:#efeff1;
+    --border:#e4e4e7;
+    --text-primary:#18181b;
+    --text-secondary:#71717a;
+    --text-muted:#a1a1aa;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg-page);color:var(--text-primary);
+    padding:36px 16px 80px;line-height:1.5;
+  }
+
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    max-width:880px;margin:0 auto 30px;gap:12px;flex-wrap:wrap;
+  }
+  h1{font-size:21px;font-weight:600;letter-spacing:-.2px}
+  .sub{color:var(--text-secondary);font-size:13.5px;margin-top:3px}
+  .theme-toggle{
+    border:1px solid var(--border);background:var(--bg-card);
+    color:var(--text-primary);padding:8px 14px;border-radius:10px;
+    font-size:13px;cursor:pointer;font-weight:500;font-family:inherit;
+    transition:background .15s,border-color .15s;
+  }
+  .theme-toggle:hover{background:var(--bg-hover)}
+
+  .grid{
+    max-width:880px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));
+    gap:22px;
+  }
+
+  .variant{
+    background:var(--bg-card);border:1px solid var(--border);
+    border-radius:18px;padding:20px;
+  }
+  .variant h2{font-size:14.5px;font-weight:600;margin-bottom:3px;letter-spacing:-.1px}
+  .variant .desc{font-size:12.5px;color:var(--text-secondary);margin-bottom:18px}
+
+  /* ===== Спільна основа плитки ===== */
+  .tasks-segmented{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  }
+  .tasks-seg-btn{
+    background:var(--bg-tile);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    cursor:pointer;font-family:inherit;
+    text-align:left;display:flex;flex-direction:column;align-items:flex-start;
+    gap:11px;padding:16px;min-height:94px;
+    transition:background .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .1s ease;
+  }
+  .tasks-seg-btn:hover{background:var(--bg-hover)}
+  .tasks-seg-btn:active{transform:scale(.985)}
+  .tasks-seg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;transition:box-shadow .18s ease}
+  .tasks-seg-label{font-size:13px;font-weight:550;line-height:1.32;color:var(--text-secondary);transition:color .18s ease}
+
+  /* 1. М'який відтінок (tint) */
+  .v1 .tasks-seg-btn.active{
+    background:color-mix(in srgb,var(--q-color) 12%,var(--bg-tile));
+    border-color:color-mix(in srgb,var(--q-color) 28%,var(--border));
+  }
+  .v1 .tasks-seg-btn.active .tasks-seg-label{color:var(--text-primary)}
+
+  /* 2. Піднята (iOS segmented) */
+  .v2{padding:6px;gap:6px;background:var(--bg-tile);border:1px solid var(--border);border-radius:18px}
+  .v2 .tasks-seg-btn{background:transparent;border-color:transparent;border-radius:12px}
+  .v2 .tasks-seg-btn:hover{background:var(--bg-hover)}
+  .v2 .tasks-seg-btn.active{background:var(--bg-card);box-shadow:0 1px 3px rgba(0,0,0,.28)}
+  .v2 .tasks-seg-btn.active .tasks-seg-label{color:var(--text-primary)}
+
+  /* 3. Ліва акцентна смужка */
+  .v3 .tasks-seg-btn.active{
+    background:color-mix(in srgb,var(--q-color) 9%,var(--bg-tile));
+    border-color:var(--border);
+    box-shadow:inset 3px 0 0 var(--q-color);
+  }
+  .v3 .tasks-seg-btn.active .tasks-seg-label{color:var(--text-primary)}
+
+  /* 4. Кольорова рамка */
+  .v4 .tasks-seg-btn.active{
+    border-color:var(--q-color);
+    background:var(--bg-tile);
+  }
+  .v4 .tasks-seg-btn.active .tasks-seg-label{color:var(--q-color)}
+
+  /* 5. Верхня акцентна лінія */
+  .v5 .tasks-seg-btn{position:relative;overflow:hidden}
+  .v5 .tasks-seg-btn::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:transparent;transition:background .18s ease}
+  .v5 .tasks-seg-btn.active{
+    background:color-mix(in srgb,var(--q-color) 9%,var(--bg-tile));
+    border-color:color-mix(in srgb,var(--q-color) 22%,var(--border));
+  }
+  .v5 .tasks-seg-btn.active::before{background:var(--q-color)}
+  .v5 .tasks-seg-btn.active .tasks-seg-label{color:var(--text-primary)}
+
+  /* 6. Кільце навколо крапки */
+  .v6 .tasks-seg-btn.active{
+    background:color-mix(in srgb,var(--q-color) 10%,var(--bg-tile));
+    border-color:color-mix(in srgb,var(--q-color) 24%,var(--border));
+  }
+  .v6 .tasks-seg-btn.active .tasks-seg-dot{box-shadow:0 0 0 4px color-mix(in srgb,var(--q-color) 20%,transparent)}
+  .v6 .tasks-seg-btn.active .tasks-seg-label{color:var(--text-primary)}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <h1>tasks-segmented — плитки 2×2</h1>
+      <div class="sub">Стримані варіанти оформлення (матриця Ейзенхауера)</div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Тема</button>
+  </div>
+
+  <div class="grid">
+
+    <div class="variant">
+      <h2>1. М'який відтінок</h2>
+      <p class="desc">Активна плитка — легкий tint кольору квадранта.</p>
+      <div class="tasks-segmented v1">
+        <button class="tasks-seg-btn active" data-quad="do" type="button" style="--q-color:var(--c1)" aria-label="Терміново і важливо"><span class="tasks-seg-dot" style="background:var(--c1)"></span><span class="tasks-seg-label">Терміново і важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="schedule" type="button" style="--q-color:var(--c2)" aria-label="Важливо, але не терміново"><span class="tasks-seg-dot" style="background:var(--c2)"></span><span class="tasks-seg-label">Важливо, але не терміново</span></button>
+        <button class="tasks-seg-btn" data-quad="delegate" type="button" style="--q-color:var(--c3)" aria-label="Терміново, але не важливо"><span class="tasks-seg-dot" style="background:var(--c3)"></span><span class="tasks-seg-label">Терміново, але не важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="delete" type="button" style="--q-color:var(--c4)" aria-label="Не терміново і не важливо"><span class="tasks-seg-dot" style="background:var(--c4)"></span><span class="tasks-seg-label">Не терміново і не важливо</span></button>
+      </div>
+    </div>
+
+    <div class="variant">
+      <h2>2. Піднята плитка</h2>
+      <p class="desc">Як iOS segmented: активна «випинається» над треком.</p>
+      <div class="tasks-segmented v2">
+        <button class="tasks-seg-btn active" data-quad="do" type="button" style="--q-color:var(--c1)" aria-label="Терміново і важливо"><span class="tasks-seg-dot" style="background:var(--c1)"></span><span class="tasks-seg-label">Терміново і важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="schedule" type="button" style="--q-color:var(--c2)" aria-label="Важливо, але не терміново"><span class="tasks-seg-dot" style="background:var(--c2)"></span><span class="tasks-seg-label">Важливо, але не терміново</span></button>
+        <button class="tasks-seg-btn" data-quad="delegate" type="button" style="--q-color:var(--c3)" aria-label="Терміново, але не важливо"><span class="tasks-seg-dot" style="background:var(--c3)"></span><span class="tasks-seg-label">Терміново, але не важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="delete" type="button" style="--q-color:var(--c4)" aria-label="Не терміново і не важливо"><span class="tasks-seg-dot" style="background:var(--c4)"></span><span class="tasks-seg-label">Не терміново і не важливо</span></button>
+      </div>
+    </div>
+
+    <div class="variant">
+      <h2>3. Ліва смужка</h2>
+      <p class="desc">Акцент — тонка кольорова смужка зліва (як у заголовках).</p>
+      <div class="tasks-segmented v3">
+        <button class="tasks-seg-btn active" data-quad="do" type="button" style="--q-color:var(--c1)" aria-label="Терміново і важливо"><span class="tasks-seg-dot" style="background:var(--c1)"></span><span class="tasks-seg-label">Терміново і важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="schedule" type="button" style="--q-color:var(--c2)" aria-label="Важливо, але не терміново"><span class="tasks-seg-dot" style="background:var(--c2)"></span><span class="tasks-seg-label">Важливо, але не терміново</span></button>
+        <button class="tasks-seg-btn" data-quad="delegate" type="button" style="--q-color:var(--c3)" aria-label="Терміново, але не важливо"><span class="tasks-seg-dot" style="background:var(--c3)"></span><span class="tasks-seg-label">Терміново, але не важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="delete" type="button" style="--q-color:var(--c4)" aria-label="Не терміново і не важливо"><span class="tasks-seg-dot" style="background:var(--c4)"></span><span class="tasks-seg-label">Не терміново і не важливо</span></button>
+      </div>
+    </div>
+
+    <div class="variant">
+      <h2>4. Кольорова рамка</h2>
+      <p class="desc">Активна плитка — рамка кольором, текст теж кольоровий.</p>
+      <div class="tasks-segmented v4">
+        <button class="tasks-seg-btn active" data-quad="do" type="button" style="--q-color:var(--c1)" aria-label="Терміново і важливо"><span class="tasks-seg-dot" style="background:var(--c1)"></span><span class="tasks-seg-label">Терміново і важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="schedule" type="button" style="--q-color:var(--c2)" aria-label="Важливо, але не терміново"><span class="tasks-seg-dot" style="background:var(--c2)"></span><span class="tasks-seg-label">Важливо, але не терміново</span></button>
+        <button class="tasks-seg-btn" data-quad="delegate" type="button" style="--q-color:var(--c3)" aria-label="Терміново, але не важливо"><span class="tasks-seg-dot" style="background:var(--c3)"></span><span class="tasks-seg-label">Терміново, але не важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="delete" type="button" style="--q-color:var(--c4)" aria-label="Не терміново і не важливо"><span class="tasks-seg-dot" style="background:var(--c4)"></span><span class="tasks-seg-label">Не терміново і не важливо</span></button>
+      </div>
+    </div>
+
+    <div class="variant">
+      <h2>5. Верхня лінія</h2>
+      <p class="desc">Акцент — тонка кольорова лінія зверху плитки.</p>
+      <div class="tasks-segmented v5">
+        <button class="tasks-seg-btn active" data-quad="do" type="button" style="--q-color:var(--c1)" aria-label="Терміново і важливо"><span class="tasks-seg-dot" style="background:var(--c1)"></span><span class="tasks-seg-label">Терміново і важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="schedule" type="button" style="--q-color:var(--c2)" aria-label="Важливо, але не терміново"><span class="tasks-seg-dot" style="background:var(--c2)"></span><span class="tasks-seg-label">Важливо, але не терміново</span></button>
+        <button class="tasks-seg-btn" data-quad="delegate" type="button" style="--q-color:var(--c3)" aria-label="Терміново, але не важливо"><span class="tasks-seg-dot" style="background:var(--c3)"></span><span class="tasks-seg-label">Терміново, але не важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="delete" type="button" style="--q-color:var(--c4)" aria-label="Не терміново і не важливо"><span class="tasks-seg-dot" style="background:var(--c4)"></span><span class="tasks-seg-label">Не терміново і не важливо</span></button>
+      </div>
+    </div>
+
+    <div class="variant">
+      <h2>6. Кільце на крапці</h2>
+      <p class="desc">Акцент — м'яке кільце навколо кольорової крапки.</p>
+      <div class="tasks-segmented v6">
+        <button class="tasks-seg-btn active" data-quad="do" type="button" style="--q-color:var(--c1)" aria-label="Терміново і важливо"><span class="tasks-seg-dot" style="background:var(--c1)"></span><span class="tasks-seg-label">Терміново і важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="schedule" type="button" style="--q-color:var(--c2)" aria-label="Важливо, але не терміново"><span class="tasks-seg-dot" style="background:var(--c2)"></span><span class="tasks-seg-label">Важливо, але не терміново</span></button>
+        <button class="tasks-seg-btn" data-quad="delegate" type="button" style="--q-color:var(--c3)" aria-label="Терміново, але не важливо"><span class="tasks-seg-dot" style="background:var(--c3)"></span><span class="tasks-seg-label">Терміново, але не важливо</span></button>
+        <button class="tasks-seg-btn" data-quad="delete" type="button" style="--q-color:var(--c4)" aria-label="Не терміново і не важливо"><span class="tasks-seg-dot" style="background:var(--c4)"></span><span class="tasks-seg-label">Не терміново і не важливо</span></button>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  function toggleTheme(){
+    const root=document.documentElement;
+    root.setAttribute('data-theme', root.getAttribute('data-theme')==='light'?'dark':'light');
+  }
+  document.querySelectorAll('.tasks-segmented').forEach(group=>{
+    const btns=group.querySelectorAll('.tasks-seg-btn');
+    btns.forEach(b=>{
+      b.addEventListener('click',()=>{
+        btns.forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+      });
+    });
+  });
+</script>
+</body>
+</html>

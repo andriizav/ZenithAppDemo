@@ -1,0 +1,394 @@
+/* ════════════════════════════════════════════════════════════════
+   LOGIN SCREEN — PIN CODE
+   ════════════════════════════════════════════════════════════════ */
+
+.login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: #f5f6f8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: loginFadeIn 0.4s ease-out forwards;
+    -webkit-user-select: none;
+    user-select: none;
+    overflow: hidden;
+
+    /* Білий тон локскріну: перевизначаємо змінні, щоб усі
+       дочірні елементи (точки, клавіатура, текст) стали світлими */
+    --bg-primary: #f5f6f8;
+    --bg-secondary: #ffffff;
+    --text-primary: #1c1c1e;
+    --text-secondary: #8a8a8e;
+    --border: #e3e3e8;
+    --dot-empty: #d2d2d7;
+    --accent: #5b9cf5;
+    --success: #34c759;
+    --danger: #f2607a;
+    color-scheme: light;
+}
+
+@keyframes loginFadeIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.login-screen.fade-out {
+    animation: loginFadeOut 0.35s ease-in forwards;
+}
+
+@keyframes loginFadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(1.03); }
+}
+
+.login-logo {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--accent, #5b9cf5), #7c5bf5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 32px rgba(91, 156, 245, 0.25);
+    animation: logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+.login-logo svg {
+    width: 36px;
+    height: 36px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.login-title {
+    font-size: 20px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #ff8500 0%, #ff006e 35%, #8338ec 70%, #3a86ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    margin-bottom: 6px;
+}
+
+.login-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary, #999);
+    margin-bottom: 36px;
+}
+
+/* PIN dots */
+.pin-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.pin-dots-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    will-change: transform;
+}
+
+.pin-dots-inner.shake {
+    animation: pinShake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes pinShake {
+    0%   { transform: translateX(0) rotate(0); }
+    10%  { transform: translateX(-8px) rotate(-1.5deg); }
+    20%  { transform: translateX(7px) rotate(1.5deg); }
+    35%  { transform: translateX(-6px) rotate(-1deg); }
+    50%  { transform: translateX(5px) rotate(1deg); }
+    65%  { transform: translateX(-3px) rotate(-0.5deg); }
+    80%  { transform: translateX(2px) rotate(0); }
+    100% { transform: translateX(0) rotate(0); }
+}
+
+.pin-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--dot-empty, #444);
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    flex-shrink: 0;
+}
+
+.pin-dot.filled {
+    background: var(--accent, #5b9cf5);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #5b9cf5) 22%, transparent);
+}
+
+.pin-dot.success {
+    background: var(--success, #4ac06a);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--success, #4ac06a) 22%, transparent);
+}
+
+.pin-dot.error {
+    background: var(--danger, #f2607a);
+    box-shadow:
+        0 0 0 3px color-mix(in srgb, var(--danger, #f2607a) 25%, transparent),
+        0 0 10px color-mix(in srgb, var(--danger, #f2607a) 35%, transparent);
+    animation: pinPop 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes pinPop {
+    0%   { transform: scale(1); }
+    20%  { transform: scale(1.9); }
+    45%  { transform: scale(0.85); }
+    65%  { transform: scale(1.5); }
+    85%  { transform: scale(0.95); }
+    100% { transform: scale(1.25); }
+}
+
+.pin-dots-inner.error-flash {
+    animation: pinDotsFlash 0.5s ease-out both;
+}
+
+@keyframes pinDotsFlash {
+    0%   { filter: drop-shadow(0 0 0 transparent); }
+    30%  { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--danger, #f2607a) 70%, transparent)); }
+    100% { filter: drop-shadow(0 0 0 transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pin-dots-inner.shake { animation: none; }
+    .pin-dot.error { animation: none; transform: scale(1.25); }
+    .pin-dots-inner.error-flash { animation: none; }
+}
+
+/* Numeric keypad */
+.pin-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 72px);
+    gap: 12px;
+    align-items: center;
+}
+
+.pin-key {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg-secondary, #212121);
+    color: var(--text-primary, #e6e6e6);
+    font-size: 24px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.pin-key::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--accent, #5b9cf5);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.pin-key:active {
+    transform: scale(0.92);
+}
+
+.pin-key:active::after {
+    opacity: 0.15;
+}
+
+.pin-key.key-action {
+    background: transparent;
+    color: var(--text-secondary, #999);
+    font-size: 16px;
+}
+
+.pin-key.key-action:active {
+    background: var(--bg-secondary, #212121);
+}
+
+.pin-key.key-action svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--text-secondary, #999);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pin-key.key-zero {
+    grid-column: 2;
+    justify-self: center;
+}
+
+.pin-key.key-backspace {
+    grid-column: 3;
+    justify-self: center;
+}
+
+/* Error message — винесено з потоку, щоб не зсувати інші елементи */
+.login-error {
+    position: absolute;
+    bottom: 48px;
+    left: 50%;
+    transform: translate(-50%, 6px) scale(0.96);
+    width: max-content;
+    max-width: 280px;
+    color: var(--danger, #f2607a);
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.35;
+    text-align: center;
+    padding: 9px 16px;
+    background: color-mix(in srgb, var(--danger, #f2607a) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--danger, #f2607a) 24%, transparent);
+    border-radius: 14px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0.28s;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.login-error.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0) scale(1);
+}
+
+.login-error {
+    transform: translate(-50%, 6px) scale(0.96);
+}
+
+/* Attempt counter */
+.login-attempts {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary, #999);
+    background: var(--bg-secondary, #212121);
+    padding: 6px 16px;
+    border-radius: 20px;
+}
+
+/* Wait screen */
+.login-wait {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: #f5f6f8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #1c1c1e;
+    font-size: 18px;
+}
+
+.login-wait-timer {
+    font-size: 48px;
+    font-weight: 700;
+    color: #5b9cf5;
+    margin-top: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Success overlay */
+.login-success-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10001;
+    background: #f5f6f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: successFade 1.9s ease forwards;
+}
+
+@keyframes successFade {
+    0%  { opacity: 1; }
+    80% { opacity: 1; }
+    100%{ opacity: 0; }
+}
+
+.login-success-check {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--success, #4ac06a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: checkBounce 0.5s ease;
+    box-shadow: 0 8px 32px rgba(74, 192, 106, 0.3);
+}
+
+@keyframes checkBounce {
+    0%   { width: 0; height: 0; opacity: 0; }
+    50%  { width: 92px; height: 92px; opacity: 1; }
+    100% { width: 80px; height: 80px; opacity: 1; }
+}
+
+.login-success-check svg {
+    width: 40px;
+    height: 40px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    animation: drawCheck 0.4s 0.2s ease forwards;
+}
+
+@keyframes drawCheck {
+    to { stroke-dashoffset: 0; }
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .pin-key {
+        width: 64px;
+        height: 64px;
+        font-size: 22px;
+    }
+    .pin-keypad {
+        grid-template-columns: repeat(3, 64px);
+        gap: 10px;
+    }
+    .login-logo {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+    }
+    .login-logo svg {
+        width: 32px;
+        height: 32px;
+    }
+}

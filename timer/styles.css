@@ -1,0 +1,1237 @@
+.timer-tab * { margin: 0; padding: 0; box-sizing: border-box; }
+
+.timer-tab body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #1a1a1a;
+  color: #e0e0e0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+
+
+.timer-tab h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+  position: relative;
+  z-index: 1;
+}
+
+.timer-tab .timer-layout {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 36px;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.timer-tab .timer-main {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.timer-tab .container {
+  width: 340px;
+  position: relative;
+  z-index: 1;
+}
+
+.timer-tab .timer-side {
+  flex: 0 0 360px;
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  position: relative;
+}
+
+/* Панель дій таймера (як .tasks-actions) — круглі кнопки внизу праворуч. */
+.timer-tab .timer-actions {
+  position: fixed;
+  bottom: 35px;
+  right: 24px;
+  display: flex;
+  gap: 12px;
+  z-index: 100;
+}
+
+.timer-tab .timer-sounds-btn,
+.timer-tab .timer-look-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: #282828;
+  color: #999999;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, color 0.15s, opacity 0.15s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  opacity: 0.2;
+}
+
+.timer-tab .timer-sounds-btn svg,
+.timer-tab .timer-look-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+}
+
+.timer-tab .timer-sounds-btn:hover {
+  transform: scale(1.1);
+  color: #5b9cf5;
+  opacity: 1;
+}
+
+.timer-tab .timer-look-btn:hover {
+  transform: scale(1.1);
+  color: #5b9cf5;
+  opacity: 1;
+}
+
+/* --- Presets Section --- */
+.timer-tab .presets-section {
+  margin-bottom: 0;
+  background: #232323;
+  border: 1px solid #2a2a2a;
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  user-select: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.timer-tab .presets-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #888;
+}
+
+.timer-tab .presets-header svg {
+  opacity: 0.6;
+}
+
+.timer-tab .presets-header span {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.timer-tab .presets-add-btn {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #666;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s ease;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.timer-tab .presets-add-btn svg {
+  display: block;
+  opacity: 1;
+}
+
+.timer-tab .presets-add-btn svg .plus-vert {
+  transition: transform 0.2s ease;
+  transform-origin: 12px 12px;
+}
+
+.timer-tab .presets-add-btn.active svg .plus-vert {
+  transform: scaleY(0);
+}
+
+.timer-tab .presets-add-btn svg.chevron {
+  transition: transform 0.3s ease;
+}
+
+.timer-tab .presets-add-btn.active svg.chevron {
+  transform: rotate(180deg);
+}
+
+.timer-tab .presets-add-btn:hover {
+  background: #333;
+  color: #aaa;
+}
+
+.timer-tab .presets-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 0;
+}
+
+.timer-tab .preset-btn {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  box-sizing: border-box;
+  background: #262626;
+  border: 1px solid #333;
+  color: #ccc;
+  padding: 8px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.12s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  max-width: 100%;
+  font-family: inherit;
+}
+
+.timer-tab .preset-btn:hover {
+  background: #2e2e2e;
+  border-color: #444;
+  color: #fff;
+}
+
+.timer-tab .preset-btn.dragging { opacity: 0.4; }
+
+.timer-tab .preset-btn.drag-over {
+  border-color: #5b9cf5;
+  background: #1a2a3a;
+}
+
+.timer-tab .preset-btn.editing {
+  border-color: #5b9cf5;
+  background: #1a2535;
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(91, 156, 245, 0.45);
+}
+
+.timer-tab .preset-btn .preset-edit-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.75;
+}
+
+.timer-tab .preset-btn.active {
+  border-color: #5b9cf5;
+  background: rgba(91, 156, 245, 0.1);
+  color: #fff;
+}
+
+/* Група шаблонів з ідентичними таймінгами (дублікати) — такого самого
+   кольору, що й звичайне виділення обраного шаблону. */
+.timer-tab .preset-btn.twin {
+  border-color: #5b9cf5;
+  background: rgba(91, 156, 245, 0.1);
+  color: #fff;
+}
+
+.timer-tab .preset-btn.twin:hover {
+  border-color: #5b9cf5;
+  background: rgba(91, 156, 245, 0.1);
+  color: #fff;
+}
+
+.timer-tab .save-row {
+  margin-top: 6px;
+  position: relative;
+}
+
+.timer-tab .save-row-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: max-height 0.2s ease, opacity 0.15s ease, margin 0.2s ease;
+  margin-top: 0;
+}
+
+.timer-tab .save-row.open .save-row-fields,
+.timer-tab .save-row.editing .save-row-fields {
+  max-height: 80px;
+  opacity: 1;
+  pointer-events: auto;
+  margin-top: 8px;
+}
+
+.timer-tab .save-row-input-wrap {
+  position: relative;
+  flex: 1 1 100px;
+  min-width: 0;
+}
+
+.timer-tab .save-row input {
+  width: 100%;
+  height: 36px;
+  line-height: 36px;
+  box-sizing: border-box;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: #e0e0e0;
+  padding: 0 36px 0 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  transition: border-color 0.12s ease;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.timer-tab .save-row input::placeholder { color: #444; }
+.timer-tab .save-row input:focus {
+  border-color: #5b9cf5;
+}
+
+.timer-tab .save-row button {
+  flex: 0 0 auto;
+  height: 36px;
+  line-height: 36px;
+  box-sizing: border-box;
+  background: #2a2a2a;
+  color: #bbb;
+  border: 1px solid #383838;
+  padding: 0 16px;
+  min-width: 0;
+  white-space: nowrap;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.12s ease;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.timer-tab .save-row button:hover {
+  background: #363636;
+  border-color: #444;
+  color: #ddd;
+}
+
+.timer-tab .save-row button.secondary {
+  background: transparent;
+  color: #555;
+  border-color: #333;
+}
+
+.timer-tab .save-row button.secondary:hover {
+  background: #222;
+  color: #888;
+}
+
+.timer-tab .save-row .save-row-send-btn {
+  position: absolute;
+  right: 6px;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  height: auto;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #555;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.15s, color 0.15s;
+  padding: 0;
+  flex: none;
+  min-width: 0;
+  line-height: 1;
+}
+
+.timer-tab .save-row .save-row-send-btn:hover {
+  opacity: 1;
+  color: #fff;
+  background: transparent;
+  border-color: transparent;
+}
+
+/* --- Settings --- */
+.timer-tab .settings {
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 0;
+  background: #232323;
+  border: 1px solid #2f2f2f;
+  border-radius: 16px;
+  padding: 16px 18px 18px;
+  user-select: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.timer-tab .section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #888;
+}
+
+.timer-tab .section-header svg {
+  opacity: 0.6;
+}
+
+.timer-tab .section-header span {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.timer-tab .input-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.timer-tab .input-group.full { grid-template-columns: 1fr 1fr 1fr; }
+
+.timer-tab .field label {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #ccc;
+  margin-bottom: 8px;
+}
+
+.timer-tab .field input {
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #2e2e2e;
+  color: #e8e8e8;
+  padding: 11px 14px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  transition: border-color 0.15s ease;
+  outline: none;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.field input::-webkit-inner-spin-button,
+.timer-tab .field input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.timer-tab .field input:focus {
+  border-color: #5b9cf5;
+  background: #1d1d1d;
+}
+
+.timer-tab .settings-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #888;
+}
+
+.timer-tab .settings-header span {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.timer-tab .advanced-settings {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.2s ease, opacity 0.15s ease, margin 0.2s ease;
+  margin-top: 0;
+}
+
+.timer-tab .advanced-settings.open {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 12px;
+}
+
+/* --- Перемикач розміщення шаблонів (заповнення / стовпчик) ---
+   Рядок — як .notes-settings-row у нотатках: напис + підпис ліворуч,
+   компактний сегментований перемикач праворуч. */
+.timer-settings-modal .timer-look-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 0;
+}
+
+/* Текстову частину не даємо стискатись перемикачем — інакше він робить
+   вузькою колонку і підпис ламається на багато рядків. */
+.timer-settings-modal .timer-look-row .notes-settings-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.timer-settings-modal .notes-settings-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.timer-settings-modal .notes-settings-sub {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.timer-settings-modal .timer-look-toggle {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 2px;
+  padding: 3px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.timer-settings-modal .timer-look-btn-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 9px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.timer-settings-modal .timer-look-btn-opt svg { stroke: currentColor; }
+
+.timer-settings-modal .timer-look-btn-opt:hover { color: var(--text-primary); }
+
+.timer-settings-modal .timer-look-btn-opt.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+/* Режим «стовпчик»: один шаблон на рядок, але кнопки лишаються
+   по ширині тексту (як у режимі «заповнення»), а не на всю ширину блоку. */
+.timer-tab .presets-list.column {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* --- Timer Display --- */
+.timer-tab .timer-section {
+  text-align: center;
+  margin-bottom: 0;
+  background: #232323;
+  border: 1px solid #2f2f2f;
+  border-radius: 16px;
+  padding: 28px 18px 18px;
+  user-select: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.timer-tab .phase-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  color: #555;
+  margin-bottom: 16px;
+  min-height: 20px;
+}
+
+.timer-tab .phase-label.work { color: #22c55e; }
+.timer-tab .phase-label.rest { color: #f59e0b; }
+.timer-tab .phase-label.warmup { color: #eab308; }
+.timer-tab .phase-label.cooldown { color: #3b82f6; }
+.timer-tab .phase-label.done { color: #22c55e; }
+.timer-tab .phase-label.preview { color: #666; }
+
+.timer-tab .time-display {
+  font-size: 6rem;
+  font-weight: 200;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin-bottom: 16px;
+  transition: text-shadow 0.3s ease;
+  letter-spacing: -0.04em;
+  position: relative;
+}
+
+.timer-tab .time-display.work {
+  color: #22c55e;
+  text-shadow: 0 0 60px rgba(34, 197, 94, 0.4);
+}
+.timer-tab .time-display.rest {
+  color: #f59e0b;
+  text-shadow: 0 0 60px rgba(245, 158, 11, 0.4);
+}
+.timer-tab .time-display.warmup {
+  color: #eab308;
+  text-shadow: 0 0 60px rgba(234, 179, 8, 0.4);
+}
+.timer-tab .time-display.cooldown {
+  color: #3b82f6;
+  text-shadow: 0 0 60px rgba(59, 130, 246, 0.4);
+}
+.timer-tab .time-display.done {
+  color: #22c55e;
+  text-shadow: 0 0 60px rgba(34, 197, 94, 0.5);
+}
+.timer-tab .time-display.idle { color: #444; }
+.timer-tab .time-display.preview { color: #666; text-shadow: none; }
+.timer-tab .time-display.paused { opacity: 0.5; }
+
+.timer-tab .round-info {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 24px;
+  height: 20px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+/* --- Progress Bar --- */
+.timer-tab .progress-bar-container {
+  width: 100%;
+  height: 6px;
+  background: #2a2a2a;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.timer-tab .progress-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 3px;
+  transition: width 0.1s linear, background 0.3s, box-shadow 0.3s;
+  background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+}
+
+/* --- Controls --- */
+.timer-tab .controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
+}
+
+.timer-tab .ctrl-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #282828;
+  color: #999999;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.timer-tab .ctrl-btn:hover { background: #333333; color: #fff; transform: scale(1.1); }
+
+.timer-tab .ctrl-btn.primary {
+  width: 56px;
+  height: 56px;
+  background: #5b9cf5;
+  color: #fff;
+  font-size: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.timer-tab .ctrl-btn.primary:hover {
+  background: #4a8ae8;
+  transform: scale(1.1);
+}
+
+/* --- Round indicators --- */
+.timer-tab .rounds-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  margin-bottom: 28px;
+  min-height: 14px;
+  transform-origin: center;
+}
+
+.timer-tab .round-dot {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(82, 82, 90, 0.7);
+  transition: background 0.1s ease, box-shadow 0.1s ease;
+  cursor: pointer;
+  position: relative;
+}
+.timer-tab .round-dot::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+}
+
+.timer-tab .round-dot.done {
+  background: #22c55e;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+}
+.timer-tab .round-dot.current {
+  background: #fff;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+}
+.timer-tab .rounds-visual.lite .round-dot {
+  opacity: 0.2;
+}
+
+/* --- Вікна налаштувань таймера ---
+   Каркас (.notes-modal*) — спільний з нотатками: розмитляє тло,
+   картка, заголовок з <h3>, футер із кнопкою «Готово». */
+.timer-tab .timer-look-body { display: none; }
+
+/* Вікно «Звуки» ширше за типове, щоб вмістити три колонки звуків. */
+.timer-settings-modal .notes-modal-content {
+  max-height: calc(100vh - 48px);
+}
+
+.timer-settings-modal .notes-modal-body {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #888;
+}
+
+.timer-tab .timer-sounds-section, .timer-settings-modal .timer-sounds-section {
+  margin-bottom: 16px;
+}
+.timer-tab .timer-sounds-section:last-child,
+.timer-settings-modal .timer-sounds-section:last-child {
+  margin-bottom: 0;
+}
+.timer-tab .timer-sounds-section-title, .timer-settings-modal .timer-sounds-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #777;
+  margin-bottom: 8px;
+  padding-left: 8px;
+  border-left: 2px solid #3f7ee8;
+}
+
+.timer-tab .timer-lab-grid, .timer-settings-modal .timer-lab-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.timer-tab .timer-lab-grid::-webkit-scrollbar,
+.timer-settings-modal .timer-lab-grid::-webkit-scrollbar { width: 2px; height: 2px; }
+.timer-tab .timer-lab-grid::-webkit-scrollbar-track,
+.timer-settings-modal .timer-lab-grid::-webkit-scrollbar-track { background: transparent; }
+.timer-tab .timer-lab-grid::-webkit-scrollbar-thumb,
+.timer-settings-modal .timer-lab-grid::-webkit-scrollbar-thumb { background: linear-gradient(#333, #555); border-radius: 2px; }
+.timer-tab .timer-lab-grid::-webkit-scrollbar-thumb:hover,
+.timer-settings-modal .timer-lab-grid::-webkit-scrollbar-thumb:hover { background: linear-gradient(#444, #666); }
+
+.timer-tab .timer-lab-card, .timer-settings-modal .timer-lab-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  background: #1c1c1c;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+  cursor: default;
+}
+.timer-tab .timer-lab-card, .timer-settings-modal .timer-lab-card:hover {
+  border-color: #3a3a3a;
+  background: #222;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.timer-tab .timer-lab-card, .timer-settings-modal .timer-lab-card.timer-lab-active {
+  border-color: #3f7ee8;
+  background: #1a1a2e;
+  box-shadow: 0 0 0 1px rgba(63,126,232,0.15);
+}
+
+.timer-tab .timer-lab-name, .timer-settings-modal .timer-lab-name {
+  font-size: 13px;
+  color: #bbb;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.timer-tab .timer-lab-card.timer-lab-active .timer-lab-name,
+.timer-settings-modal .timer-lab-card.timer-lab-active .timer-lab-name { color: #eee; }
+
+.timer-tab .timer-lab-actions, .timer-settings-modal .timer-lab-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.timer-tab .timer-lab-play, .timer-settings-modal .timer-lab-play {
+  width: 26px;
+  height: 26px;
+  border: 1px solid #333;
+  background: #222;
+  color: #888;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s, color .15s;
+}
+.timer-tab .timer-lab-play, .timer-settings-modal .timer-lab-play:hover { background: #333; color: #fff; }
+
+.timer-tab .timer-lab-choose, .timer-settings-modal .timer-lab-choose {
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid #333;
+  background: #222;
+  color: #888;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.timer-tab .timer-lab-choose, .timer-settings-modal .timer-lab-choose:hover { background: #333; color: #fff; }
+.timer-tab .timer-lab-card.timer-lab-active .timer-lab-choose,
+.timer-settings-modal .timer-lab-card.timer-lab-active .timer-lab-choose {
+  background: #3f7ee8;
+  border-color: #3f7ee8;
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════
+   ── LIGHT THEME: TIMER ──
+   ═══════════════════════════════════════════════════ */
+
+:root[data-theme="light"] .timer-tab body {
+  background: #f0f0f0;
+  color: #1a1a1a;
+}
+
+:root[data-theme="light"] .timer-tab h1 {
+  color: #1a1a1a;
+}
+
+:root[data-theme="light"] .timer-tab .timer-sounds-btn,
+:root[data-theme="light"] .timer-tab .timer-look-btn {
+  background: #ffffff;
+  color: #888;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="light"] .timer-tab .timer-sounds-btn:hover,
+:root[data-theme="light"] .timer-tab .timer-look-btn:hover {
+  color: #5b9cf5;
+}
+
+:root[data-theme="light"] .timer-tab .timer-sounds-inline {
+  color: #888;
+}
+
+:root[data-theme="light"] .timer-tab .timer-sounds-inline:hover {
+  background: #e0e0e0;
+  color: #555;
+}
+
+/* Presets */
+:root[data-theme="light"] .timer-tab .presets-section {
+  background: #ffffff;
+  border-color: #e0e0e0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme="light"] .timer-tab .presets-header {
+  color: #888;
+}
+
+:root[data-theme="light"] .timer-tab .presets-add-btn {
+  color: #888;
+}
+
+:root[data-theme="light"] .timer-tab .presets-add-btn:hover {
+  background: #e8e8e8;
+  color: #555;
+}
+
+:root[data-theme="light"] .timer-tab .preset-btn {
+  background: #f5f5f5;
+  border-color: #e0e0e0;
+  color: #333;
+}
+
+:root[data-theme="light"] .timer-tab .preset-btn:hover {
+  background: #ebebeb;
+  border-color: #ccc;
+  color: #1a1a1a;
+}
+
+:root[data-theme="light"] .timer-tab .preset-btn.drag-over {
+  background: rgba(91, 156, 245, 0.08);
+}
+
+:root[data-theme="light"] .timer-tab .preset-btn.editing {
+  background: rgba(91, 156, 245, 0.08);
+}
+
+:root[data-theme="light"] .timer-tab .preset-btn.active {
+  background: rgba(91, 156, 245, 0.1);
+}
+
+:root[data-theme="light"] .timer-tab .preset-btn.twin {
+  background: rgba(91, 156, 245, 0.1);
+}
+
+/* Save row */
+:root[data-theme="light"] .timer-tab .save-row input {
+  background: #f5f5f5;
+  border-color: #e0e0e0;
+  color: #1a1a1a;
+}
+
+:root[data-theme="light"] .timer-tab .save-row input::placeholder {
+  color: #aaa;
+}
+
+:root[data-theme="light"] .timer-tab .save-row input:focus {
+  border-color: #5b9cf5;
+  background: #ffffff;
+}
+
+:root[data-theme="light"] .timer-tab .save-row button {
+  background: #f0f0f0;
+  border-color: #e0e0e0;
+  color: #555;
+}
+
+:root[data-theme="light"] .timer-tab .save-row button:hover {
+  background: #e4e4e4;
+  color: #333;
+}
+
+:root[data-theme="light"] .timer-tab .save-row button.secondary {
+  color: #999;
+  border-color: #e0e0e0;
+}
+
+:root[data-theme="light"] .timer-tab .save-row button.secondary:hover {
+  background: #f5f5f5;
+  color: #666;
+}
+
+/* Settings */
+:root[data-theme="light"] .timer-tab .settings {
+  background: #ffffff;
+  border-color: #e0e0e0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme="light"] .timer-tab .section-header {
+  color: #888;
+}
+
+:root[data-theme="light"] .timer-tab .field label {
+  color: #666;
+}
+
+:root[data-theme="light"] .timer-tab .field input {
+  background: #f5f5f5;
+  border-color: #e0e0e0;
+  color: #1a1a1a;
+}
+
+:root[data-theme="light"] .timer-tab .field input:focus {
+  border-color: #5b9cf5;
+  background: #ffffff;
+}
+
+:root[data-theme="light"] .timer-tab .settings-header {
+  color: #888;
+}
+
+
+/* Timer display */
+:root[data-theme="light"] .timer-tab .timer-section {
+  background: #ffffff;
+  border-color: #e0e0e0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme="light"] .timer-tab .time-display.idle {
+  color: #bbb;
+}
+
+:root[data-theme="light"] .timer-tab .time-display.preview {
+  color: #999;
+}
+
+:root[data-theme="light"] .timer-tab .round-info {
+  color: #999;
+}
+
+/* Progress bar */
+:root[data-theme="light"] .timer-tab .progress-bar-container {
+  background: #e8e8e8;
+}
+
+/* Controls */
+:root[data-theme="light"] .timer-tab .ctrl-btn {
+  background: #ffffff;
+  color: #888;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="light"] .timer-tab .ctrl-btn:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+/* Round dots */
+:root[data-theme="light"] .timer-tab .round-dot {
+  opacity: 0.8;
+}
+
+:root[data-theme="light"] .timer-tab .round-dot.current {
+  background: #1a1a1a;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Вікна налаштувань (каркас .notes-modal — спільний, див. css/modals.css) */
+:root[data-theme="light"] .timer-settings-modal .notes-modal-body {
+  color: #555;
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-grid::-webkit-scrollbar-track,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-grid::-webkit-scrollbar-thumb,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-grid::-webkit-scrollbar-thumb {
+  background: linear-gradient(#d0d0d0, #b0b0b0);
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-grid::-webkit-scrollbar-thumb:hover,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-grid::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(#c0c0c0, #a0a0a0);
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-card,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-card {
+  background: #fafafa;
+  border-color: #e0e0e0;
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-card,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-card:hover {
+  border-color: #d0d0d0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-card,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-card.timer-lab-active {
+  background: rgba(63, 126, 232, 0.06);
+  border-color: #b8c9f8;
+  box-shadow: 0 0 0 1px rgba(63,126,232,0.1);
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-name,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-name {
+  color: #444;
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-card.timer-lab-active .timer-lab-name,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-card.timer-lab-active .timer-lab-name {
+  color: #1a1a1a;
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-play,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-play {
+  background: #ffffff;
+  border-color: #e0e0e0;
+  color: #888;
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-play,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-play:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-choose,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-choose {
+  background: #ffffff;
+  border-color: #e0e0e0;
+  color: #888;
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-choose,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-choose:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+:root[data-theme="light"] .timer-tab .timer-lab-card.timer-lab-active .timer-lab-choose,
+:root[data-theme="light"] .timer-settings-modal .timer-lab-card.timer-lab-active .timer-lab-choose {
+  background: #3f7ee8;
+  border-color: #3f7ee8;
+  color: #fff;
+}
+
+:root[data-theme="light"] .timer-tab .timer-sounds-section-title,
+:root[data-theme="light"] .timer-settings-modal .timer-sounds-section-title {
+  color: #777;
+}
+
+/* ========== PRESETS CONTEXT MENU (дизайн 1в1 з .tasks-context-menu) ========== */
+
+.timer-context-menu {
+  position: fixed;
+  min-width: 180px;
+  background: #2a2a2e;
+  border: 1px solid #3a3a3e;
+  border-radius: 10px;
+  padding: 5px;
+  z-index: 10001;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  opacity: 0;
+  transform: scale(0.95);
+  transform-origin: top left;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.timer-context-menu.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.timer-context-menu .ctx-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #e0e0e0;
+  transition: background 0.1s;
+}
+
+.timer-context-menu .ctx-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.timer-context-menu .ctx-item svg {
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.timer-context-menu .ctx-item--danger {
+  color: #f85149;
+}
+
+.timer-context-menu .ctx-item--danger svg {
+  opacity: 0.8;
+}
+
+.timer-context-menu .ctx-item--danger:hover {
+  background: rgba(248, 81, 73, 0.14);
+}
+
+.timer-context-menu .ctx-separator {
+  height: 1px;
+  background: #3a3a3e;
+  margin: 4px 8px;
+}
+
+:root[data-theme="light"] .timer-context-menu {
+  background: #ffffff;
+  border-color: #e5e5e5;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.03) inset;
+}
+
+:root[data-theme="light"] .timer-context-menu .ctx-item {
+  color: #333;
+}
+
+:root[data-theme="light"] .timer-context-menu .ctx-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:root[data-theme="light"] .timer-context-menu .ctx-item--danger:hover {
+  background: rgba(248, 81, 73, 0.1);
+}
+
+:root[data-theme="light"] .timer-context-menu .ctx-separator {
+  background: #e5e5e5;
+}

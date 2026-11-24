@@ -1,0 +1,360 @@
+.habits-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    width: fit-content;
+    margin: 0 auto;
+    position: relative;
+}
+
+@media (min-width: 601px) {
+    .habits-container {
+        padding-bottom: 50px;
+    }
+}
+
+.habits-resizer {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: transparent;
+    cursor: col-resize;
+    z-index: 20;
+    transition: background 0.15s;
+}
+
+.habits-resizer:hover {
+    background: rgba(91, 156, 245, 0.3);
+}
+
+.habits-resizer.active {
+    background: rgba(91, 156, 245, 0.5);
+}
+
+/* ─── Motivation Quote ─── */
+.habits-quote {
+    position: relative;
+    width: fit-content;
+    max-width: fit-content;
+    margin: 20px auto 24px;
+    padding: 14px 36px 14px 20px;
+    background: #212121;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    color: var(--text, #e8e8ea);
+    font-size: 14px;
+    text-align: left;
+    overflow: visible;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.habits-quote:active {
+    transform: scale(0.98);
+}
+
+.habits-quote-mark {
+    position: absolute;
+    top: -12px;
+    left: 16px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 60px;
+    line-height: 1;
+    font-weight: 700;
+    color: transparent;
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.55), rgba(10, 132, 255, 0.35));
+    -webkit-background-clip: text;
+    background-clip: text;
+    opacity: 0.6;
+    filter: drop-shadow(0 1px 4px rgba(0, 122, 255, 0.18));
+    pointer-events: none;
+    user-select: none;
+}
+
+.habits-quote-text {
+    position: relative;
+    display: block;
+    padding-left: 30px;
+    line-height: 1.5;
+    flex: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    transform: translateY(0);
+}
+
+.habits-quote-text.swapping {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+@media (max-width: 600px) {
+    .habits-quote {
+        margin: 12px auto;
+        font-size: 14px;
+    }
+}
+
+/* ─── Beginner Guide ─── */
+.habits-guide {
+    width: fit-content;
+    max-width: 520px;
+    margin: 0 auto 28px;
+    background: #212121;
+    border: 1px solid #333;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.habits-guide-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+}
+
+.habits-guide-icon {
+    color: var(--accent, #5b9cf5);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.habits-guide-title {
+    color: var(--text, #e8e8ea);
+    font-size: 14px;
+    font-weight: 500;
+    flex: 1;
+}
+
+.habits-guide-chevron {
+    color: #888;
+    display: flex;
+    align-items: center;
+    transition: transform 0.25s ease;
+}
+
+.habits-guide.open .habits-guide-chevron {
+    transform: rotate(180deg);
+}
+
+.habits-guide-body {
+    display: none;
+    padding: 0 16px 16px;
+}
+
+.habits-guide.open .habits-guide-body {
+    display: block;
+}
+
+.habits-guide-section {
+    margin-top: 12px;
+}
+
+.habits-guide-section:first-child {
+    margin-top: 0;
+}
+
+.habits-guide-subtitle {
+    color: var(--text, #e8e8ea);
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.habits-guide-text {
+    color: #aaa;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.habits-guide-text b {
+    color: var(--text, #e8e8ea);
+}
+
+.habits-guide-types {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.habits-guide-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #aaa;
+}
+
+.habits-guide-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.habits-guide-badge.good {
+    background: rgba(10, 132, 255, 0.15);
+    color: #5b9cf5;
+}
+
+.habits-guide-badge.bad {
+    background: rgba(255, 69, 58, 0.15);
+    color: #ff6b6b;
+}
+
+.habits-guide-cells {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.habits-guide-cell-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.habits-guide-cell {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.habits-guide-cell.good-done {
+    background: #0A84FF;
+    border: 1px solid transparent;
+}
+
+.habits-guide-cell.good-skipped {
+    background: repeating-linear-gradient(135deg, transparent 0px, transparent 2px, #FF453A 2px, #FF453A 4px), #1a1a1a;
+    border: 1px solid #FF453A;
+}
+
+.habits-guide-cell.good-half {
+    background: linear-gradient(90deg, #0A84FF 50%, #282828 50%);
+    border: 1px solid #0A84FF;
+}
+
+.habits-guide-label {
+    color: #aaa;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.habits-guide-label b {
+    color: var(--text, #e8e8ea);
+}
+
+.habits-guide-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #2a2a2a;
+    flex-wrap: wrap;
+}
+
+.habits-guide-ack {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #aaa;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.habits-guide-ack input {
+    width: 18px;
+    height: 18px;
+    accent-color: #0A84FF;
+    cursor: pointer;
+    border-radius: 5px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1.5px solid #8e8e93;
+    background: transparent;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.habits-guide-ack input:checked {
+    border-color: transparent;
+    background: linear-gradient(135deg, #0A84FF, #2ea0ff);
+    box-shadow: 0 2px 6px rgba(10, 132, 255, 0.45);
+}
+
+.habits-guide-ack input:checked::after {
+    content: "";
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    width: 5px;
+    height: 9px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    border-radius: 1px;
+    transform: translate(-50%, -54%) rotate(45deg);
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+    animation: habitsCheckPop 0.2s ease;
+}
+
+@keyframes habitsCheckPop {
+    0% { transform: translate(-50%, -54%) rotate(45deg) scale(0.5); opacity: 0; }
+    100% { transform: translate(-50%, -54%) rotate(45deg) scale(1); opacity: 1; }
+}
+
+:root[data-theme="light"] .habits-guide-footer {
+    border-top-color: #e0e0e0;
+}
+
+:root[data-theme="light"] .habits-guide-ack {
+    color: #666;
+}
+
+/* ═══════════════════════════════════════════════════
+   ── LIGHT THEME: BASE ──
+   ═══════════════════════════════════════════════════ */
+
+:root[data-theme="light"] .habits-container {
+    /* no change needed */
+}
+
+:root[data-theme="light"] .habits-resizer:hover {
+    background: rgba(91, 156, 245, 0.3);
+}
+
+:root[data-theme="light"] .habits-resizer.active {
+    background: rgba(91, 156, 245, 0.5);
+}
+
+:root[data-theme="light"] .habits-quote {
+    background: #ffffff;
+    border-color: #e5e5e5;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    color: #555;
+}
+
+:root[data-theme="light"] .habits-quote-mark {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.5), rgba(10, 132, 255, 0.3));
+    -webkit-background-clip: text;
+    background-clip: text;
+    opacity: 0.7;
+}

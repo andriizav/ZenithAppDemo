@@ -1,0 +1,422 @@
+/* ---------- LIGHT THEME ---------- */
+
+:root[data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-editor: #f0f0f0;
+    --bg-hover: #ebebeb;
+    --border: #e0e0e0;
+    --text-primary: #1a1a1a;
+    --text-secondary: #555555;
+    --text-muted: #999999;
+    --accent: #5b9cf5;
+    --accent-bg: rgba(91, 156, 245, 0.12);
+    --bg-card: #ffffff;
+    --bg-tile: #f7f7f8;
+    --success: #4ac06a;
+    --warning: #f0a040;
+    --danger: #e05555;
+    --danger-hover: #d03030;
+}
+
+:root[data-theme="light"] body {
+    background: #f0f0f0;
+    color: #1a1a1a;
+}
+
+:root[data-theme="light"] .tabs {
+    background: #ffffff;
+}
+
+:root[data-theme="light"] .tab {
+    color: #555555;
+}
+
+:root[data-theme="light"] .tab.active {
+    color: #1a1a1a;
+    border-bottom-color: var(--accent);
+}
+
+:root[data-theme="light"] .tab-count {
+    background: #ebebeb;
+    color: #999999;
+}
+
+:root[data-theme="light"] .tab.active .tab-count {
+    color: #ffffff;
+    background: #5b9cf5;
+}
+
+:root[data-theme="light"] .tab-content {
+    background: transparent;
+}
+
+:root[data-theme="light"] .bookmark-item {
+    color: #1a1a1a;
+}
+
+:root[data-theme="light"] .bookmark-domain {
+    color: #999999;
+}
+
+:root[data-theme="light"] .search-input {
+    background: #ffffff;
+    border-color: #e0e0e0;
+    color: #1a1a1a;
+    box-shadow: none;
+}
+
+:root[data-theme="light"] .search-input::placeholder {
+    color: #999999;
+}
+
+:root[data-theme="light"] .search-count {
+    color: #999999;
+}
+
+:root[data-theme="light"] .loading,
+:root[data-theme="light"] .no-results {
+    color: #555555;
+}
+
+:root[data-theme="light"] .error {
+    color: #e05555;
+}
+
+:root[data-theme="light"] #preloader {
+    background: #ffffff;
+}
+
+:root[data-theme="light"] .spinner {
+    border-color: #e0e0e0;
+    border-top-color: #5b9cf5;
+}
+
+:root[data-theme="light"] .theme-toggle {
+    color: #999999;
+    opacity: 0.5;
+}
+
+:root[data-theme="light"] .gist-top-btn {
+    color: #999999;
+    opacity: 0.5;
+}
+
+:root[data-theme="light"] .gist-top-btn.active {
+    color: #5b9cf5;
+    opacity: 1;
+}
+
+/* Light theme modals */
+:root[data-theme="light"] .notes-modal {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="light"] .notes-modal-content {
+    background: #ffffff;
+    border-color: #e0e0e0;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="light"] .settings-modal-content {
+    background: #ffffff;
+    border-color: #e0e0e0;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+}
+
+:root[data-theme="light"] .notes-modal-header {
+    border-bottom-color: #e0e0e0;
+}
+
+:root[data-theme="light"] .notes-modal-header h3 {
+    color: #1a1a1a;
+}
+
+:root[data-theme="light"] .notes-modal-close {
+    color: #999999;
+}
+
+:root[data-theme="light"] .notes-modal-body {
+    color: #1a1a1a;
+}
+
+:root[data-theme="light"] .notes-modal-footer {
+    border-top-color: #e0e0e0;
+}
+
+/* Light theme unified modal buttons */
+:root[data-theme="light"] .modal-btn {
+    background: #f5f5f5;
+    border-color: #e0e0e0;
+    color: #555555;
+}
+
+:root[data-theme="light"] .modal-btn--primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+:root[data-theme="light"] .modal-btn--danger {
+    background: transparent;
+    border-color: #f1c4c4;
+    color: #e05555;
+}
+
+:root[data-theme="light"] .modal-btn--icon {
+    color: #555555;
+}
+
+ :root[data-theme="light"] .gist-settings-label {
+    color: #1a1a1a;
+}
+
+:root[data-theme="light"] .gist-settings-label input[type="checkbox"] {
+    accent-color: #5b9cf5;
+}
+
+:root[data-theme="light"] .gist-settings-section label {
+    color: #1a1a1a;
+}
+
+:root[data-theme="light"] .gist-settings-input {
+    background: #f5f5f5;
+    border-color: #e0e0e0;
+    color: #1a1a1a;
+}
+
+:root[data-theme="light"] .gist-settings-hint {
+    color: #555555;
+}
+
+:root[data-theme="light"] .gist-settings-hint a {
+    color: #5b9cf5;
+}
+
+:root[data-theme="light"] .gist-settings-hint code {
+    background: #f0f0f0;
+}
+
+:root[data-theme="light"] .gist-status-info {
+    background: rgba(91, 156, 245, 0.1);
+    color: #5b9cf5;
+    border-color: #5b9cf5;
+}
+
+:root[data-theme="light"] .gist-status-success {
+    background: rgba(74, 192, 106, 0.1);
+    color: #4ac06a;
+    border-color: #4ac06a;
+}
+
+:root[data-theme="light"] .gist-status-error {
+    background: rgba(224, 85, 85, 0.1);
+    color: #e05555;
+    border-color: #e05555;
+}
+
+/* ============================================================
+   MOBILE — LIGHT THEME
+   (виокремлено з mobile.css)
+   ============================================================ */
+
+/* ---------- LIGHT THEME FOR DROPDOWN ---------- */
+
+:root[data-theme="light"] .tab-more-dropdown {
+    background: #fff;
+    border-color: #e0e0e0;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="light"] .tab-more-dropdown .tab {
+    color: #555;
+}
+
+:root[data-theme="light"] .tab-more-dropdown .tab.active {
+    color: #5b9cf5;
+}
+
+:root[data-theme="light"] .tab-theme-dropdown,
+:root[data-theme="light"] .tab-gist-dropdown,
+:root[data-theme="light"] .tab-order-dropdown {
+    color: #555;
+}
+
+/* ---------- TABS.active (mobile) ---------- */
+
+:root[data-theme="light"] .tab.active {
+    color: var(--accent);
+}
+
+/* ---------- NOTES SIDEBAR (mobile) ---------- */
+
+:root[data-theme="light"] .notes-sidebar-list {
+    background-color: #fff;
+    border-color: #e0e0e0;
+}
+
+/* ============================================================
+   TASKS — світлі кольори квадрантів у білій темі
+   (--q-color та border-left задані інлайн, тому !important)
+   ============================================================ */
+
+:root[data-theme="light"] .tasks-seg-btn[data-quad="do"]       { --q-color: #e06666 !important; }
+:root[data-theme="light"] .tasks-seg-btn[data-quad="schedule"] { --q-color: #efa24a !important; }
+:root[data-theme="light"] .tasks-seg-btn[data-quad="delegate"] { --q-color: #6aa3f5 !important; }
+:root[data-theme="light"] .tasks-seg-btn[data-quad="delete"]   { --q-color: #9aa0a6 !important; }
+
+:root[data-theme="light"] .tasks-segmented {
+    background: #ffffff;
+    border-color: #e0e0e0;
+}
+
+:root[data-theme="light"] .tasks-seg-btn.active {
+    background: #f5f5f5;
+}
+
+:root[data-theme="light"] .tasks-seg-btn.active .tasks-seg-count {
+    background: color-mix(in srgb, var(--q-color) 16%, #ffffff);
+    color: var(--q-color);
+    outline: 1px solid color-mix(in srgb, var(--q-color) 30%, transparent);
+    outline-offset: -1px;
+}
+
+:root[data-theme="light"] .tasks-quadrant[data-key="do"] .tasks-quadrant-header       { border-left-color: #e06666 !important; }
+:root[data-theme="light"] .tasks-quadrant[data-key="schedule"] .tasks-quadrant-header { border-left-color: #efa24a !important; }
+:root[data-theme="light"] .tasks-quadrant[data-key="delegate"] .tasks-quadrant-header { border-left-color: #6aa3f5 !important; }
+:root[data-theme="light"] .tasks-quadrant[data-key="delete"] .tasks-quadrant-header   { border-left-color: #9aa0a6 !important; }
+
+/* ============================================================
+   TIMER — light theme overrides
+   ============================================================ */
+
+:root[data-theme="light"] .timer-tab .presets-section {
+    background: #fafafa;
+    border-color: #e0e0e0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+:root[data-theme="light"] .timer-tab .presets-header { color: #888; }
+:root[data-theme="light"] .timer-tab .presets-add-btn { color: #888; }
+:root[data-theme="light"] .timer-tab .preset-btn {
+    background: #f0f0f0;
+    border-color: #d5d5d5;
+    color: #333;
+}
+
+:root[data-theme="light"] .timer-tab .timer-section {
+    background: #fafafa;
+    border-color: #e0e0e0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+:root[data-theme="light"] .timer-tab .settings {
+    background: #fafafa;
+    border-color: #e0e0e0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+:root[data-theme="light"] .timer-tab .settings-header {
+    color: #888;
+}
+
+:root[data-theme="light"] .timer-tab .sound-label {
+    color: #333;
+}
+
+:root[data-theme="light"] .timer-tab .timer-sounds-btn {
+    color: #555;
+}
+
+:root[data-theme="light"] .timer-tab .timer-sounds-inline {
+    color: #888;
+}
+
+:root[data-theme="light"] body { color: #1a1a1a; }
+:root[data-theme="light"] .tabs { background: #fff; }
+:root[data-theme="light"] .tab { color: #555; }
+:root[data-theme="light"] .tab.active { color: #5b9cf5; }
+:root[data-theme="light"] .tab-count { background: #ebebeb; color: #999; }
+:root[data-theme="light"] .tab.active .tab-count { color: #fff; background: #5b9cf5; }
+:root[data-theme="light"] #preloader { background: #fff; }
+:root[data-theme="light"] .spinner { border-color: #e0e0e0; border-top-color: #5b9cf5; }
+:root[data-theme="light"] .theme-toggle { color: #999; opacity: 0.5; }
+:root[data-theme="light"] .bookmark-item { color: #1a1a1a; }
+:root[data-theme="light"] .bookmark-domain { color: #999; }
+:root[data-theme="light"] .search-input { background: #fff; border-color: #e0e0e0; color: #1a1a1a; box-shadow: none; }
+:root[data-theme="light"] .search-input::placeholder { color: #999; }
+:root[data-theme="light"] .search-count { color: #999; }
+:root[data-theme="light"] .notes-modal { background: rgba(0,0,0,0.3); }
+:root[data-theme="light"] .notes-modal-content { background: #fff; border-color: #e0e0e0; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+:root[data-theme="light"] .notes-modal-header { border-bottom-color: #e0e0e0; }
+:root[data-theme="light"] .notes-modal-header h3 { color: #1a1a1a; }
+:root[data-theme="light"] .notes-modal-close { color: #999; }
+:root[data-theme="light"] .notes-modal-body { color: #1a1a1a; }
+:root[data-theme="light"] .notes-modal-footer { border-top-color: #e0e0e0; }
+:root[data-theme="light"] .tasks-quadrant { background: #fff; border-color: #e0e0e0; }
+:root[data-theme="light"] .tasks-quadrant-header { color: #1a1a1a; }
+:root[data-theme="light"] .tasks-quadrant-count { background: #ebebeb; color: #555; }
+:root[data-theme="light"] .tasks-task-text { color: #1a1a1a; }
+:root[data-theme="light"] .tasks-task-text.done { color: #999; }
+:root[data-theme="light"] .tasks-add-input { color: #1a1a1a; }
+:root[data-theme="light"] .tasks-add-input::placeholder { color: #999; }
+:root[data-theme="light"] .tasks-done-toggle { color: #999; }
+:root[data-theme="light"] .tasks-repeat-text-input { background: #f5f5f5; border-color: #e0e0e0; color: #1a1a1a; }
+:root[data-theme="light"] .tasks-repeat-options { background: #f5f5f5; border-color: #e0e0e0; }
+:root[data-theme="light"] .tasks-repeat-option { color: #555; }
+:root[data-theme="light"] .tasks-repeat-option.active { background: rgba(91,156,245,0.12); color: #5b9cf5; }
+:root[data-theme="light"] .tasks-weekdays { background: #f5f5f5; border-color: #e0e0e0; }
+:root[data-theme="light"] .tasks-weekday { color: #555; }
+:root[data-theme="light"] .tasks-weekday.active { background: rgba(91,156,245,0.12); color: #5b9cf5; }
+:root[data-theme="light"] .tasks-month-label { background: #f5f5f5; border-color: #e0e0e0; color: #1a1a1a; }
+:root[data-theme="light"] .tasks-month-wrap { background: #ebebeb; border-color: #e0e0e0; }
+:root[data-theme="light"] .tasks-month-input { color: #1a1a1a; }
+:root[data-theme="light"] .tasks-repeat-desc-input { background: #f5f5f5; border-color: #e0e0e0; color: #1a1a1a; }
+:root[data-theme="light"] .tasks-subtask-text { color: #1a1a1a; }
+:root[data-theme="light"] .tasks-subtask-text.done { color: #999; }
+:root[data-theme="light"] .tasks-subtask-input { background: #fff; border-color: #e0e0e0; color: #1a1a1a; }
+:root[data-theme="light"] .tasks-settings-row { color: #1a1a1a; }
+:root[data-theme="light"] .tasks-settings-text { color: #1a1a1a; }
+:root[data-theme="light"] .tasks-settings-sub { color: #999; }
+:root[data-theme="light"] .tasks-switch-slider { background: #e0e0e0; border-color: #e0e0e0; }
+:root[data-theme="light"] .tasks-switch-slider::before { background: #fff; }
+:root[data-theme="light"] .tasks-switch input:checked + .tasks-switch-slider { background: rgba(91,156,245,0.2); border-color: #5b9cf5; }
+:root[data-theme="light"] .tasks-switch input:checked + .tasks-switch-slider::before { background: #5b9cf5; }
+:root[data-theme="light"] .tasks-icon-btn { color: #808080; }
+:root[data-theme="light"] .tasks-gear-dropdown,
+:root[data-theme="light"] .tasks-color-dropdown { background: #fff; border-color: #e0e0e0; }
+:root[data-theme="light"] .tasks-gear-option { color: #1a1a1a; }
+:root[data-theme="light"] .tasks-gear-option input[type="checkbox"] { border-color: #c7c7cc; }
+:root[data-theme="light"] .tasks-repeat-hint { background: #f5f5f5; border-color: #e0e0e0; color: #1a1a1a; }
+:root[data-theme="light"] .tasks-month-btn:active:not(:disabled) { color: #fff; background: #5b9cf5; }
+:root[data-theme="light"] .tasks-month-btn:disabled { color: #999; }
+:root[data-theme="light"] .tasks-collapsible-head { color: #999; }
+:root[data-theme="light"] .tasks-collapsible-hint { color: #999; background: #ebebeb; }
+:root[data-theme="light"] .tasks-modal-title { color: #1a1a1a; }
+:root[data-theme="light"] .tasks-repeat-field-label { color: #999; }
+:root[data-theme="light"] .tasks-task-repeat { color: #999; }
+:root[data-theme="light"] .tasks-task-repeat.active { color: #666; }
+:root[data-theme="light"] .tasks-task-subtasks { color: #999; }
+:root[data-theme="light"] .tasks-container { background: transparent; }
+:root[data-theme="light"] .task-checkmark { border-color: #999; }
+:root[data-theme="light"] .tasks-checkbox:checked + .task-checkmark { background: #e0e0e0; border-color: #e0e0e0; }
+:root[data-theme="light"] .tasks-checkbox:checked + .task-checkmark::after { border-color: #999; }
+:root[data-theme="light"] .task-edit-input { background: #f5f5f5; border-color: #5b9cf5; color: #1a1a1a; }
+:root[data-theme="light"] .tasks-add-send { color: #999; }
+:root[data-theme="light"] .tasks-export-btn, :root[data-theme="light"] .tasks-import-btn, :root[data-theme="light"] .tasks-sync-btn, :root[data-theme="light"] .tasks-export-btn, :root[data-theme="light"] .tasks-import-btn, :root[data-theme="light"] .tasks-sync-btn, :root[data-theme="light"] .tasks-settings-btn {
+    background: #fff; color: #666; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+:root[data-theme="light"] .tasks-export-btn,
+:root[data-theme="light"] .tasks-import-btn,
+:root[data-theme="light"] .tasks-sync-btn,
+:root[data-theme="light"] .tasks-export-btn, :root[data-theme="light"] .tasks-import-btn, :root[data-theme="light"] .tasks-sync-btn, :root[data-theme="light"] .tasks-settings-btn {
+    background: #fff; color: #666; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+:root[data-theme="light"] .gist-settings-label { color: #1a1a1a; }
+:root[data-theme="light"] .gist-settings-section label { color: #1a1a1a; }
+:root[data-theme="light"] .gist-settings-input { background: #f5f5f5; border-color: #e0e0e0; color: #1a1a1a; }
+:root[data-theme="light"] .gist-settings-hint { color: #555; }
+:root[data-theme="light"] .gist-settings-hint code { background: #f0f0f0; }
+:root[data-theme="light"] .gist-status-info { background: rgba(91,156,245,0.1); color: #5b9cf5; border-color: #5b9cf5; }
+:root[data-theme="light"] .gist-status-success { background: rgba(74,192,106,0.1); color: #4ac06a; border-color: #4ac06a; }
+:root[data-theme="light"] .gist-status-error { background: rgba(224,85,85,0.1); color: #e05555; border-color: #e05555; }

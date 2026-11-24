@@ -1,0 +1,223 @@
+/* ========== SETTINGS MODAL ========== */
+
+.habits-settings-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: habits-settings-fade 0.18s ease;
+}
+
+@keyframes habits-settings-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.habits-settings-modal .notes-modal-content {
+    background: #212121;
+    border: 1px solid #2e2e2e;
+    border-radius: 16px;
+    width: 440px;
+    max-width: 92vw;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: habits-settings-pop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes habits-settings-pop {
+    from { opacity: 0; transform: scale(0.94) translateY(8px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.habits-settings-modal .notes-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid #2a2a2e;
+}
+
+.habits-settings-modal .notes-modal-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #f0f0f0;
+}
+
+.habits-settings-modal .notes-modal-close {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.habits-settings-modal .notes-modal-close:hover {
+    color: #fff;
+}
+
+.habits-settings-modal .notes-modal-body {
+    padding: 16px 20px;
+}
+
+.habits-settings-modal .notes-modal-footer {
+    padding: 14px 20px 18px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.habits-settings-modal .tasks-settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
+    color: #e8e8e8;
+}
+
+.habits-settings-modal .tasks-settings-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 14px;
+}
+
+.habits-settings-modal .tasks-settings-sub {
+    font-size: 12px;
+    color: #999;
+}
+
+.habits-settings-modal .tasks-switch {
+    position: relative;
+    flex-shrink: 0;
+    width: 42px;
+    height: 24px;
+}
+
+.habits-settings-modal .tasks-switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.habits-settings-modal .tasks-switch-slider {
+    position: absolute;
+    inset: 0;
+    background: #3a3a3a;
+    border: 1px solid #444;
+    border-radius: 999px;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.habits-settings-modal .tasks-switch-slider::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #aaa;
+    border-radius: 50%;
+    transition: transform 0.18s ease, background 0.15s;
+}
+
+.habits-settings-modal .tasks-switch input:checked + .tasks-switch-slider {
+    background: rgba(91, 156, 245, 0.2);
+    border-color: #5b9cf5;
+}
+
+.habits-settings-modal .tasks-switch input:checked + .tasks-switch-slider::before {
+    transform: translate(18px, -50%);
+    background: #5b9cf5;
+}
+
+/* Вибір візуалу «напів» у налаштуваннях */
+.habits-settings-modal .half-style-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    cursor: pointer;
+    border: 1px solid #555;
+    --half-empty: #282828;
+}
+
+.habits-settings-modal .half-style-swatch.selected {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+.habits-settings-modal .notes-modal-footer {
+    padding: 14px 20px 18px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ═══════════════════════════════════════════════════
+   ── LIGHT THEME: SETTINGS ──
+   ═══════════════════════════════════════════════════ */
+
+:root[data-theme="light"] .habits-settings-modal {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme="light"] .habits-settings-modal .notes-modal-content {
+    background: #ffffff;
+    border-color: #e0e0e0;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="light"] .habits-settings-modal .notes-modal-header {
+    border-bottom-color: #e0e0e0;
+}
+
+:root[data-theme="light"] .habits-settings-modal .notes-modal-header h3 {
+    color: #1a1a1a;
+}
+
+:root[data-theme="light"] .habits-settings-modal .notes-modal-close {
+    color: #999;
+}
+
+:root[data-theme="light"] .habits-settings-modal .notes-modal-close:hover {
+    color: #333;
+}
+
+:root[data-theme="light"] .habits-settings-modal .tasks-settings-row {
+    color: #1a1a1a;
+}
+
+:root[data-theme="light"] .habits-settings-modal .tasks-settings-sub {
+    color: #888;
+}
+
+:root[data-theme="light"] .habits-settings-modal .tasks-switch-slider {
+    background: #d0d0d0;
+    border-color: #ccc;
+}
+
+:root[data-theme="light"] .habits-settings-modal .tasks-switch-slider::before {
+    background: #fff;
+}
+
+:root[data-theme="light"] .habits-settings-modal .tasks-switch input:checked + .tasks-switch-slider {
+    background: rgba(91, 156, 245, 0.18);
+    border-color: #5b9cf5;
+}
+
+:root[data-theme="light"] .habits-settings-modal .tasks-switch input:checked + .tasks-switch-slider::before {
+    background: #5b9cf5;
+}
+
+:root[data-theme="light"] .habits-settings-modal .half-style-swatch {
+    border-color: #ccc;
+    --half-empty: #e8e8e8;
+}
+
+:root[data-theme="light"] .habits-settings-modal .half-style-swatch.selected {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25);
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xbel PUBLIC "+//IDN python.org//DTD XML Bookmark Exchange Language 1.0//EN//XML" "http://pyxml.sourceforge.net/topics/dtds/xbel.dtd">
+<xbel version="1.0">
+<!--- highestId :25: for Floccus bookmark sync browser extension -->
+
+<bookmark href="https://www.imdb.com/" id="1">
+  <title>IMDb — база фільмів</title>
+</bookmark>
+<bookmark href="https://www.themoviedb.org/" id="2">
+  <title>TMDB — фільми та серіали</title>
+</bookmark>
+<bookmark href="https://separator.floccus.org/?id=319308" id="25">
+  <title>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</title>
+</bookmark>
+<bookmark href="https://onlinevkino.com/" id="5">
+  <title>Онлайн кинотеатр - смотреть фильмы онлайн в хорошем HD 1080 качестве бесплатно</title>
+</bookmark>
+<bookmark href="https://uaserials.my/" id="6">
+  <title>UASerials — серіали та фільми українською мовою онлайн</title>
+</bookmark>
+<bookmark href="https://kinokrad.my/r26" id="7">
+  <title>КиноКрад – смотреть фильмы онлайн бесплатно</title>
+</bookmark>
+<bookmark href="https://uakinogo.online/" id="8">
+  <title>KinoGo.online смотреть фильмы и сериалы онлайн на официальном КиноГо</title>
+</bookmark>
+<bookmark href="https://rezka-ua.pub/" id="9">
+  <title>Смотреть фильмы и сериалы онлайн в хорошем качестве 720p hd и без регистрации</title>
+</bookmark>
+<bookmark href="https://uafix.net/serials/szovni/season-04-episode-04/" id="19">
+  <title>Ззовні 4 сезон 4 серія дивитись онлайн українською</title>
+</bookmark>
+</xbel>

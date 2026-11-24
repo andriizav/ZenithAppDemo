@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="dark" />
+        <title>Icons Manager | ZenithApp</title>
+        <script src="icons.js"></script>
+        <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family:
+                        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                        sans-serif;
+                    background: #1a1a1a;
+                    color: #e8e8e8;
+                    min-height: 100vh;
+                    padding: 40px 24px 100px;
+                }
+
+                /* ── HEADER ─────────────────────────────── */
+                .header {
+                    text-align: center;
+                    margin-bottom: 48px;
+                }
+                .header h1 {
+                    font-size: 36px;
+                    font-weight: 700;
+                    color: #ffffff;
+                    margin-bottom: 6px;
+                }
+                .header h2 {
+                    font-size: 16px;
+                    font-weight: 500;
+                    color: #ffffff;
+                }
+
+                /* ── LAYOUT ─────────────────────────────── */
+                .layout {
+                    display: grid;
+                    grid-template-columns: 340px 1fr;
+                    gap: 14px;
+                    max-width: 1080px;
+                    margin: 0 auto;
+                }
+                @media (max-width: 780px) {
+                    .layout {
+                        grid-template-columns: 1fr;
+                    }
+                }
+
+                /* ── CARD ───────────────────────────────── */
+                .card {
+                    background: #1b1b1b;
+                    border: 1px solid #262626;
+                    border-radius: 16px;
+                    padding: 24px;
+                }
+                .card-label {
+                    font-size: 11px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.9px;
+                    color: #444;
+                    margin-bottom: 20px;
+                }
+
+                /* ── FORM ───────────────────────────────── */
+                .field {
+                    margin-bottom: 14px;
+                }
+                .field-label {
+                    display: block;
+                    font-size: 11px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    letter-spacing: 0.7px;
+                    color: #555;
+                    margin-bottom: 7px;
+                }
+                .field-input {
+                    width: 100%;
+                    background: #1a1a1a;
+                    border: 1px solid #2a2a2a;
+                    border-radius: 10px;
+                    color: #e8e8e8;
+                    font-size: 14px;
+                    padding: 11px 13px;
+                    font-family: inherit;
+                    outline: none;
+                    transition: border-color 0.15s;
+                }
+                .field-input:focus {
+                    border-color: #5b9cf5;
+                }
+                ::placeholder {
+                    color: #2e2e2e;
+                }
+
+                textarea.field-input {
+                    resize: vertical;
+                    min-height: 108px;
+                    font-family: "Courier New", monospace;
+                    font-size: 11.5px;
+                    line-height: 1.65;
+                }
+
+                /* ── PREVIEW ────────────────────────────── */
+                .preview {
+                    height: 76px;
+                    background: #1a1a1a;
+                    border: 1px solid #2a2a2a;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .preview svg {
+                    width: 28px !important;
+                    height: 28px !important;
+                    display: block;
+                }
+                .preview-empty {
+                    color: #2b2b2b;
+                    font-size: 13px;
+                }
+
+                /* ── BUTTONS ────────────────────────────── */
+                .btn-row {
+                    display: flex;
+                    gap: 8px;
+                    margin-top: 18px;
+                }
+                .btn {
+                    padding: 10px 16px;
+                    border-radius: 10px;
+                    border: none;
+                    font-size: 13px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    font-family: inherit;
+                    transition: filter 0.15s;
+                    white-space: nowrap;
+                }
+                .btn:hover {
+                    filter: brightness(1.18);
+                }
+                .btn-add {
+                    background: #5b9cf5;
+                    color: #fff;
+                    padding: 10px 35px;
+                }
+                .btn-ghost {
+                    background: #1f1f1f;
+                    color: #666;
+                    border: 1px solid #282828;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    text-decoration: none;
+                }
+
+                /* ── ICONS GRID ─────────────────────────── */
+                .icons-meta {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 14px;
+                    font-size: 11px;
+                    color: #3a3a3a;
+                }
+                .icons-meta strong {
+                    color: #555;
+                }
+
+                .icons-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                    gap: 7px;
+                }
+
+                .icon-cell {
+                    background: #1a1a1a;
+                    border: 1px solid #222;
+                    border-radius: 10px;
+                    padding: 10px 4px 7px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 5px;
+                    position: relative;
+                    color: #ccc;
+                    transition:
+                        border-color 0.15s,
+                        background 0.15s,
+                        opacity 0.15s;
+                    cursor: grab;
+                }
+                .icon-cell:hover {
+                    border-color: rgba(220, 60, 60, 0.5);
+                    background: rgba(220, 60, 60, 0.04);
+                }
+                .icon-cell:hover .icon-del {
+                    opacity: 1;
+                }
+                .icon-cell.dragging {
+                    opacity: 0.3;
+                    cursor: grabbing;
+                }
+                .icon-cell.drag-over {
+                    border-color: #5b9cf5;
+                    background: rgba(91, 156, 245, 0.07);
+                }
+                .icon-cell svg {
+                    width: 20px !important;
+                    height: 20px !important;
+                    display: block;
+                    flex-shrink: 0;
+                }
+                .icon-id {
+                    font-size: 9.5px;
+                    color: #3e3e3e;
+                    text-align: center;
+                    word-break: break-all;
+                    line-height: 1.3;
+                    cursor: text;
+                    border-radius: 4px;
+                    padding: 1px 3px;
+                    transition: background 0.15s;
+                }
+                .icon-id:hover {
+                    background: rgba(255, 255, 255, 0.05);
+                }
+                .icon-id-input {
+                    width: 100%;
+                    background: #2a2a2a;
+                    border: 1px solid #5b9cf5;
+                    border-radius: 4px;
+                    color: #e8e8e8;
+                    font-size: 9.5px;
+                    font-family: "Courier New", monospace;
+                    text-align: center;
+                    padding: 1px 3px;
+                    outline: none;
+                    box-sizing: border-box;
+                }
+                .icon-del {
+                    position: absolute;
+                    top: 4px;
+                    right: 4px;
+                    width: 15px;
+                    height: 15px;
+                    background: #c03030;
+                    border: none;
+                    border-radius: 50%;
+                    color: #fff;
+                    font-size: 10px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    opacity: 0;
+                    transition: opacity 0.15s;
+                    padding: 0;
+                    line-height: 1;
+                }
+                .icon-del:hover {
+                    background: #e03333;
+                }
+
+                /* ── FILE BAR ───────────────────────────── */
+                .file-bar {
+                    max-width: 1080px;
+                    margin: 14px auto 0;
+                    background: #1b1b1b;
+                    border: 1px solid #262626;
+                    border-radius: 16px;
+                    padding: 14px 24px;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                }
+                .save-status {
+                    font-size: 11px;
+                    color: #3a3a3a;
+                    transition: color 0.2s;
+                    margin-left: auto;
+                }
+                .save-status.dirty {
+                    color: #c09030;
+                }
+                .save-status.saved {
+                    color: #4a9e6a;
+                }
+                .btn-lucide {
+                    background: #1a2a1a;
+                    color: #4a9e6a;
+                    border: 1px solid #243a24;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    text-decoration: none;
+                }
+                .btn-lucide:hover {
+                    filter: brightness(1.25);
+                }
+
+                /* ── TOAST ──────────────────────────────── */
+                .toast {
+                    position: fixed;
+                    bottom: 32px;
+                    left: 50%;
+                    transform: translateX(-50%) translateY(14px);
+                    background: #1e1e1e;
+                    border: 1px solid #2e2e2e;
+                    color: #bbb;
+                    padding: 10px 20px;
+                    border-radius: 10px;
+                    font-size: 13px;
+                    opacity: 0;
+                    pointer-events: none;
+                    transition:
+                        opacity 0.18s,
+                        transform 0.18s;
+                    z-index: 999;
+                    white-space: nowrap;
+                }
+                .toast.show {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(0);
+                }
+                .toast.success {
+                    border-color: rgba(91, 156, 245, 0.35);
+                    color: #7ab3f8;
+                }
+                .toast.error {
+                    border-color: rgba(220, 60, 60, 0.35);
+                    color: #f07070;
+                }
+            <!--
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>ZenithApp</h1>
+            <h2>Manager icons</h2>
+        </div>
+
+        <div class="layout">
+            <!-- ── ADD ICON ──────────────────────────── -->
+            <div class="card">
+                <div class="field">
+                    <label class="field-label" for="iconId">ID іконки</label>
+                    <input
+                        class="field-input"
+                        type="text"
+                        id="iconId"
+                        placeholder="визначиться автоматично"
+                        autocomplete="off"
+                    />
+                </div>
+
+                <div class="field">
+                    <label class="field-label" for="svgCode">SVG код</label>
+                    <textarea
+                        class="field-input"
+                        id="svgCode"
+                        placeholder='<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ...>...'
+                    ></textarea>
+                </div>
+
+                <div class="field">
+                    <label class="field-label">Preview</label>
+                    <div class="preview" id="preview">
+                        <span class="preview-empty">Вставте SVG</span>
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn btn-add" id="addBtn">
+                        Додати іконку
+                    </button>
+                    <button class="btn btn-ghost" id="clearBtn">
+                        Очистити
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── ICONS LIST ────────────────────────── -->
+            <div class="card">
+                <div class="icons-meta">
+                    <strong id="iconsCount">0 іконок</strong>
+                </div>
+                <div class="icons-grid" id="iconsList"></div>
+            </div>
+        </div>
+
+        <!-- ── FILE BAR ──────────────────────────────── -->
+        <div class="file-bar">
+            <a
+                href="https://lucide.dev/icons/"
+                target="_blank"
+                class="btn btn-ghost"
+                ><svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path
+                        d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                    />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" /></svg
+                >lucide.dev</a
+            >
+            <span class="save-status" id="saveStatus">завантажено</span>
+            <button class="btn btn-ghost" id="copyBtn">Скопіювати код</button>
+            <button class="btn btn-add" id="saveBtn">
+                Зберегти в icons.js
+            </button>
+        </div>
+
+        <div class="toast" id="toast"></div>
+
+        <script>
+            // ─── STATE ────────────────────────────────────────────────────────────────
+            // ICONS & emojiToIconMap are injected by <script src="icons.js">
+            let icons =
+                typeof ICONS !== "undefined"
+                    ? ICONS.map((i) => ({ ...i }))
+                    : [];
+            // ─── FILE CONTENT GENERATOR ───────────────────────────────────────────────
+            function generateFileContent() {
+                const iconLines = icons
+                    .map((icon) => {
+                        const svg = (icon.svg || "")
+                            .replace(/\\/g, "\\\\")
+                            .replace(/'/g, "\\'");
+                        return `  {\n    id: "${icon.id}",\n    svg: '${svg}',\n  }`;
+                    })
+                    .join(",\n");
+
+                let out = `/* ========== ICONS FOR HABITS ========== */\n\nconst ICONS = [\n${iconLines}\n];\n`;
+
+                // Preserve emojiToIconMap if it was loaded from icons.js
+                if (typeof emojiToIconMap !== "undefined") {
+                    const mapLines = Object.entries(emojiToIconMap)
+                        .map(([k, v]) => `  "${k}": "${v}"`)
+                        .join(",\n");
+                    out += `\n// Also include emoji to icon mapping for migration\nconst emojiToIconMap = {\n${mapLines}\n};\n`;
+                }
+
+                return out;
+            }
+
+            // ─── SAVE TO icons.js ─────────────────────────────────────────────────────
+            function saveToFile() {
+                const content = generateFileContent();
+                const blob = new Blob([content], { type: "text/javascript" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "icons.js";
+                a.click();
+                URL.revokeObjectURL(url);
+                setDirty(false);
+                showToast("↓ icons.js завантажено", "success");
+            }
+
+            async function copyCode() {
+                try {
+                    await navigator.clipboard.writeText(generateFileContent());
+                    showToast("✓ Код скопійовано", "success");
+                } catch {
+                    showToast("Помилка копіювання", "error");
+                }
+            }
+
+            // ─── DIRTY STATE ──────────────────────────────────────────────────────────
+            function setDirty(dirty) {
+                const el = document.getElementById("saveStatus");
+                if (dirty) {
+                    el.textContent = "● незбережені зміни";
+                    el.className = "save-status dirty";
+                } else {
+                    el.textContent = "✓ збережено";
+                    el.className = "save-status saved";
+                }
+            }
+
+            // ─── ID FROM SVG CLASS ────────────────────────────────────────────────────
+            function extractId(svgStr) {
+                const classMatch = svgStr.match(/class="([^"]*)"/);
+                if (!classMatch) return "";
+                const classes = classMatch[1]
+                    .split(/\s+/)
+                    .filter((c) => c.startsWith("lucide-"));
+                if (!classes.length) return "";
+                const plain = classes.find((c) => !c.endsWith("-icon"));
+                const chosen = plain || classes[0].replace(/-icon$/, "");
+                return chosen.replace(/^lucide-/, "");
+            }
+
+            // ─── LIVE SVG PREVIEW + AUTO ID ───────────────────────────────────────────
+            document
+                .getElementById("svgCode")
+                .addEventListener("input", function () {
+                    const val = this.value.trim();
+                    const box = document.getElementById("preview");
+                    if (val.startsWith("<svg")) {
+                        box.innerHTML = val;
+                        // size is enforced by CSS (svg { width: 28px !important; ... })
+                    } else {
+                        box.innerHTML =
+                            '<span class="preview-empty">Вставте SVG</span>';
+                    }
+                    document.getElementById("iconId").value = extractId(val);
+                });
+
+            // ─── ADD ICON ─────────────────────────────────────────────────────────────
+            document.getElementById("addBtn").addEventListener("click", () => {
+                const rawId = document.getElementById("iconId").value.trim();
+                const svg = document.getElementById("svgCode").value.trim();
+
+                let id;
+                if (rawId) {
+                    id = rawId.toLowerCase().replace(/\s+/g, "-");
+                } else {
+                    let n = 1;
+                    while (icons.some((i) => i.id === `icon${n}`)) n++;
+                    id = `icon${n}`;
+                }
+
+                if (!id) {
+                    showToast("Введіть ID іконки", "error");
+                    return;
+                }
+                if (!svg) {
+                    showToast("Введіть SVG код", "error");
+                    return;
+                }
+                if (!svg.startsWith("<svg")) {
+                    showToast("Це не SVG код", "error");
+                    return;
+                }
+                if (icons.some((i) => i.id === id)) {
+                    showToast(`ID "${id}" вже існує`, "error");
+                    return;
+                }
+
+                icons.push({ id, svg });
+                setDirty(true);
+                renderIcons();
+                clearForm();
+                showToast(`+ "${id}" додано`, "success");
+            });
+
+            // Allow Enter in the ID field to focus SVG textarea
+            document
+                .getElementById("iconId")
+                .addEventListener("keydown", (e) => {
+                    if (e.key === "Enter")
+                        document.getElementById("svgCode").focus();
+                });
+
+            // ─── CLEAR FORM ───────────────────────────────────────────────────────────
+            document
+                .getElementById("clearBtn")
+                .addEventListener("click", clearForm);
+
+            function clearForm() {
+                document.getElementById("iconId").value = "";
+                document.getElementById("svgCode").value = "";
+                document.getElementById("preview").innerHTML =
+                    '<span class="preview-empty">Вставте SVG</span>';
+            }
+
+            // ─── TOOLBAR BUTTONS ──────────────────────────────────────────────────────
+            document
+                .getElementById("saveBtn")
+                .addEventListener("click", saveToFile);
+            document
+                .getElementById("copyBtn")
+                .addEventListener("click", copyCode);
+
+            // ─── DRAG & DROP ──────────────────────────────────────────────────────────
+            let dragSrcIndex = null;
+
+            function onDragStart(e, index) {
+                dragSrcIndex = index;
+                e.currentTarget.classList.add("dragging");
+                e.dataTransfer.effectAllowed = "move";
+            }
+            function onDragEnd(e) {
+                e.currentTarget.classList.remove("dragging");
+                document
+                    .querySelectorAll(".icon-cell")
+                    .forEach((c) => c.classList.remove("drag-over"));
+            }
+            function onDragOver(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+                e.currentTarget.classList.add("drag-over");
+            }
+            function onDragLeave(e) {
+                e.currentTarget.classList.remove("drag-over");
+            }
+            function onDrop(e, index) {
+                e.preventDefault();
+                e.currentTarget.classList.remove("drag-over");
+                if (dragSrcIndex === null || dragSrcIndex === index) return;
+                const moved = icons.splice(dragSrcIndex, 1)[0];
+                icons.splice(index, 0, moved);
+                dragSrcIndex = null;
+                setDirty(true);
+                renderIcons();
+            }
+
+            // ─── RENDER ICONS GRID ────────────────────────────────────────────────────
+            function renderIcons() {
+                const list = document.getElementById("iconsList");
+                const count = document.getElementById("iconsCount");
+
+                count.textContent = `${icons.length} іконок`;
+                list.innerHTML = "";
+
+                icons.forEach((icon, index) => {
+                    const cell = document.createElement("div");
+                    cell.className = "icon-cell";
+                    cell.draggable = true;
+
+                    const fallbackSvg =
+                        '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>';
+                    cell.innerHTML = `
+          ${icon.svg || fallbackSvg}
+          <div class="icon-id">${icon.id}</div>
+          <button class="icon-del" title="Видалити">×</button>
+        `;
+
+                    cell.addEventListener("dragstart", (e) =>
+                        onDragStart(e, index),
+                    );
+                    cell.addEventListener("dragend", (e) => onDragEnd(e));
+                    cell.addEventListener("dragover", (e) => onDragOver(e));
+                    cell.addEventListener("dragleave", (e) => onDragLeave(e));
+                    cell.addEventListener("drop", (e) => onDrop(e, index));
+
+                    cell.querySelector(".icon-del").addEventListener(
+                        "click",
+                        (e) => {
+                            e.stopPropagation();
+                            icons = icons.filter((i) => i.id !== icon.id);
+                            setDirty(true);
+                            renderIcons();
+                            showToast(`Видалено: ${icon.id}`, "success");
+                        },
+                    );
+
+                    const idEl = cell.querySelector(".icon-id");
+                    idEl.addEventListener("dblclick", (e) => {
+                        e.stopPropagation();
+                        const oldId = icon.id;
+                        const input = document.createElement("input");
+                        input.type = "text";
+                        input.value = oldId;
+                        input.className = "icon-id-input";
+                        idEl.replaceWith(input);
+                        input.focus();
+                        input.select();
+
+                        const commit = () => {
+                            let newId = input.value
+                                .trim()
+                                .toLowerCase()
+                                .replace(/\s+/g, "-");
+                            input.replaceWith(idEl);
+                            if (!newId || newId === oldId) {
+                                idEl.textContent = oldId;
+                                return;
+                            }
+                            if (
+                                icons.some(
+                                    (i) => i.id === newId && i.id !== oldId,
+                                )
+                            ) {
+                                let n = 2;
+                                while (
+                                    icons.some(
+                                        (i) =>
+                                            i.id === `${newId}${n}` &&
+                                            i.id !== oldId,
+                                    )
+                                )
+                                    n++;
+                                newId = `${newId}${n}`;
+                            }
+                            idEl.textContent = newId;
+                            const item = icons.find((i) => i.id === oldId);
+                            if (item) item.id = newId;
+                            setDirty(true);
+                            renderIcons();
+                            showToast(
+                                `тХи╨▓тХитЦСтХитХХтХитХЭтХитХбтХитХЬтХитХЫсГХтХитЦСтХитХЬтХитХЫ: ${oldId} тЖТ ${newId}`,
+                                "success",
+                            );
+                        };
+
+                        input.addEventListener("keydown", (ev) => {
+                            if (ev.key === "Enter") {
+                                ev.preventDefault();
+                                commit();
+                            }
+                            if (ev.key === "Escape") {
+                                ev.preventDefault();
+                                input.replaceWith(idEl);
+                            }
+                        });
+                        input.addEventListener("blur", commit);
+                    });
+
+                    list.appendChild(cell);
+                });
+            }
+
+            // ─── TOAST ────────────────────────────────────────────────────────────────
+            let toastTimer;
+            function showToast(msg, type = "success") {
+                const t = document.getElementById("toast");
+                clearTimeout(toastTimer);
+                t.textContent = msg;
+                t.className = `toast show ${type}`;
+                toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+            }
+
+            // ─── INIT ─────────────────────────────────────────────────────────────────
+            renderIcons();
+        </script>
+    </body>
+</html>

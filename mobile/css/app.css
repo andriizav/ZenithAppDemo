@@ -1,0 +1,1764 @@
+/* App shell: top-level layout, tab bar, screens. Design tokens live in
+   css/variables.css. */
+
+body {
+    /* Максимальна ширина як у телефону — контент центрується,
+       щоб на широкому екрані виглядало як мобільний застосунок. */
+    max-width: 480px;
+    margin: 0 auto;
+    /* ЄДИНИЙ вертикальний скрол-контейнер застосунку. app-view.html робить
+       body height:100dvh;overflow:hidden — тут перевизначаємо на нативний
+       скрол з інерцією (momentum). Один скролер замість вкладених контейнерів
+       усуває «білі смужки» скролбарів і бокову прокрутку.
+       overflow-x:hidden ловить будь-яке випадкове горизонтальне переповнення. */
+    /* app-view.html робить body flex-колонкою (для центрування локскріну).
+       Для застосунку скидаємо на block: body тут — скрол-контейнер, а
+       Chrome/WebKit НЕ додають власний padding-bottom flex-скролера до
+       області прокрутки — через це остання панель (.habits-actions)
+       ховалась під фіксованим таб-баром. Як block усе працює просто:
+       блоки в потоці, а padding-bottom нижче тримає зазор під таб-бар. */
+    display: block;
+    height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* Ховаємо скролбар (біла смужка справа) на всіх рушіях. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* Зверху: відступ під виріз/статус-бар (safe-top=0 на пристроях без
+       вирізу). Знизу padding НЕ ставимо: у Safari/WebKit padding-bottom
+       скрол-контейнера (особливо коли body — flex-колонка) випадає зі
+       скрол-зони, і остання панель (.habits-actions) ховається під
+       фіксованим таб-баром. Тому запас під таб-бар тримає #contents-container
+       (flex-ЕЛЕМЕНТ) — там padding-bottom враховується завжди. */
+    padding:
+        var(--safe-top, 0px)
+        var(--content-side-pad)
+        0
+        var(--content-side-pad);
+}
+
+/* WebKit-скролбар body ховаємо окремим правилом (біла смужка справа). */
+body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+#contents-container {
+    /* Запас під фіксований таб-бар (висота бару + зазор) — тут, на flex-
+       елементі, а не на body-скролері: інакше Safari викидає його зі скрол-
+       зони й .habits-actions ховається під таб-баром. */
+    padding-bottom: calc(var(--tabbar-h, 92px) + var(--content-bottom-gap));
+}
+
+/* Shared settings/delete-confirmation modal — see css/components/modal.css */
+
+/* ============================================================
+    MOBILE.CSS — всі стилі для мобільних пристроїв (< 600px)
+    ============================================================ */
+
+/* Перемикач вигляду нотаток створюється JS лише на телефоні;поза медіа-запитом ховаємо { display: none; }
+
+/* Перемикач панелі форматування, стилізований як кнопка заголовка
+   (.notes-settings-btn .page-action-btn), ховаємо поза режимом
+   редагування через .notes-float-hidden (цей клас використовується
+   лише цією кнопкою). Вища специфічність, щоб перебити
+   display:flex !important у .header-button-right .page-action-btn. */
+.notes-float-hidden { display: none !important; }
+.header-button-right .page-action-btn.notes-float-hidden { display: none !important; }
+
+/* ---------- TAB MORE BUTTON / DROPDOWN ---------- */
+
+.tab-more-wrapper {
+    position: relative;
+    display: none;
+    flex-shrink: 0;
+}
+
+.tab-more-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    flex-shrink: 0;
+    align-self: center;
+    margin-left: 4px;
+    transition: color 0.15s, background 0.15s, transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.tab-more-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.tab-more-btn.is-open {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.tab-more-btn.is-open svg {
+    transform: rotate(90deg);
+}
+
+/* ---------- SETTINGS / PAGE-ACTION BUTTONS: ROTATE ICON WHEN OPEN ---------- */
+
+.tasks-settings-btn svg {
+    transition: none;
+}
+
+.tasks-settings-btn.is-active svg {
+    transform: none;
+}
+
+.tab-more-dropdown {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 15px);
+    right: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    min-width: 210px;
+    padding: 6px;
+    animation: more-dropdown-in 0.16s ease;
+}
+
+@keyframes more-dropdown-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-more-dropdown.open {
+    display: block;
+}
+
+/* Кожен пункт меню — компактний рядок: іконка + назва */
+.tab-more-dropdown .tab,
+.tab-theme-dropdown,
+.tab-gist-dropdown,
+.tab-order-dropdown {
+    display: flex !important;
+    width: 100%;
+    align-items: center;
+    gap: 12px;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: transparent;
+    cursor: pointer;
+    justify-content: flex-start;
+    flex: none;
+    max-width: none;
+    flex-direction: row;
+}
+
+.tab-more-dropdown .tab svg,
+.tab-theme-dropdown svg,
+.tab-gist-dropdown svg,
+.tab-order-dropdown svg {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex-shrink: 0;
+    stroke: currentColor;
+}
+
+.tab-more-dropdown .tab.active {
+    color: var(--accent);
+}
+
+.tab-more-dropdown .tab.active svg {
+    color: var(--accent);
+}
+
+/* Лічильник у меню — компактний бейдж справа */
+.tab-more-dropdown .tab-count {
+    position: static;
+    transform: none;
+    margin-left: auto;
+    font-size: 11px;
+    min-width: 20px;
+    padding: 2px 7px;
+    line-height: 1.3;
+}
+
+/* Роздільник перед блоком налаштувань */
+.tab-more-dropdown .tab-theme-dropdown {
+    margin-top: 6px;
+    padding-top: 13px;
+    border-top: 1px solid var(--border);
+    border-radius: 0 0 10px 10px;
+}
+
+/* Контейнер звичок: на всіх екранах — одноколонковий повноширинний */
+  .habits-container {
+    display: flex !important;
+    flex-direction: column;
+    width: 100% !important;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 4px;
+    gap: 14px;
+  }
+
+  /* Мобільна картка: шапка зверху, heatmap знизу (вертикально) */
+  .habit {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    padding: 12px 12px 14px !important;
+  }
+
+  .habit-main {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .habit-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    gap: 6px 10px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .habit-name {
+    font-size: 15px !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .habit-top-right {
+    margin-left: auto !important;
+    gap: 8px !important;
+  }
+
+  .heatmap-wrapper {
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .heatmap {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 4px !important;
+  }
+
+  /* ─── Панель дій звичок на мобільному ───
+     НЕ плаваюча: блок у потоці в самому низу сторінки (після карток).
+     Приховано рідкісні дії (експорт/імпорт/синхронізація/статистика/
+     сповіщення) — лишаються лише Смітник, Налаштування та Додати.
+     Мінімалістичний вигляд: широкі прозорі кнопки з іконкою + підписом,
+     акцентна пігулка «Додати». */
+  .habits-actions {
+    position: static;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 7px 4px;
+    /* Контейнер прозорий — кнопки самі є прозорими пігулками (див. нижче).
+       Раніше тут був суцільний background:#fff з рамкою/тінню від старого
+       «плаваючого» дизайну — у темній темі він давав велику білу пляму. */
+    background: transparent;
+    border: none;
+    border-radius: 16px;
+    box-shadow: none;
+    pointer-events: auto;
+    z-index: auto;
+    margin: 10px 0;
+    background-color: #fff;
+  }
+
+  .habits-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Приховуємо рідкісні дії на мобільному */
+  .habits-actions .export-btn,
+  .habits-actions .import-btn,
+  .habits-actions .sync-btn,
+  .habits-actions .stats-btn,
+  .habits-actions .notification-btn {
+    display: none !important;
+  }
+
+  .habits-actions .archive-btn,
+  .habits-actions .settings-btn,
+  .habits-actions .add-btn {
+    /* Завжди видимі на мобільному (не залежать від hover/.show-actions) */
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    flex: 1 1 0;
+    min-width: 84px;
+    max-width: 160px;
+    height: auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 7px 8px;
+    border-radius: 12px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: var(--text-secondary, #aaa);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    line-height: 1.1;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    transform: translateZ(0);
+    transition: background 0.12s, color 0.12s, transform 0.08s;
+  }
+
+  .habits-actions .archive-btn:active,
+  .habits-actions .settings-btn:active,
+  .habits-actions .add-btn:active {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary, #fff);
+    transform: scale(0.96);
+  }
+
+  /* Підпис під іконкою (беремо з атрибута title) */
+  .habits-actions .archive-btn::after,
+  .habits-actions .settings-btn::after,
+  .habits-actions .add-btn::after {
+    content: attr(title);
+    display: block;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+
+  .habits-actions .add-btn svg,
+  .habits-actions .archive-btn svg,
+  .habits-actions .settings-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Прибираємо десктопний hover-ефект масштабування на тачі */
+/* ============================================================
+   MEDIA QUERY — всі мобільні стилі в одному місці
+   ============================================================ */
+
+/* Клас додається JS (scrollHeatmapsToToday), коли heatmap реально
+   ширший за свій контейнер — на мобільному/будь-якому вузькому екрані.
+   Обрізає heatmap у межах екрана і робить його прокручуваним, незалежно
+   від media-запиту. На широкому десктопі рік вміщається повністю — клас
+   не додається, поведінка лишається як було. */
+.heatmap.heatmap-overflow {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Компактний вигляд (один рядок на звичку) вмикається JS-класом
+   .habits-compact, коли heatmap не вміщається в контейнер — тобто на
+   мобільному/будь-якому вузькому екрані, незалежно від media-запиту.
+   Не задаємо тут width:100% — на мобільному контейнер і так 100%
+   через медіа-запит, а на десктопі це б ламало центрування. */
+#habitsContainer.habits-compact {
+    max-width: 100%;
+    padding: 0px;
+}
+
+#habitsContainer.habits-compact .habit {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px 12px 14px;
+}
+
+#habitsContainer.habits-compact .habit-main {
+    display: block;
+    width: 100%;
+    min-width: 0;
+}
+
+#habitsContainer.habits-compact .habit-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    min-width: 0;
+    gap: 6px 10px;
+    margin-bottom: 10px;
+}
+
+#habitsContainer.habits-compact .habit-name {
+    font-size: 15px;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#habitsContainer.habits-compact .habit-top-right {
+    margin-left: auto;
+    gap: 8px;
+}
+
+#habitsContainer.habits-compact .heatmap-wrapper {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+    /* Одноколонковий вигляд секції (на випадок, якщо ширший запит
+       не спрацював) — картки не виходять за межі дисплею. */
+    .habits-section {
+        display: flex !important;
+        flex-direction: column;
+        width: 100% !important;
+        max-width: 100%;
+        gap: 10px;
+    }
+
+    /* --- Показати dropdown, приховати theme-toggle і gist-top-btn --- */
+    .tab-more-wrapper {
+        display: flex !important;
+        flex: 1 1 0;
+        align-items: stretch;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+    }
+
+    .tab-more-btn {
+        display: flex !important;
+        flex: 1 1 0;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        align-self: stretch;
+        height: 100%;
+        gap: 4px;
+        width: 100%;
+        border: none;
+        border-bottom: none;
+        border-radius: 12px;
+        padding: 5px 8px;
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.2px;
+        background: transparent;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .tab-more-btn svg {
+        display: block;
+        width: 22px;
+        height: 22px;
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    .tab-more-label {
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.2px;
+        line-height: 1;
+    }
+
+    .theme-toggle { display: none !important; }
+    .gist-top-btn { display: none !important; }
+
+    .tabs {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 480px;
+        bottom: 0;
+        margin: 0;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+        border-top: 1px solid var(--border);
+        border-bottom: none;
+        overflow: visible;
+        background: var(--bg-primary);
+        box-shadow: none;
+        z-index: 500;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+        padding: 8px 6px 26px 6px;
+    }
+
+    .tab {
+        padding: 5px 0;
+        font-size: 10px;
+        white-space: nowrap;
+        flex-shrink: 1;
+        flex: 1 1 0;
+        max-width: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        border-bottom: none;
+        border-radius: 12px;
+        -webkit-appearance: none;
+        appearance: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .tab.active {
+        color: var(--accent);
+        transition: none;
+    }
+
+    .tab svg {
+        display: block;
+        width: 22px;
+        height: 22px;
+        margin: 0;
+        transform-box: fill-box;
+        transform-origin: center;
+    }
+
+    .tab.active svg {
+        animation: tab-icon-wiggle 0.35s ease;
+    }
+
+    .tab-icon-wiggle {
+        animation: tab-icon-wiggle 0.35s ease;
+    }
+
+    @keyframes tab-icon-wiggle {
+        0%, 100% { transform: rotate(0); }
+        30% { transform: rotate(-12deg); }
+        60% { transform: rotate(12deg); }
+    }
+
+    .tab-count {
+        font-size: 9px;
+        padding: 0 4px;
+        min-width: 16px;
+        top: 0;
+        right: 50%;
+        transform: translateX(16px);
+    }
+
+    /* Приховуємо таби після Таймера (але вони в dropdown) */
+    .tab.tab-extra {
+        display: none !important;
+    }
+
+    /* --- Bookmarks (як на десктопі: домен видно, назва в один рядок) --- */
+    .bookmark-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        line-height: 1.25;
+    }
+
+    .bookmark-domain { display: block; }
+
+    .bookmark-item { padding: 5px 8px; }
+
+    .bookmark-icon {
+        width: 16px;
+        height: 16px;
+        min-width: 16px;
+        min-height: 16px;
+        margin-right: 10px;
+    }
+
+    /* --- Search --- */
+    .search-wrapper {
+        margin-bottom: 16px;
+        display: block;
+    }
+
+    .search-input {
+        padding: 10px 40px 10px 38px;
+        font-size: 16px;
+    }
+
+    /* --- Notes modal --- */
+    .notes-modal { padding-top: 8vh; }
+
+    .notes-modal-content {
+        max-width: 95vw;
+        margin: 0 10px;
+    }
+
+    .notes-modal-header { padding: 14px 16px; }
+    .notes-modal-body { padding: 16px; }
+    .notes-modal-footer { padding: 12px 16px; }
+
+    /* --- Unified modal buttons (mobile sizing) --- */
+    .modal-btn {
+        min-height: 44px;
+        padding: 10px 18px;
+        font-size: 14px;
+        border-radius: 10px;
+    }
+
+    .modal-btn--icon {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        flex: 0 0 auto;
+    }
+
+    /* --- Misc --- */
+    .loading,
+    .error,
+    .no-results {
+        padding: 24px 16px;
+        font-size: 14px;
+    }
+
+    /* ============================================================
+       TIMER
+       ============================================================ */
+
+    .timer-tab .timer-layout {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding-top: 0px;
+    }
+
+    .timer-tab .timer-main {
+        width: 100%;
+        max-width: 100%;
+        justify-content: center;
+    }
+
+    .timer-tab .container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .timer-tab .timer-side {
+        flex: none;
+        width: 100%;
+        max-width: 100%;
+        gap: 10px;
+    }
+
+    .timer-tab .time-display { font-size: 4rem; }
+
+    .timer-tab .presets-section {
+        width: 100%;
+        max-width: 100%;
+        order: 0;
+        border-radius: 12px;
+        padding: 10px 12px;
+    }
+
+    .timer-tab .input-group.full {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .timer-tab .timer-sounds-btn {
+        display: none !important;
+    }
+
+    .timer-tab .settings {
+        position: relative;
+    }
+
+    /* На мобільному кнопку «Звуки» перенесено у заголовок
+       (header-button-right), тому її окреме плаваюче розміщення ховаємо. */
+    .timer-tab .timer-sounds-inline {
+        display: none !important;
+    }
+
+    .timer-tab h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .timer-tab .round-info {
+        font-size: 13px;
+        margin-bottom: 16px;
+    }
+
+    .timer-tab .progress-bar-container { margin-bottom: 20px; }
+    .timer-tab .rounds-visual { margin-bottom: 18px; }
+
+    /* ============================================================
+       NOTES
+       ============================================================ */
+
+    /* !important б'є inline-стилі width:900px / width:240px,
+       які js ставить на десктопі — інакше на телефоні панель
+       лишається 900px завширшки й обрізається overflow:hidden */
+    .notes-layout {
+        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        min-height: calc(100dvh - var(--tabbar-h, 92px) - var(--content-bottom-gap)) !important;
+        border: none !important;
+        border-radius: 0 !important;
+        overflow: visible !important;
+    }
+
+    /* На мобільному контент нотаток — впритул до країв екрана
+       (як у додатках). Компенсуємо бічні відступи body лише для
+       активної вкладки нотаток, інші таби не зачіпаємо. */
+    .tab-content.active:has(.notes-layout) .notes-layout {
+        margin: auto;
+    }
+
+    /* Заголовок Нотаток тепер універсальний (.mobile-page-header).
+       Стрілка «назад» (.header-button-left) і кнопка тулбара керуються
+       класами .mobile-page-*, тому специфічні .notes-* більше не потрібні. */
+    .notes-layout .header-button-left { display: none; }
+    .notes-layout.mobile-view-editor .header-button-left { display: flex; }
+
+    .notes-layout.mobile-view-editor .mobile-page-header {
+        background: var(--bg-editor);
+    }
+
+    /* Коли активні нотатки — фон body робимо в колір активного контейнера
+       нотаток, щоб не було видимого шва між сторінкою й контейнером
+       (на айфоні зверху малюється саме фон body). Відступ під виріз/статус-
+       бар (padding-top: var(--safe-top)) лишаємо як на інших вкладках —
+       інакше заголовок «Нотатки» заїжджає під статус-бар. */
+    body:has(.tab-content.active .notes-layout.mobile-view-editor) {
+        background: var(--bg-editor);
+    }
+
+    /* Спільний заголовок екранів (Звички / Завдання / Таймер) —
+       у тому ж стилі, що й заголовок Нотаток. */
+    .mobile-page-header {
+        padding: 15px 0 15px 0;
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+    }
+
+    /* Заголовок Нотаток у режимі редагування — фон як у редактора */
+    .notes-layout.mobile-view-editor .mobile-page-header {
+        background: var(--bg-editor);
+    }
+
+    .header-page-title {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 0;
+        color: var(--text-primary);
+    }
+
+    .header-page-title--editable {
+        cursor: text;
+        border-radius: 6px;
+        padding: 2px 8px;
+        margin: -2px -8px;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .header-page-title--editing {
+        outline: none;
+        background: var(--bg-hover);
+        white-space: nowrap;
+        overflow: visible;
+        text-overflow: clip;
+    }
+
+    .header-button-left {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+        width: 44px;
+        height: 44px;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        color: var(--text-primary, #fff);
+        font-family: inherit;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        position: absolute;
+        left: -10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .header-button-left svg {
+        width: 20px;
+        height: 20px;
+        display: block;
+        stroke-width: 2;
+        opacity: 0.8;
+    }
+    .header-button-left .icon-chevron-left {
+        width: 25px;
+        height: 25px;
+    }
+
+    /* Розширюємо зону тапу, як у .header-button-right .page-action-btn */
+    .header-button-left::after {
+        content: '';
+        position: absolute;
+        inset: -12px;
+    }
+
+    /* Дії у верхньому правому куті заголовка (напр. кнопка «Налаштування») */
+    .header-button-right {
+        position: absolute;
+        right: -10px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Дії у верхньому лівому куті заголовка (дзеркальний аналог
+       header-button-right). Дає змогу додавати іконки зліва так само,
+       як справа. */
+    .header-button-right-left {
+        position: absolute;
+        left: -10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    body:has(.tab-content.active .notes-layout) .tabs {
+        margin-bottom: 0;
+    }
+
+    .notes-sidebar {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        max-height: none;
+        border-right: none !important;
+        box-shadow: none !important;
+        border-radius: 12px;
+    }
+
+    /* Футер «нова папка» на телефоні ховаємо — до нього не дотягнутись
+       жестом. Створення групи на мобільному винесене в кнопку заголовка
+       (.notes-header-group-add-btn), яка відкриває поле вводу одразу під
+       заголовком (#notes-group-add-top), а не тут. */
+    .notes-sidebar-actions {
+        display: none !important;
+    }
+
+    /* Поле вводу назви нової групи, що зʼявляється одразу під заголовком
+       на мобільному (замість прихованого нижнього футера). Власна картка —
+       той самий стиль картки, що й .notes-sidebar-list (білий фон + рамка),
+       з відступом між ними, щоб блоки візуально не зливались. Порожнє —
+       взагалі не займає місця. */
+    .notes-group-add-top:empty {
+        display: none;
+        padding: 0;
+        border: none;
+        margin: 0;
+    }
+    .notes-group-add-top {
+        margin-bottom: 10px;
+        background: var(--bg-primary);
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+    }
+    .notes-group-add-top .notes-input-wrap {
+        margin: 0;
+    }
+    /* Поле вводу лежить всередині вже оформленої картки (.notes-group-add-top),
+       тому власної рамки/фону не має — інакше вийде подвійна рамка. */
+    .notes-group-add-top .notes-group-add-input {
+        padding: 9px 34px 9px 15px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: none;
+        letter-spacing: normal;
+        width: 100%;
+    }
+    .notes-group-add-top .notes-send-btn {
+        right: 8px;
+        opacity: 0.8;
+    }
+
+    /* За замовчуванням і в режимі редагування сайдбар приховано */
+    .notes-layout:not(.mobile-view-list) .notes-sidebar {
+        display: none !important;
+    }
+
+    .notes-layout.mobile-view-list .notes-sidebar {
+        display: flex !important;
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        /* JS ставить inline width (з desktop drag-resize, до 400px, збережений
+           у localStorage) — без !important тут сайдбар лишається тієї ширини
+           на телефоні й дає горизонтальний скрол із порожньою білою смугою
+           справа. */
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .notes-layout.mobile-view-list .notes-editor {
+        display: none !important;
+    }
+
+    .notes-layout.mobile-view-editor .notes-editor {
+        display: flex !important;
+        flex: 1 1 auto !important;
+        min-height: 0;
+    }
+
+    /* На сторінці редагування нотатки попередження про локальне
+       зберігання не показуємо — воно лишається лише у списку тем. */
+    .notes-layout.mobile-view-editor .notes-local-warning {
+        display: none !important;
+    }
+
+    /* Кнопка «Налаштування» нотаток: показуємо лише у списку тем,
+       у режимі редагування ховаємо */
+    #content-notes:has(.notes-layout.mobile-view-editor) .notes-actions {
+        display: none !important;
+    }
+
+    #content-notes:has(.notes-layout.mobile-view-list) .notes-actions {
+        display: flex !important;
+        position: fixed !important;
+        bottom: calc(var(--tabbar-h, 92px) + 8px) !important;
+        right: 12px !important;
+        top: auto !important;
+        left: auto !important;
+        z-index: 1000;
+    }
+
+    /* Десктопні «смуги зміни розміру» на телефоні непотрібні —
+       виглядають як зайві лінії й перехоплюють тапи */
+    .notes-sidebar-resizer,
+    .notes-layout-resizer {
+        display: none !important;
+    }
+
+    .notes-sidebar-list {
+        padding: 10px 15px;
+        border: 1px solid #333333;
+        border-radius: 10px;
+    }
+
+    .notes-group {
+        margin-bottom: 10px;
+    }
+
+    .notes-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .notes-group-header {
+        padding: 4px 6px;
+    }
+
+    /* Теми кожної групи — переносяться на нові рядки, як на десктопі,
+       замість горизонтальної прокрутки в один рядок */
+    .notes-group-topics {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        overflow-x: visible;
+        gap: 6px;
+        padding: 4px 0 6px !important;
+        scrollbar-width: none;
+    }
+
+    .notes-group-topics::-webkit-scrollbar { display: none; }
+
+    /* Колапс папки: згорнутий стан має переважати над flex вище
+       (інакше теми лишаються видимими й колапс «не працює») */
+    .notes-group.collapsed .notes-group-topics {
+        display: none !important;
+    }
+
+    /* Заборона виділення тексту на сторінці списку нотаток (сайдбар) */
+    .notes-sidebar,
+    .notes-sidebar-list,
+    .notes-group,
+    .notes-group-header,
+    .notes-group-topics,
+    .notes-topic-item {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    .notes-topic-item {
+        flex: 0 0 auto;
+        background: var(--bg-hover) !important;
+        border: 1px solid var(--border) !important;
+    }
+
+    .notes-sidebar-actions {
+        padding: 5px 12px;
+        border-top: 1px solid var(--border);
+    }
+
+    .notes-group-add {
+        width: 26px;
+        height: 26px;
+        font-size: 16px;
+    }
+
+    .notes-editor {
+        flex: 1 1 auto !important;
+        min-height: 240px;
+    }
+
+    /* Редактор росте за вмістом — сторінка скролиться цілком,
+       без внутрішнього скролу панелі */
+    #notes-quill-editor {
+        overflow-y: visible !important;
+        height: auto !important;
+    }
+
+    .notes-inline-input-field {
+        width: 140px;
+        min-width: 100px;
+    }
+
+    .notes-inline-input {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    /* Поле посилання/відео на телефоні — фіксована панель знизу екрана
+       (над таб-баром), а не всередині горизонтального тулбару */
+    .notes-inline-input--bottom {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 480px;
+        bottom: var(--tabbar-h, 92px);
+        z-index: 1100;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        padding: 5px;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .notes-inline-input--bottom .notes-inline-input-label {
+        display: none;
+    }
+
+    .notes-inline-input--bottom .notes-inline-input-field-wrap {
+        flex: 1 1 auto;
+        width: 100%;
+    }
+
+    .notes-inline-input--bottom .notes-inline-input-field {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        font-size: 16px;
+    }
+
+    .notes-inline-input--bottom .notes-inline-input-send,
+    .notes-inline-input--bottom .notes-inline-input-cancel {
+        width: 34px;
+        height: 34px;
+    }
+
+    .ql-toolbar.ql-snow {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        justify-content: flex-start !important;
+        align-items: center;
+        scrollbar-width: none;
+    }
+
+    .ql-toolbar.ql-snow::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Тогл-кнопка всередині тулбару — як звичайний елемент рядка,
+       без абсолютного позиціювання, щоб не перекривала кнопки */
+    .ql-toolbar .notes-toolbar-toggle {
+        position: static !important;
+        top: auto !important;
+        right: auto !important;
+        margin-left: auto;
+        background: var(--bg-hover);
+        border-radius: 6px;
+        display: none !important; /* Hide on mobile - use floating button instead */
+    }
+
+    .ql-toolbar .ql-formats {
+        margin: 0 !important;
+        padding: 0 4px !important;
+    }
+
+    /* На телефоні тулбар за замовчуванням ЗГОРНУТИЙ (чистий вигляд),
+       розгортається тапом по пілі. Керуємо через той самий клас
+       .notes-toolbar-hidden, що й на десктопі — поведінка інвертована. */
+    .ql-toolbar.ql-snow:not(.notes-toolbar-hidden) {
+        display: none !important;
+    }
+
+    .ql-toolbar.ql-snow.notes-toolbar-hidden {
+        display: flex !important;
+    }
+
+    .notes-toolbar-reveal.is-hidden {
+        display: none !important;
+    }
+
+    .notes-toolbar-reveal .notes-toolbar-toggle {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .notes-toolbar-reveal .notes-toolbar-toggle svg {
+        width: 18px;
+        height: 18px;
+        display: block;
+        transform: rotate(180deg);
+    }.header-button-right .page-action-btn.is-hidden-toolbar {
+        color: var(--text-muted) !important;
+        opacity: 0.5 !important;
+    }
+
+    #notes-quill-editor .ql-editor {
+        padding: 10px 0 0;
+        font-size: 16px;
+    }
+
+    /* Плаваючу кнопку налаштувань повністю ховаємо на телефоні —
+       вона перенесена у заголовок сторінки (mobile-page-header). */
+    .notes-actions {
+        display: none !important;
+    }
+
+    /* Стиль кнопки «Налаштування» нотаток — спільний (.page-action-btn вище). */
+
+    .quick-notes-container { padding: 12px; }
+
+    .quick-notes-textarea {
+        min-height: 200px;
+        font-size: 15px;
+    }
+
+    /* ============================================================
+       HABITS
+       ============================================================ */
+
+    .habits-quote {
+        margin: 0 auto 12px;
+        font-size: 14px;
+        padding: 16px 18px 16px 18px;
+    }
+
+    .habits-container {
+        width: 100% !important;
+        max-width: 100%;
+        padding: 0 4px;
+        gap: 14px;
+    }
+
+    /* Одним рядком: зліва компактна шапка, справа — heatmap,
+       що заповнює залишок ширини й прокручується (центр — сьогодні) */
+    .habit {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px 12px 14px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    /* На телефоні перетягування через хендл не потрібне — ховаємо,
+       щоб «⋮⋮» не перекривав іконку/назву зверху картки */
+    .habit-drag-handle {
+        display: none !important;
+    }
+
+    .habit-main {
+        display: block;
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* Шапка — один горизонтальний рядок: іконка, назва, бейджі, серія, чекбокс */
+    .habit-header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 100%;
+        min-width: 0;
+        gap: 6px 10px;
+        margin-bottom: 10px;
+    }
+
+    .habit-name {
+        font-size: 15px;
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .habit-top-right {
+        margin-left: auto;
+        gap: 8px;
+    }
+
+    .habit-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .habit-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .habit-checkbox {
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0;
+    }
+
+    .heatmap-wrapper {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .heatmap {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        /* Чітка зупинка прокрутки на межах клітинок, без «напів» */
+        scroll-snap-type: x proximity;
+        scroll-padding-left: 1px;
+    }
+
+    .empty-state {
+        width: 100%;
+        max-width: 100%;
+        padding: 40px 20px;
+    }
+
+    .empty-state h3 { font-size: 18px; }
+
+    .stats-modal {
+        width: 95vw;
+        max-height: 85vh;
+    }
+
+    .comparison-header,
+    .comparison-row {
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        font-size: 12px;
+        padding: 8px 10px;
+        gap: 6px;
+    }
+
+    .comparison-header > :nth-child(5),
+    .comparison-header > :nth-child(6),
+    .comparison-row > :nth-child(5),
+    .comparison-row > :nth-child(6) {
+        display: none;
+    }
+
+    .comparison-summary {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .analysis-insights { grid-template-columns: 1fr; }
+    .summary-value { font-size: 20px; }
+
+    .habit-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+    }
+
+    .habit-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .stats-tabs {
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    .stats-tab {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .legend-item {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .analysis-bar-item { gap: 8px; }
+
+    .analysis-label {
+        width: 30px;
+        font-size: 11px;
+    }
+
+    .analysis-value {
+        width: 35px;
+        font-size: 12px;
+    }
+
+    .insight-item { padding: 12px; }
+    .insight-value { font-size: 14px; }
+    .streak-badge { font-size: 14px; }
+
+    .habits-actions .archive-btn,
+    .habits-actions .settings-btn,
+    .habits-actions .add-btn {
+        display: flex;
+        min-width: 76px;
+        font-size: 10px;
+        padding: 6px 6px;
+        gap: 5px;
+    }
+
+    .habits-actions .add-btn svg,
+    .habits-actions .archive-btn svg,
+    .habits-actions .settings-btn svg {
+        width: 19px;
+        height: 19px;
+    }
+
+    /* --- Кольори станів чекбоксів (done / skipped / half) ---
+       Кольори самих клітинок heatmap (.cell) керуються з cards.css. */
+    .habit-checkbox.good-checkbox.done,
+    .habit-checkbox.bad-checkbox.clean,
+    .habit-checkbox.bad-checkbox.skipped {
+        background-color: #0A84FF !important;
+        border-color: #0A84FF !important;
+    }
+
+    .habit-checkbox.skipped,
+    .habit-checkbox.bad-checkbox.done {
+        background: #FF453A !important;
+        border-color: #FF453A !important;
+    }
+
+    .habit-checkbox.skipped svg,
+    .habit-checkbox.bad-checkbox.done svg {
+        color: #ffffff !important;
+    }
+
+    .habit-checkbox.half {
+        --half-color: #0A84FF !important;
+    }
+
+    /* ============================================================
+       TASKS
+       ============================================================ */
+
+    .tasks-grid {
+        grid-template-columns: 1fr;
+        margin-bottom: 0;
+        flex: 1 1 auto;
+        min-height: 0;
+        height: auto;
+        container-type: normal;
+    }
+
+    .tasks-quadrant {
+        height: 100%;
+        min-height: 0;
+    }
+
+    /* Показуємо лише активний квадрант на мобілці */
+    .tasks-quadrant:not(.active) {
+        display: none;
+    }
+
+    .tasks-quadrant-tasks {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        max-height: none;
+        scrollbar-width: none;
+    }
+
+    .tasks-quadrant-tasks::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tasks-quadrant-header {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .tasks-task-text { font-size: 14px; }
+
+    .tasks-add-input {
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+
+    /* Завдання мають вміщатися у висоту екрана без скролу сторінки.
+       Сторінка = flex-колонка на всю висоту в'юпорту (мінус нижній таб-бар),
+       а контейнер «розширюється» на залишок — скролиться лише вміст квадрантів. */
+    #content-tasks.active,
+    #content-code.active {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - var(--tabbar-h, 92px) - var(--content-bottom-gap));
+        height: calc(100dvh - var(--tabbar-h, 92px) - var(--content-bottom-gap));
+        overflow: hidden;
+        overflow: clip;
+        overflow-clip-margin: calc(var(--content-side-pad) + 4px);
+    }
+
+    /* .tasks-container лежить усередині #output-tasks/#output-code, тому ланцюжок
+       flex має пройти і через нього. overflow:clip із запасом на бічні
+       відступи дозволяє кнопкам заголовка (.header-button-right / .header-button-left)
+       виходити за межі контенту до країв екрана, не обрізаючись. */
+    #content-tasks.active #output-tasks,
+    #content-code.active #output-code {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+        overflow: clip;
+        overflow-clip-margin: calc(var(--content-side-pad) + 4px);
+    }
+
+    #content-tasks.active .mobile-page-header,
+    #content-code.active .mobile-page-header {
+        flex: 0 0 auto;
+    }
+
+    .tasks-container {
+        flex: 1 1 auto;
+        min-height: 0;
+        height: auto;
+        overflow: hidden;
+    }
+
+    .tasks-quadrant-tasks {
+        overscroll-behavior: contain;
+    }
+
+    .tasks-task-repeat {
+        opacity: 0.85;
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Кнопка «Налаштування» — компактна, у нижньому правому куті, над таб-баром */
+    .tasks-actions {
+        position: fixed !important;
+        bottom: calc(var(--tabbar-h, 92px) + 8px) !important;
+        right: 12px !important;
+        top: auto !important;
+        left: auto !important;
+        display: flex;
+        gap: 8px;
+        z-index: 900;
+        pointer-events: none;
+    }
+
+    /* Старі кнопки експорту/імпорту/синхронізації більше не показуємо */
+    .tasks-export-btn,
+    .tasks-import-btn,
+    .tasks-sync-btn {
+        display: none !important;
+    }
+
+    /* Спільний стиль для кнопок у правому куті заголовка
+       (Налаштування завдань/нотаток, Звуки таймера) і в лівому
+       (Нова група нотаток). Змінюйте розмір/прозорість тут — застосується
+       до всіх. */
+    .header-button-right .page-action-btn,
+    .header-button-right-left .page-action-btn {
+        width: 44px !important;
+        height: 44px !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 8px !important;
+        color: var(--text-primary) !important;
+        opacity: 0.8 !important;
+        cursor: pointer;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        visibility: visible !important;
+        pointer-events: auto;
+        position: relative;
+        box-shadow: none !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .header-button-right .page-action-btn svg,
+    .header-button-right-left .page-action-btn svg {
+        width: 20px !important;
+        height: 20px !important;
+        stroke: currentColor;
+        stroke-width: 2;
+    }
+
+    /* Розширюємо зону тапу для зручності пальцем (комфортні ~68px) */
+    .header-button-right .page-action-btn::after,
+    .header-button-right-left .page-action-btn::after {
+        content: '';
+        position: absolute;
+        inset: -12px;
+        pointer-events: none;
+    }
+
+    /* Нижній перемикач квадрантів — дизайн №2 «Піднята» (iOS segmented), 1:1 з segmented-test.html */
+    .tasks-segmented {
+        position: static;
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        padding: 6px;
+        background: #232323;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        z-index: 50;
+    }
+
+    .tasks-seg-btn {
+        position: relative;
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 12px;
+        cursor: pointer;
+        font-family: inherit;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px 14px;
+        min-height: 64px;
+    }
+
+    .tasks-seg-btn.active {
+        background: var(--bg-card);
+        border-color: var(--border);
+    }
+
+    .tasks-seg-btn.active .tasks-seg-label {
+        color: var(--text-primary);
+    }
+
+    .tasks-seg-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: var(--q-color) !important;
+    }
+
+    .tasks-seg-label {
+        font-size: 13px;
+        font-weight: 550;
+        line-height: 1.32;
+        color: var(--text-secondary);
+        white-space: normal;
+    }
+
+    .tasks-seg-count {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        min-width: 20px;
+        height: 20px;
+        padding: 0 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-hover);
+        color: var(--text-secondary);
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1;
+        border-radius: 999px;
+    }
+
+    .tasks-seg-btn.active .tasks-seg-count {
+        background: color-mix(in srgb, var(--q-color) 22%, var(--bg-card));
+        color: var(--q-color);
+        outline: 1px solid color-mix(in srgb, var(--q-color) 35%, transparent);
+        outline-offset: -1px;
+    }
+
+/* ============================================================
+   PULL TO REFRESH
+   ============================================================ */
+
+/* Не даємо браузеру (Android Chrome) запускати свій нативний
+   pull-to-refresh паралельно з нашим. */
+html, body {
+    overscroll-behavior-y: none;
+}
+
+.ptr-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    z-index: 999;
+    pointer-events: none;
+    transform: translateY(-48px);
+    will-change: transform;
+}
+
+.ptr-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2.5px solid var(--border, #444);
+    border-top-color: var(--accent, #0A84FF);
+    border-radius: 50%;
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.ptr-indicator.ptr-visible .ptr-spinner {
+    opacity: 1;
+    animation: ptr-spin 0.7s linear infinite;
+}
+
+.ptr-indicator.ptr-refreshing .ptr-spinner {
+    opacity: 1;
+    animation: ptr-spin 0.7s linear infinite;
+}
+
+@keyframes ptr-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ---------- LOADER МІЖ ВКЛАДКАМИ ----------
+   Показується поверх контенту активної вкладки, доки виконується
+   асинхронне завантаження модуля (напр. Quill для «Нотатки») або
+   інша важка ініціалізація. Дає миттєвий візуальний фідбек при
+   перемиканні табів, щоб не було відчуття «зависання». */
+
+.tab-content {
+    position: relative;
+}
+
+ .tab-content-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 60;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--bg-primary, #1a1a1a) 72%, transparent);
+    -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(1px);
+    animation: tab-loader-fade 0.12s ease-out;
+}
+
+.tab-content-loader.is-visible {
+    display: flex;
+}
+
+.tab-content-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--border, #444);
+    border-top-color: var(--accent, #0A84FF);
+    border-radius: 50%;
+    animation: tab-spin 0.7s linear infinite;
+    will-change: transform;
+}
+
+@keyframes tab-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes tab-loader-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+

@@ -1,0 +1,850 @@
+/* Global resets and base element styles. Design tokens live in
+   css/variables.css. */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    /* На iOS Safari overflow-x:hidden на body саме по собі не завжди
+       ріже бокову прокрутку — реальний скрол-контейнер там html.
+       Без цього будь-який елемент, що на піксель ширший за екран
+       (напр. inline-width сайдбару нотаток), дає горизонтальний скрол
+       із порожньою білою смугою справа. */
+    overflow-x: hidden;
+}
+
+body {
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+        Arial, sans-serif;
+    background: var(--bg-primary);
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    /* 100dvh (динамічний в'юпорт) замість 100vh: на iOS Safari 100vh більший
+       за видиму область, тож min-height:100vh робив сторінку трохи вищою за
+       екран і давав зайвий скрол/смугу знизу. */
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+}
+
+/* Прибираємо системний сірий флеш-хайлайт при тапі на мобільних браузерах.
+   Застосовуємо до * (а не тільки до button/a/label тощо), бо флеш вилазить
+   і на вкладених span/svg/div всередині клікабельних елементів, і на
+   елементах з обробниками, повішеними через addEventListener — таке
+   точково через список селекторів не покрити. */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Таби */
+.tabs {
+    display: flex;
+    gap: 0;
+    margin: 0 40px 30px 40px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+    flex-wrap: wrap;
+    background: var(--bg-primary);
+    z-index: 10;
+    transition: box-shadow 0.2s;
+    /* Не даємо браузеру (iOS Safari/Chrome) починати жест скролу/pull-to-refresh
+       з панелі табів: випадкове вертикальне проведення пальцем по табах інакше
+       запускало оновлення сторінки. Перетягування табів працює через SortableJS
+       (власні touch-події), на які touch-action не впливає. */
+    touch-action: none;
+    -webkit-touch-callout: none;
+}
+.tab {
+    padding: 12px 18px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    border-radius: 0;
+    transition: border-color 0.2s;
+    position: relative;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.tab:active,
+.tab.active {
+    color: #fff;
+    border-bottom-color: var(--accent);
+    border-bottom-width: 2px;
+    transition: none;
+}
+.tab.dragging,
+.tab.sortable-chosen {
+    cursor: grabbing;
+}
+
+body.tabs-dragging {
+    cursor: grabbing;
+}
+
+.tab.sortable-ghost {
+    opacity: 0.4;
+}
+
+.tab.sortable-drag {
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.tab svg {
+    margin-right: 6px;
+    transition: transform 0.2s ease;
+}
+
+@keyframes tab-icon-wiggle {
+    0%, 100% { transform: rotate(0); }
+    30% { transform: rotate(-12deg); }
+    60% { transform: rotate(12deg); }
+}
+
+.tab-icon-wiggle {
+    animation: tab-icon-wiggle 0.35s ease;
+}
+
+.tab.active svg {
+    animation: tab-icon-wiggle 0.35s ease;
+}
+
+/* Заборонити виділення тексту на екранах Звички та Завдання
+   (залишаємо можливість виділення у полях введення) */
+#content-habits,
+#content-tasks,
+#content-code {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+#content-habits input,
+#content-habits textarea,
+#content-tasks input,
+#content-tasks textarea,
+#content-code input,
+#content-code textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    user-select: text;
+}
+
+.tab-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--bg-hover);
+    border: none;
+    border-radius: 20px;
+    padding: 4px 7px;
+    margin-left: 8px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    line-height: 1;
+}
+
+.tab-count.ready {
+    display: flex;
+}
+
+.tab.active .tab-count {
+    color: #ffffff;
+    background: var(--accent);
+    font-weight: 400;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.bookmarks-list {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.bookmark-item {
+    padding: 7px 10px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-primary);
+    border-left: 2px solid transparent;
+    transition:
+        background 0.15s,
+        color 0.15s,
+        border-color 0.15s;
+}
+
+.bookmark-item:active {
+    background: var(--bg-hover);
+    color: #ffffff;
+    border-left-color: var(--accent);
+}
+
+ .bookmark-icon-fallback {
+     color: var(--accent, #888);
+     border-radius: 0;
+ }
+.bookmark-icon {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    min-height: 18px;
+    margin-right: 12px;
+    border-radius: 4px;
+    display: block;
+    object-fit: contain;
+}
+
+.separator {
+    height: 0;
+    border-top: 1px solid var(--border);
+    margin: 14px 0;
+}
+
+.bookmark-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.bookmark-title {
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    line-height: 1.3;
+}
+
+.bookmark-domain {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+    transition: color 0.15s;
+}
+
+.bookmark-item:active .bookmark-domain {
+    color: var(--text-secondary);
+}
+
+.search-wrapper {
+    max-width: 700px;
+    margin: 0 auto 16px;
+    position: relative;
+}
+
+.search-wrapper::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+    pointer-events: none;
+    transition: stroke 0.2s;
+}
+
+.search-input {
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    padding: 10px 48px 10px 42px;
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.search-input::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.search-count {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: var(--text-muted);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.loading,
+.error,
+.no-results {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.error {
+    color: var(--danger);
+}
+
+ #preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    background: var(--bg-primary);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+.motivation-quote {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 12px 16px 20px;
+    margin: 0 8px;
+    line-height: 1.5;
+    border-bottom: 1px solid var(--border);
+}
+
+#preloader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        opacity 0.3s ease-out,
+        visibility 0.3s;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    box-sizing: content-box;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- MODAL ---------- */
+
+.notes-modal {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay-scrim);
+    z-index: 1000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 15vh;
+    animation: modal-fade-in 0.15s ease;
+}
+
+@keyframes modal-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.notes-modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    scrollbar-gutter: stable both-edges;
+    box-shadow: var(--shadow-modal);
+    animation: modal-slide-in 0.15s ease;
+}
+
+@keyframes modal-slide-in {
+    from {
+        transform: translateY(-12px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.notes-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.notes-modal-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.notes-modal-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition:
+        background 0.15s,
+        color 0.15s;
+}
+
+.notes-modal-body {
+    padding: 20px;
+}
+
+.notes-modal-footer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+}
+
+/* ---------- GIST SETTINGS ---------- */
+
+@keyframes gist-pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.gist-settings-section {
+    margin-bottom: 20px;
+}
+
+.gist-settings-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.gist-settings-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.gist-settings-section label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.gist-settings-input {
+    width: 100%;
+    background: var(--bg-editor);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: "Courier New", monospace;
+}
+
+.gist-settings-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.gist-settings-hint a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.gist-settings-hint code {
+    background: var(--bg-editor);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+.gist-settings-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+/* ---------- SYNC SETTINGS MODAL (gist/notes-settings.js) ---------- */
+
+/* Спільний вертикальний ритм: усі блоки (вибір способу, gist/file-панель,
+   danger zone) — прямі діти цього контейнера з однаковим gap, тому кожен
+   блок сам НЕ задає собі зовнішні відступи (margin: 0 на .sync-block). */
+.sync-settings-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.sync-block {
+    margin: 0;
+}
+
+.sync-block-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.sync-method-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sync-method-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.sync-method-card:active {
+    transform: scale(0.99);
+}
+
+.sync-method-card.is-active {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+}
+
+/* Власний вигляд радіо-кнопки замість нативного контролу ОС: нативний
+   рендериться за глобальним color-scheme:dark (заданим для всього застосунку
+   незалежно від фактичної теми), тож у світлій темі виглядав би чорним. */
+.sync-method-card input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex: 0 0 auto;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    background: var(--bg-primary);
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.15s;
+}
+
+.sync-method-card input[type="radio"]:checked {
+    border-color: var(--accent);
+}
+
+.sync-method-card input[type="radio"]:checked::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.sync-method-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.sync-method-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.sync-method-card-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.sync-panel {
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-card);
+}
+
+.sync-panel .gist-settings-section:last-of-type {
+    margin-bottom: 0;
+}
+
+.sync-gist-link-row {
+    margin-top: 6px;
+    display: none;
+}
+
+.sync-gist-link {
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.sync-danger-zone {
+    padding: 14px;
+    border: 1px solid rgba(224, 85, 85, 0.35);
+    border-radius: 10px;
+    background: rgba(224, 85, 85, 0.06);
+}
+
+.sync-danger-zone-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--danger);
+}
+
+.sync-danger-zone-desc {
+    margin: 8px 0 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   UNIFIED MODAL BUTTONS (.modal-btn)
+   Єдина типізована система кнопок для всіх модальних вікон.
+   Типи (варіанти):
+     .modal-btn                 — базова (secondary / нейтральна)
+     .modal-btn--primary        — основна дія (Зберегти / Готово)
+     .modal-btn--secondary      — вторинна дія (Скасувати / Закрити) = базова
+     .modal-btn--danger         — небезпечна дія (Видалити)
+     .modal-btn--icon           — квадратна кнопка-іконка (напр. кошик)
+   Модифікатори:
+     .modal-btn--block          — розтягнути на всю ширину (flex:1)
+   ========================================================================== */
+.modal-btn {
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 9px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    line-height: 1;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s, opacity 0.15s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.modal-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.modal-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Основна дія */
+.modal-btn--primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+/* Небезпечна дія */
+.modal-btn--danger {
+    background: transparent;
+    border-color: #3a1f1f;
+    color: #f85149;
+}
+
+/* Кнопка-іконка (квадратна, напр. кошик у футері) */
+.modal-btn--icon {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    color: var(--text-secondary);
+    margin-right: auto; /* штовхає інші кнопки праворуч */
+}
+
+.modal-btn--icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Розтягнути на всю доступну ширину (для мобільних футерів) */
+.modal-btn--block {
+    flex: 1;
+}
+
+ .gist-status {
+    margin-top: 16px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: none;
+}
+
+.gist-status-info {
+    background: var(--accent-bg);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+}
+
+.gist-status-success {
+    background: rgba(74, 192, 106, 0.12);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.gist-status-error {
+    background: rgba(224, 85, 85, 0.12);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+/* ---------- THEME TOGGLE ---------- */
+
+.theme-toggle {
+    margin-left: auto;
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s;
+    flex-shrink: 0;
+    align-self: center;
+    opacity: 0.35;
+}
+
+.gist-top-btn {
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s;
+    flex-shrink: 0;
+    align-self: center;
+    opacity: 0.35;
+    margin-left: 4px;
+}
+
+.gist-top-btn.active {
+    color: var(--text-muted);
+    opacity: 0.35;
+}
+
+.gist-top-btn.syncing {
+    animation: gist-spin 1s linear infinite;
+}
+
+@keyframes gist-spin {
+    to { transform: rotate(360deg); }
+}
+
+.theme-toggle svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+.gist-top-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* ════════════════════════════════════════════════════════════════

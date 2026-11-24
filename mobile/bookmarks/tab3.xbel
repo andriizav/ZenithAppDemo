@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xbel PUBLIC "+//IDN python.org//DTD XML Bookmark Exchange Language 1.0//EN//XML" "http://pyxml.sourceforge.net/topics/dtds/xbel.dtd">
+<xbel version="1.0">
+<!--- highestId :23: for Floccus bookmark sync browser extension -->
+
+<bookmark href="https://uk.wikipedia.org/wiki/%D0%93%D0%BE%D0%BB%D0%BE%D0%B2%D0%BD%D0%B0_%D1%81%D1%82%D0%BE%D1%80%D1%96%D0%BD%D0%BA%D0%B0" id="1">
+  <title>Вікіпедія</title>
+</bookmark>
+<bookmark href="https://developer.mozilla.org/uk/" id="2">
+  <title>MDN Web Docs</title>
+</bookmark>
+<bookmark href="https://docs.github.com/" id="3">
+  <title>GitHub Docs</title>
+</bookmark>
+<bookmark href="https://www.wikidata.org/" id="4">
+  <title>Wikidata</title>
+</bookmark>
+<bookmark href="https://separator.floccus.org/?id=814547" id="22">
+  <title>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</title>
+</bookmark>
+<bookmark href="https://www.openstreetmap.org/" id="5">
+  <title>OpenStreetMap</title>
+</bookmark>
+<bookmark href="https://commons.wikimedia.org/" id="6">
+  <title>Wikimedia Commons</title>
+</bookmark>
+<bookmark href="https://separator.floccus.org/?id=664875" id="23">
+  <title>⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯</title>
+</bookmark>
+<bookmark href="https://www.iana.org/" id="7">
+  <title>IANA</title>
+</bookmark>
+</xbel>

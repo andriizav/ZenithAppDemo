@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дизайни блоку цитати — Apple style</title>
+<style>
+  :root {
+    --bg: #11131a;
+    --card: #212121;
+    --border: #333333;
+    --text: #e8e8ea;
+    --muted: #8a8f9c;
+    --accent: #5b9cf5;
+  }
+  body[data-theme="light"] {
+    --bg: #f4f5f7;
+    --card: #ffffff;
+    --border: rgba(0,0,0,0.08);
+    --text: #2c2c2e;
+    --muted: #8b909c;
+    --accent: #5b9cf5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 16px;
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 460px; margin: 0 auto; }
+  h1 { font-size: 19px; font-weight: 600; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 13px; margin: 0 0 30px; }
+  .v { margin-bottom: 34px; }
+  .v-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--muted); margin-bottom: 12px; font-weight: 600;
+  }
+  .quote { font-size: 15px; font-weight: 400; line-height: 1.55; }
+  .q-news .meta {
+    margin-top: 12px; font-size: 12px; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.04em;
+  }
+
+  /* V1 — current: faint glyph + indent (базовий) */
+  .q-glyph {
+    position: relative; overflow: hidden;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 22px;
+  }
+  .q-glyph .mark {
+    position: absolute; top: -14px; left: 8px;
+    font-family: Georgia, serif; font-size: 70px; line-height: 1;
+    color: var(--accent); opacity: 0.20; pointer-events: none;
+  }
+  .q-glyph .t { position: relative; padding-left: 30px; }
+
+  /* V2 — SF symbol-style: small accent quote icon in a rounded circle, centered */
+  .q-icon {
+    position: relative; overflow: hidden;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px 22px 20px; text-align: center;
+  }
+  .q-icon .badge {
+    width: 38px; height: 38px; margin: 0 auto 12px;
+    border-radius: 50%; background: color-mix(in srgb, var(--accent) 18%, transparent);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent); font-family: Georgia, serif; font-size: 22px;
+  }
+
+  /* V3 — left accent bar (system tinted), text flush */
+  .q-bar {
+    position: relative; overflow: hidden;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 22px 18px 22px;
+  }
+  .q-bar::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--accent); opacity: 0.85;
+  }
+  .q-bar .t { padding-left: 14px; }
+
+  /* V4 — top hairline divider + author line (News/Books style) */
+  .q-news {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .q-news .t { padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+  .q-news .meta {
+    margin-top: 12px; font-size: 12px; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.04em;
+  }
+
+  /* V5 — frosted/glassy subtle gradient tint */
+  .q-frost {
+    position: relative; overflow: hidden;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, var(--card)), var(--card));
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 20px 22px;
+  }
+  .q-frost .mark {
+    position: absolute; right: 14px; top: -6px;
+    font-family: Georgia, serif; font-size: 80px; line-height: 1;
+    color: var(--accent); opacity: 0.12; pointer-events: none;
+  }
+  .q-frost .t { position: relative; padding-right: 36px; }
+
+  .toggle {
+    position: fixed; top: 14px; right: 14px;
+    background: var(--card); color: var(--text);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 14px; font-size: 13px; cursor: pointer; font-weight: 600;
+  }
+</style>
+</head>
+<body>
+  <button class="toggle" onclick="toggleTheme()">🌓 Тема</button>
+  <div class="wrap">
+    <h1>Блок цитати · Apple style</h1>
+    <p class="sub">Варіанти в стилі системних карток. Обрати один → застосую в base.css.</p>
+
+    <div class="v">
+      <div class="v-label">V1 · Гліф зліва (поточний)</div>
+      <div class="q-glyph">
+        <span class="mark">“</span>
+        <div class="t quote">Маленькі щоденні дії ведуть до великих змін.</div>
+      </div>
+    </div>
+
+    <div class="v">
+      <div class="v-label">V2 · Акцентна іконка-бейдж, центр</div>
+      <div class="q-icon">
+        <div class="badge">“</div>
+        <div class="quote">Дисципліна — міст між цілями й досягненнями.</div>
+      </div>
+    </div>
+
+    <div class="v">
+      <div class="v-label">V3 · Кольорова смужка зліва</div>
+      <div class="q-bar">
+        <div class="t quote">Найкращий час посадити дерево був 20 років тому. Другий — сьогодні.</div>
+      </div>
+    </div>
+
+    <div class="v">
+      <div class="v-label">V4 · Роздільник + підпис (News/Books)</div>
+      <div class="q-news">
+        <div class="t quote">Почни з малого, але почни сьогодні.</div>
+        <div class="meta">МОТИВАЦІЯ · СЬОГОДНІ</div>
+      </div>
+    </div>
+
+    <div class="v">
+      <div class="v-label">V5 · Легкий акцентний градієнт</div>
+      <div class="q-frost">
+        <span class="mark">”</span>
+        <div class="t quote">Те, що робиш постійно, визначає, хто ти є.</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  function toggleTheme() {
+    const b = document.body;
+    b.dataset.theme = b.dataset.theme === "light" ? "dark" : "light";
+  }
+</script>
+</body>
+</html>

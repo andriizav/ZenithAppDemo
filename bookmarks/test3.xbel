@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xbel PUBLIC "+//IDN python.org//DTD XML Bookmark Exchange Language 1.0//EN//XML" "http://pyxml.sourceforge.net/topics/dtds/xbel.dtd">
+<xbel version="1.0">
+<!--- highestId :10: for Floccus bookmark sync browser extension -->
+
+<bookmark href="https://www.npmjs.com/" id="1">
+  <title>npm</title>
+</bookmark>
+<bookmark href="https://github.com/" id="2">
+  <title>GitHub</title>
+</bookmark>
+<bookmark href="https://gitlab.com/" id="3">
+  <title>GitLab</title>
+</bookmark>
+<bookmark href="https://bitbucket.org/" id="4">
+  <title>Bitbucket</title>
+</bookmark>
+<bookmark href="https://codepen.io/" id="5">
+  <title>CodePen</title>
+</bookmark>
+</xbel>

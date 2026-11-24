@@ -1,0 +1,953 @@
+/* ========== NOTE MODAL ========== */
+
+.habits-note-modal {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay-scrim);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: habits-settings-fade 0.18s ease;
+}
+
+.habits-note-modal .notes-modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid #2e2e2e;
+    border-radius: 16px;
+    width: 420px;
+    max-width: 92vw;
+    box-shadow: var(--shadow-modal);
+    animation: habits-settings-pop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.habits-note-modal .notes-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid #2a2a2e;
+}
+
+.habits-note-modal .notes-modal-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #f0f0f0;
+}
+
+.habits-note-modal .notes-modal-close {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.habits-note-modal .notes-modal-body {
+    padding: 16px 20px;
+}
+
+.habits-note-modal .notes-modal-footer {
+    padding: 14px 20px 18px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.note-modal-text {
+    width: 100%;
+    min-height: 90px;
+    resize: vertical;
+    background: var(--bg-primary);
+    border: 1px solid #2e2e2e;
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: #e8e8e8;
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1.5;
+    outline: none;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--overlay-scrim);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 1000;
+}
+
+ .modal-overlay.open {
+    display: flex;
+    animation: overlay-fade 0.2s ease;
+}
+@keyframes overlay-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-overlay.open .modal {
+    animation: modal-pop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-pop {
+    from { opacity: 0; transform: scale(0.94) translateY(8px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal {
+    background: var(--bg-secondary);
+    border: 1px solid #2e2e2e;
+    border-radius: 18px;
+    padding: 28px 28px 24px;
+    width: 420px;
+    max-width: 92vw;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ========== EDIT HABIT MODAL (same as note modal) ========== */
+
+.habit-edit-modal .notes-modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid #2e2e2e;
+    border-radius: 16px;
+    width: 420px;
+    max-width: 92vw;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.habit-edit-modal.open .notes-modal-content {
+    animation: modal-pop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.habit-edit-modal .notes-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid #2a2a2e;
+}
+
+.habit-edit-modal .notes-modal-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #f0f0f0;
+}
+
+.habit-edit-modal .notes-modal-close {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+/* Body content */
+.habit-edit-modal .notes-modal-body {
+    padding: 16px 20px;
+}
+
+/* Footer */
+.habit-edit-modal .notes-modal-footer {
+    padding: 14px 20px 18px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* Habit name input wrapper */
+.habit-edit-modal .edit-habit-name-wrapper {
+    margin-bottom: 20px;
+}
+
+.habit-edit-modal .edit-habit-name-input {
+    width: 100%;
+    background: var(--bg-primary);
+    border: 1px solid #2e2e2e;
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: #e8e8e8;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+    box-sizing: border-box;
+}
+
+.habit-edit-modal .edit-habit-name-input::placeholder {
+    color: #666;
+}
+
+/* Section labels inside modal */
+.habit-edit-modal .modal-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #555;
+    margin-bottom: 8px;
+    margin-top: 16px;
+}
+
+.habit-edit-modal .modal-section-label:first-of-type {
+    margin-top: 0;
+}
+
+.modal h3 {
+    font-size: 17px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    margin-top: 8px;
+    color: #f0f0f0;
+    text-align: center;
+    letter-spacing: -0.2px;
+}
+
+.modal-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.modal input[type="text"] {
+    width: 100%;
+    background: var(--bg-primary);
+    border: 1px solid #2e2e2e;
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: #e8e8e8;
+    font-size: 16px;
+    margin-bottom: 20px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.icon-picker {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.type-selector {
+    display: flex;
+    background: #191919;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 20px;
+}
+
+.type-option {
+    flex: 1;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.type-option input {
+    display: none;
+}
+
+.type-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 9px 16px;
+    border-radius: 7px;
+    text-align: center;
+    transition: background-color 0.18s ease, color 0.18s ease;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+}
+
+.type-label::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    opacity: 0.5;
+}
+
+.type-label.good::before {
+    background: var(--success);
+}
+.type-label.bad::before {
+    background: #f85149;
+}
+
+.type-option input:checked + .type-label.good {
+    background: rgba(74, 192, 106, 0.14);
+    color: var(--success);
+}
+
+.type-option input:checked + .type-label.good::before {
+    opacity: 1;
+}
+
+.type-option input:checked + .type-label.bad {
+    background: rgba(248, 81, 73, 0.14);
+    color: #f85149;
+}
+
+.type-option input:checked + .type-label.bad::before {
+    opacity: 1;
+}
+
+.icon-option {
+    width: 40px;
+    height: 40px;
+    background: #2a2a2a;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        border-color 0.15s,
+        box-shadow 0.15s;
+    color: #e8e8e8;
+}
+
+.icon-option svg {
+    width: 20px;
+    height: 20px;
+    stroke: #c8c8c8;
+    transition: stroke 0.15s;
+}
+
+.icon-option.selected {
+    border-color: var(--accent);
+    background: rgba(91, 156, 245, 0.22);
+    box-shadow: 0 0 0 1px rgba(91, 156, 245, 0.18);
+}
+
+ .icon-option.selected svg {
+     stroke: #ffffff;
+ }
+
+ .habit-edit-modal .icon-option {
+    width: 30px;
+    height: 30px;
+ }
+
+ .habit-edit-modal .icon-option svg {
+     width: 18px;
+     height: 18px;
+ }
+
+ .habit-edit-modal .color-option {
+    width: 26px;
+    height: 26px;
+ }
+
+/* ─── Category Picker ─── */
+
+.color-picker {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.color-option {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.12s, border-color 0.12s;
+    position: relative;
+}
+
+.color-option.selected {
+    border-color: #fff;
+    transform: scale(1.1);
+}
+
+.color-option.selected:not(.color-option--none)::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    width: 4px;
+    height: 8px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.color-option--none {
+    background: #2a2a2a !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+}
+
+.color-option--none.selected {
+    border-color: #888;
+    color: #ddd;
+}
+
+.reminder-block {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid #272727;
+}
+
+.reminder-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #1c1c1c;
+    border: 1px solid var(--bg-hover);
+    border-radius: 12px;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.reminder-card-icon {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(91, 156, 245, 0.12);
+    color: var(--accent);
+}
+
+.reminder-card-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.reminder-card-info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.reminder-card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ececec;
+    line-height: 1.3;
+}
+
+.reminder-card-sub {
+    font-size: 12px;
+    color: #7a7a7a;
+    margin-top: 2px;
+    line-height: 1.3;
+}
+
+/* ─── Toggle switch ─── */
+.reminder-switch {
+    flex-shrink: 0;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.reminder-switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+
+.reminder-switch-track {
+    position: relative;
+    display: block;
+    width: 44px;
+    height: 26px;
+    border-radius: 999px;
+    background: #3a3a3a;
+    transition: background 0.2s ease;
+}
+
+.reminder-switch-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reminder-switch input:checked + .reminder-switch-track {
+    background: var(--accent);
+}
+
+.reminder-switch input:checked + .reminder-switch-track .reminder-switch-thumb {
+    transform: translateX(18px);
+}
+
+/* ─── Time picker ─── */
+.reminder-time-wrap {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(-6px);
+    margin-top: 0;
+    transition: max-height 0.25s ease, opacity 0.2s ease,
+        transform 0.2s ease, margin-top 0.25s ease;
+}
+
+.reminder-time-wrap.is-open {
+    max-height: 90px;
+    opacity: 1;
+    transform: translateY(0);
+    margin-top: 12px;
+}
+
+.reminder-time-label {
+    font-size: 12px;
+    color: #7a7a7a;
+    margin-bottom: 6px;
+    padding-left: 2px;
+}
+
+.reminder-time-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.reminder-time-icon {
+    position: absolute;
+    left: 12px;
+    display: flex;
+    align-items: center;
+    color: #888;
+    pointer-events: none;
+}
+
+.reminder-time-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.reminder-time-input {
+    width: 100%;
+    padding: 11px 14px 11px 38px;
+    background: var(--bg-editor);
+    border: 1px solid #333;
+    border-radius: 10px;
+    color: #e8e8e8;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+    box-sizing: border-box;
+}
+
+.reminder-time-input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+/* Generic delete-confirmation content moved to css/components/modal.css */
+
+.empty-state {
+    text-align: center;
+    padding: 16px 20px;
+    width: auto;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.empty-state h3 {
+    font-size: 16px;
+    color: #ffffff;
+    margin: 0 0 2px;
+}
+
+.empty-state p {
+    font-size: 12px;
+    margin: 0;
+}
+
+:root[data-theme="light"] .empty-state h3 {
+    font-size: 18px;
+}
+
+.plus-highlight {
+    color: var(--accent);
+    font-size: 1.3em;
+    font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════════════
+   ── LIGHT THEME: MODALS ──
+   ═══════════════════════════════════════════════════ */
+
+:root[data-theme="light"] .habits-note-modal {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+:root[data-theme="light"] .habits-note-modal .notes-modal-content {
+    background: #ffffff;
+    border-color: #e0e0e0;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="light"] .habits-note-modal .notes-modal-header {
+    border-bottom-color: #e0e0e0;
+}
+
+:root[data-theme="light"] .habits-note-modal .notes-modal-header h3 {
+    color: var(--text-primary);
+}
+
+:root[data-theme="light"] .habits-note-modal .notes-modal-close {
+    color: #999;
+}
+
+:root[data-theme="light"] .note-modal-text {
+    background: #f5f5f5;
+    border-color: #e0e0e0;
+    color: var(--text-primary);
+}
+
+:root[data-theme="light"] .modal-overlay {
+    background: rgba(0, 0, 0, 0.35);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+}
+
+:root[data-theme="light"] .modal {
+    background: #ffffff;
+    border-color: #e0e0e0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+:root[data-theme="light"] .habit-edit-modal .notes-modal-content {
+    background: #ffffff;
+    border-color: #e0e0e0;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="light"] .habit-edit-modal .notes-modal-header {
+    border-bottom-color: #e0e0e0;
+}
+
+:root[data-theme="light"] .habit-edit-modal .notes-modal-header h3 {
+    color: var(--text-primary);
+}
+
+:root[data-theme="light"] .habit-edit-modal .notes-modal-close {
+    color: #999;
+}
+
+:root[data-theme="light"] .habit-edit-modal .edit-habit-name-input {
+    background: #f5f5f5;
+    border-color: #e0e0e0;
+    color: var(--text-primary);
+}
+
+:root[data-theme="light"] .habit-edit-modal .edit-habit-name-input::placeholder {
+    color: #999;
+}
+
+:root[data-theme="light"] .habit-edit-modal .modal-section-label {
+    color: #888;
+}
+
+:root[data-theme="light"] .modal h3 {
+    color: var(--text-primary);
+}
+
+:root[data-theme="light"] .modal-section-label {
+    color: #888;
+}
+
+:root[data-theme="light"] .modal input[type="text"] {
+    background: #f5f5f5;
+    border-color: #e0e0e0;
+    color: var(--text-primary);
+}
+
+:root[data-theme="light"] .type-selector {
+    background: #f0f0f0;
+    border-color: #e0e0e0;
+}
+
+:root[data-theme="light"] .type-label {
+    color: #888;
+}
+
+:root[data-theme="light"] .type-option input:checked + .type-label.good {
+    background: rgba(74, 192, 106, 0.12);
+    color: var(--success);
+}
+
+:root[data-theme="light"] .type-option input:checked + .type-label.bad {
+    background: rgba(248, 81, 73, 0.12);
+    color: #f85149;
+}
+
+:root[data-theme="light"] .icon-option {
+    background: #f0f0f0;
+    color: #333;
+}
+
+:root[data-theme="light"] .icon-option svg {
+    stroke: #555;
+}
+
+:root[data-theme="light"] .icon-option.selected {
+    background: rgba(91, 156, 245, 0.12);
+    border-color: var(--accent);
+}
+
+:root[data-theme="light"] .icon-option.selected svg {
+    stroke: var(--text-primary);
+}
+
+:root[data-theme="light"] .color-option.selected {
+    border-color: #333;
+}
+
+:root[data-theme="light"] .color-option--none {
+    background: #e8e8e8 !important;
+    color: #999;
+}
+
+:root[data-theme="light"] .color-option--none {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+:root[data-theme="light"] .color-option--none.selected {
+    border-color: #888;
+    color: #333;
+}
+
+:root[data-theme="light"] .reminder-block {
+    border-top-color: #e0e0e0;
+}
+
+:root[data-theme="light"] .reminder-card {
+    background: #f4f6f9;
+    border-color: #e4e8ee;
+}
+
+:root[data-theme="light"] .reminder-card-icon {
+    background: rgba(91, 156, 245, 0.15);
+    color: #3d82e0;
+}
+
+:root[data-theme="light"] .reminder-card-title {
+    color: var(--text-primary);
+}
+
+:root[data-theme="light"] .reminder-card-sub {
+    color: #8a909a;
+}
+
+:root[data-theme="light"] .reminder-switch-track {
+    background: #cfd4da;
+}
+
+:root[data-theme="light"] .reminder-switch-thumb {
+    background: #ffffff;
+}
+
+:root[data-theme="light"] .reminder-time-label {
+    color: #8a909a;
+}
+
+:root[data-theme="light"] .reminder-time-icon {
+    color: #9aa0a8;
+}
+
+:root[data-theme="light"] .reminder-time-input {
+    background: #ffffff;
+    border-color: #d8dde3;
+    color: var(--text-primary);
+}
+
+:root[data-theme="light"] .reminder-time-input::-webkit-calendar-picker-indicator {
+    filter: none;
+}
+
+:root[data-theme="light"] .empty-state {
+    color: #999;
+}
+
+:root[data-theme="light"] .empty-state h3 {
+    color: var(--text-primary);
+}
+
+/* ═══════════════════════════════════════════════════
+   ── MOBILE: MODALS (< 600px) ──
+   ═══════════════════════════════════════════════════ */
+
+    /* Body lock — no scroll when modal is open */
+    body.modal-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+
+    /* Overlay — типова модалка: центрування + зовнішнє розмиття фону */
+    .modal-overlay {
+        align-items: center;
+        justify-content: center;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 16px;
+    }
+
+    /* Загальний .modal та notes-modal-content — центрована картка
+       замість нижнього листа (як типова модалка налаштувань) */
+    .modal-overlay .modal,
+    .modal-overlay .notes-modal-content {
+        width: 100%;
+        max-width: 440px;
+        border-radius: 18px;
+        margin: auto;
+        max-height: 86vh;
+        overflow: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-overlay.open .modal,
+    .modal-overlay.open .notes-modal-content {
+        animation: modal-pop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal {
+        border-radius: 18px;
+        padding: 22px 20px 20px;
+    }
+
+    /* Edit habit modal — центрована картка з типовим виглядом */
+    .habit-edit-modal {
+        align-items: center;
+        padding: 16px;
+        z-index: 1000;
+        background: var(--overlay-scrim);
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+    }
+
+    .habit-edit-modal .notes-modal-content {
+        width: 100%;
+        max-width: 440px;
+        height: auto;
+        max-height: 86vh;
+        border-radius: 18px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .habit-edit-modal .notes-modal-header {
+        padding: 16px 18px;
+        flex-shrink: 0;
+    }
+
+    .habit-edit-modal .notes-modal-body {
+        flex: 1 1 auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 14px 16px;
+    }
+
+    .habit-edit-modal .notes-modal-footer {
+        padding: 12px 18px;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    :root[data-theme="light"] .habit-edit-modal .notes-modal-header,
+    :root[data-theme="light"] .habit-edit-modal .notes-modal-footer {
+        background: transparent;
+    }
+
+    /* Trash/archive modal */
+    .archive-modal {
+        width: 100%;
+        max-height: 88vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Stats modal */
+    .stats-modal {
+        width: 100%;
+        max-height: 88vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Compact icon picker */
+    .icon-option {
+        width: 36px;
+        height: 36px;
+        border-radius: 7px;
+    }
+
+    .icon-option svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Compact type selector */
+    .type-label {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    /* Note modal */
+    .habits-note-modal .notes-modal-content {
+        width: 100%;
+        border-radius: 16px 16px 0 0;
+        max-height: 88vh;
+    }
+
+/* ════════════════════════════════════════════════════════════════

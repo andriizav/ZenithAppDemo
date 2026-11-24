@@ -1,0 +1,45 @@
+/* Design tokens — dark theme (default). Light theme overrides live in
+   css/themes/light.css. Keep this file as the single source of truth;
+   app-view.html's inline pre-load <style> mirrors a minimal subset of
+   these values so the lockscreen doesn't flash unstyled before this
+   file finishes loading. */
+:root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #212121;
+    --bg-editor: #282828;
+    --bg-hover: #2c2c2c;
+    --border: #333333;
+    --text-primary: #e6e6e6;
+    --text-secondary: #999999;
+    --text-muted: #666666;
+    --accent: #5b9cf5;
+    --accent-bg: rgba(91, 156, 245, 0.12);
+    --bg-card: #1e1e1e;
+    --bg-tile: #1a1a1a;
+    --success: #4ac06a;
+    --warning: #f0a040;
+    --danger: #e05555;
+    --danger-hover: #d03030;
+
+    /* Бічні відступи вмісту вкладок і зазор між вмістом та нижнім таб-баром.
+       Змінюй тут — застосується до всіх вкладок автоматично. */
+    --content-side-pad: 18px;
+    --content-bottom-gap: 18px;
+
+    /* Habits grid cell colors (good/bad habit type, completed vs skipped) */
+    --good-cell: #0A84FF;
+    --good-cell-skipped: #FF453A;
+    --bad-cell: #FF453A;
+    --bad-cell-skipped: #0A84FF;
+
+    /* Shared shadow/overlay tokens — reuse instead of redeclaring one-off box-shadows */
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.5);
+    --overlay-scrim: rgba(0, 0, 0, 0.6);
+
+    /* Shared transition durations */
+    --transition-fast: 0.15s;
+    --transition-base: 0.2s;
+}

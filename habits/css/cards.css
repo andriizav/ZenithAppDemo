@@ -1,0 +1,981 @@
+:root {
+    --good-cell: #0A84FF;
+    --good-cell-skipped: #FF453A;
+    --bad-cell: #FF453A;
+    --bad-cell-skipped: #0A84FF;
+}
+
+.cell {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: #282828;
+    border: 1px solid #333333;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-right: 3px; /* відступ між колонками */
+    margin-bottom: 3px; /* відступ між рядками */
+    scroll-snap-align: start;
+}
+
+.cell.today {
+    border-color: #555;
+}
+
+/* ═══════════════════════════════════════════════
+   ── Good habits Cells ──
+   ═══════════════════════════════════════════════ */
+
+/* ── Cell state: done / completed ── */
+.habit.good .cell.active {
+    background: var(--good-cell);
+    border-color: transparent !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* ── Cell state: skipped / missed ── */
+.habit.good .cell.skipped {
+    background:
+        repeating-linear-gradient(
+            135deg,
+            transparent 0px,
+            transparent 2px,
+            var(--good-cell-skipped) 2px,
+            var(--good-cell-skipped) 4px
+        ),
+        #1a1a1a;
+
+    border-color: var(--good-cell-skipped);
+    opacity: 0.7;
+}
+
+.habit.good .cell.half {
+    --half-color: var(--good-cell);
+    --half-empty: #282828;
+}
+
+/* ═══════════════════════════════════════════════
+   ── Bad habits Cells ──
+   ═══════════════════════════════════════════════ */
+
+/* ── Cell state: done / committed (bad habit) ── */
+.habit.bad .cell.active {
+    background: var(--bad-cell);
+    border-color: transparent !important;
+    opacity: 0.75;
+}
+
+/* ── Cell state: skipped / avoided (bad habit) ── */
+.habit.bad .cell.skipped {
+    background: color-mix(in srgb, var(--bad-cell-skipped) 28%, transparent);
+    border-color: var(--bad-cell-skipped);
+    box-shadow: 0 0 4px color-mix(in srgb, var(--bad-cell-skipped) 50%, transparent);
+    opacity: 1;
+}
+
+.habit.bad .cell.half {
+    --half-color: var(--bad-cell);
+    --half-empty: #282828;
+}
+
+/* ── end day cells (heatmap cells) ── */
+
+
+.habit {
+    background: #212121;
+    border: 1px solid #333333;
+    border-radius: 12px;
+    padding: 12px 20px 12px 22px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    min-width: 190px;
+    position: relative;
+    user-select: none;
+}
+
+.habit.bad {
+    border-color: #4a2c2c;
+}
+
+/* ─── Category Visual ─── */
+
+.habit-category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.habit-drag-handle {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666666;
+    cursor: grab;
+    font-size: 12px;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 10;
+    user-select: none;
+}
+
+.habit-drag-handle:hover {
+    opacity: 1;
+}
+
+.habit.dragging {
+    opacity: 0.5;
+}
+
+.habit.dragging .habit-drag-handle {
+    cursor: grabbing;
+}
+
+.habit.drag-over {
+    border-color: #5b9cf5;
+    background: #282828;
+}
+
+.habit-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    min-width: 140px;
+    justify-content: flex-start;
+}
+
+.habit-top-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.habit-checkbox {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background-color: transparent;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.habit-checkbox svg {
+    width: 20px;
+    height: 20px;
+    color: #555;
+    transition: color 0.2s;
+}
+
+.habit-checkbox.good-checkbox.done,
+.habit-checkbox.bad-checkbox.clean,
+.habit-checkbox.bad-checkbox.skipped {
+    background-color: #0A84FF;
+    border-color: #0A84FF;
+    box-shadow: 0 0 6px color-mix(in srgb, #0A84FF 40%, transparent);
+}
+
+.habit-checkbox.good-checkbox.done svg,
+.habit-checkbox.bad-checkbox.clean svg,
+.habit-checkbox.bad-checkbox.skipped svg {
+    color: #ffffff;
+}
+
+.habit-checkbox.skipped,
+.habit-checkbox.bad-checkbox.done {
+    border: 1.5px solid rgba(255, 69, 58, 0.5);
+    background: rgba(255, 69, 58, 0.1);
+    box-shadow: 0 0 6px rgba(255, 69, 58, 0.15);
+}
+
+.habit-checkbox.skipped svg,
+.habit-checkbox.bad-checkbox.done svg {
+    color: #FF453A;
+}
+
+.habit-checkbox.bad-checkbox {
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Стан «напів» (середня клавіша) для маленької клітинки heatmap — лише градієнт */
+.cell.half svg {
+    display: none;
+}
+
+/* Для великого чекбокса «напів» показуємо галочку поверх градієнта */
+.habit-checkbox.half svg {
+    display: block;
+    color: #ffffff;
+}
+
+.habit-icon {
+    width: 36px;
+    height: 36px;
+    background: #282828;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #e8e8e8;
+    cursor: pointer;
+    transition:
+        background 0.15s,
+        box-shadow 0.15s;
+}
+
+.habit-icon:hover {
+    background: #323232;
+}
+
+.habit-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: #e8e8e8;
+}
+
+.habit-name {
+    opacity: 0.8;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.15s;
+}
+
+.habit-name:hover {
+    opacity: 1;
+}
+
+.habit-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.heatmap-wrapper {
+    display: flex;
+    gap: 20px;
+    margin-left: -2px;
+}
+
+.weekday-labels {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-top: 14px;
+}
+
+.weekday-label {
+    font-size: 9px;
+    color: #666666;
+    height: 12px;
+    line-height: 12px;
+    text-align: right;
+    width: 24px;
+}
+
+.week-column {
+    display: flex;
+    flex-direction: column;
+    scroll-snap-align: start;
+}
+
+.heatmap {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 7px;
+    padding-top: 2px;
+    cursor: pointer;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.3s ease;
+}
+
+/* Скролбар зʼявляється лише коли курсор у нижній зоні (клас .show-scroll додає JS) */
+.heatmap.show-scroll {
+    scrollbar-color: #3a3a3a transparent;
+}
+
+.heatmap::-webkit-scrollbar {
+    height: 6px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.heatmap.show-scroll::-webkit-scrollbar {
+    opacity: 1;
+}
+
+.heatmap::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.heatmap::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+.heatmap:hover::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+}
+
+.heatmap::-webkit-scrollbar-thumb:hover {
+    background: #5b9cf5;
+}
+
+.cell.padding {
+    opacity: 0.4; /* затемнені клітинки з попереднього/наступного року */
+}
+
+.habit-checkbox.half {
+    --half-color: #0A84FF;
+    --half-empty: rgba(33, 33, 33, 0.1); /* повністю темна (прозорість 0.00) під колір фону (#212121) */
+    border-color: #555;
+    box-shadow: 0 0 6px rgba(10, 132, 255, 0.4);
+}
+
+/* Варіанти візуалу «напів» (обирається в налаштуваннях) */
+/* Половинки в усі 4 боки */
+.cell.half-v1, .half-style-swatch.half-v1, .habit-checkbox.half-v1 { background: linear-gradient(to right, var(--half-color) 50%, var(--half-empty) 50%); border: none; } /* ліворуч */
+.cell.half-v2, .half-style-swatch.half-v2, .habit-checkbox.half-v2 { background: linear-gradient(to left, var(--half-color) 50%, var(--half-empty) 50%); border: none; }  /* праворуч */
+.cell.half-v3, .half-style-swatch.half-v3, .habit-checkbox.half-v3 { background: linear-gradient(to bottom, var(--half-color) 50%, var(--half-empty) 50%); border: none; } /* зверху */
+.cell.half-v4, .half-style-swatch.half-v4, .habit-checkbox.half-v4 { background: linear-gradient(to top, var(--half-color) 50%, var(--half-empty) 50%); border: none; }    /* знизу */
+/* Діагоналі в усі 4 боки */
+.cell.half-v5, .half-style-swatch.half-v5, .habit-checkbox.half-v5 { background: linear-gradient(135deg, var(--half-color) 51%, var(--half-empty) 51%); border: none; } /* ↘ */
+.cell.half-v6, .half-style-swatch.half-v6, .habit-checkbox.half-v6 { background: linear-gradient(45deg, var(--half-color) 51%, var(--half-empty) 51%); border: none; }  /* ↗ */
+.cell.half-v7, .half-style-swatch.half-v7, .habit-checkbox.half-v7 { background: linear-gradient(225deg, var(--half-color) 51%, var(--half-empty) 51%); border: none; } /* ↙ */
+.cell.half-v8, .half-style-swatch.half-v8, .habit-checkbox.half-v8 { background: linear-gradient(315deg, var(--half-color) 51%, var(--half-empty) 51%); border: none; } /* ↖ */
+/* Шахматний візерунок */
+.cell.half-v9, .half-style-swatch.half-v9, .habit-checkbox.half-v9 { background: conic-gradient(var(--half-color) 25%, var(--half-empty) 25% 50%, var(--half-color) 50% 75%, var(--half-empty) 75%); border: none; } /* шахматний */
+.cell.half-v11, .half-style-swatch.half-v11, .habit-checkbox.half-v11 { background: conic-gradient(var(--half-empty) 25%, var(--half-color) 25% 50%, var(--half-empty) 50% 75%, var(--half-color) 75%); border: none; } /* шахматний навпаки */
+/* Пунктир */
+.cell.half-v10, .half-style-swatch.half-v10, .habit-checkbox.half-v10 { background: repeating-linear-gradient(45deg, var(--half-color) 0 4px, var(--half-empty) 4px 8px); border: none; } /* пунктир */
+.cell.half-v12, .half-style-swatch.half-v12, .habit-checkbox.half-v12 { background: repeating-linear-gradient(-45deg, var(--half-color) 0 4px, var(--half-empty) 4px 8px); border: none; } /* пунктир навпаки */
+
+/*.cell.today::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #f0883e;
+    z-index: 1;
+}*/
+
+.cell.future {
+    opacity: 0.5;
+}
+
+.cell.shake {
+    animation:
+        shake 0.4s ease-out,
+        pulse-red 0.3s ease-out;
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0) rotate(0);
+    }
+    10% {
+        transform: translateX(-6px) rotate(-8deg);
+    }
+    20% {
+        transform: translateX(6px) rotate(8deg);
+    }
+    30% {
+        transform: translateX(-6px) rotate(-8deg);
+    }
+    40% {
+        transform: translateX(6px) rotate(8deg);
+    }
+    50% {
+        transform: translateX(-4px) rotate(-5deg);
+    }
+    60% {
+        transform: translateX(4px) rotate(5deg);
+    }
+    70% {
+        transform: translateX(-2px) rotate(-2deg);
+    }
+    80% {
+        transform: translateX(2px) rotate(2deg);
+    }
+}
+
+@keyframes pulse-red {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.7);
+    }
+    50% {
+        transform: scale(1.6);
+        box-shadow: 0 0 0 8px rgba(248, 81, 73, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(248, 81, 73, 0);
+    }
+}
+
+.cell.pulse {
+    animation: pulse-green 0.3s ease-out;
+}
+
+@keyframes pulse-green {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(91, 156, 245, 0.7);
+    }
+    50% {
+        transform: scale(1.6);
+        box-shadow: 0 0 0 8px rgba(91, 156, 245, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(91, 156, 245, 0);
+    }
+  }
+
+  /* Note indicator on day cell */
+  .cell.has-note {
+    position: relative;
+  }
+
+  .cell.has-note::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #f5a623;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+  }
+
+  /* Long press feedback */
+  .cell.long-press {
+    animation: long-press-pulse 0.2s ease-out;
+  }
+
+  @keyframes long-press-pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.6); }
+    50% { transform: scale(1.3); box-shadow: 0 0 0 8px rgba(245, 166, 35, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 166, 35, 0); }
+  }
+
+  .habits-actions {
+    position: fixed;
+    bottom: 35px;
+    right: 24px;
+    display: flex;
+    gap: 12px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.habits-actions.show-actions {
+    pointer-events: auto;
+}
+
+.habits-actions.show-actions .export-btn,
+.habits-actions.show-actions .import-btn,
+.habits-actions.show-actions .sync-btn,
+.habits-actions.show-actions .stats-btn,
+.habits-actions.show-actions .notification-btn,
+.habits-actions.show-actions .archive-btn,
+.habits-actions.show-actions .settings-btn,
+.habits-actions.show-actions .add-btn {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.export-btn {
+    width: 48px;
+    height: 48px;
+    background: #282828;
+    border: none;
+    border-radius: 50%;
+    color: #999999;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.import-btn {
+    width: 48px;
+    height: 48px;
+    background: #282828;
+    border: none;
+    border-radius: 50%;
+    color: #999999;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.export-btn svg,
+.import-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+.export-btn:hover {
+    transform: scale(1.1);
+    color: #4ac06a;
+}
+
+.import-btn:hover {
+    transform: scale(1.1);
+    color: #f5a623;
+}
+
+.sync-btn {
+    width: 48px;
+    height: 48px;
+    background: #282828;
+    border: none;
+    border-radius: 50%;
+    color: #999999;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.sync-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+.sync-btn:hover {
+    transform: scale(1.1);
+    color: #9b59b6;
+}
+
+.sync-btn.syncing {
+    animation: sync-spin 1s linear infinite;
+    color: #5b9cf5;
+}
+
+@keyframes sync-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.stats-btn {
+    width: 48px;
+    height: 48px;
+    background: #282828;
+    border: none;
+    border-radius: 50%;
+    color: #999999;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.stats-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+}
+
+.stats-btn:hover {
+    transform: scale(1.1);
+    color: #e74c3c;
+}
+
+.notification-btn {
+    width: 48px;
+    height: 48px;
+    background: #282828;
+    border: none;
+    border-radius: 50%;
+    color: #999999;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.notification-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+.notification-btn:hover {
+    transform: scale(1.1);
+    color: #f39c12;
+}
+
+.archive-btn {
+    width: 48px;
+    height: 48px;
+    background: #282828;
+    border: none;
+    border-radius: 50%;
+    color: #999999;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.archive-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+.archive-btn:hover {
+    transform: scale(1.1);
+    color: #e74c3c;
+}
+
+.add-btn {
+    width: 48px;
+    height: 48px;
+    background: #282828;
+    border: none;
+    border-radius: 50%;
+    color: #999999;
+    font-size: 35px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s;
+    opacity: 0.2;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.add-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+}
+
+.add-btn:hover {
+    transform: scale(1.1);
+    color: #1abc9c;
+    opacity: 1;
+}
+
+.settings-btn {
+    width: 48px;
+    height: 48px;
+    background: #282828;
+    border: none;
+    border-radius: 50%;
+    color: #999999;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.settings-btn svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+}
+
+.settings-btn:hover {
+    transform: scale(1.1);
+    color: #5b9cf5;
+    opacity: 1;
+}
+
+@keyframes add-btn-pulse {
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(91, 156, 245, 0 5);
+        opacity: 1;
+    }
+    50% {
+        box-shadow: 0 0 0 12px rgba(91, 156, 245, 0);
+        opacity: 0.7;
+    }
+}
+
+.add-btn-empty {
+    animation: add-btn-highlight 1.5s ease-in-out infinite;
+    opacity: 1;
+}
+
+@keyframes add-btn-highlight {
+    0%,
+    100% {
+        box-shadow:
+            0 0 6px 0 rgba(91, 156, 245, 0.15),
+            0 0 0 0 rgba(91, 156, 245, 0);
+        color: rgba(91, 156, 245, 0.6);
+    }
+    50% {
+        box-shadow:
+            0 0 18px 4px rgba(91, 156, 245, 0.35),
+            0 0 36px 8px rgba(91, 156, 245, 0.12);
+        color: #8ec5ff;
+    }
+}
+
+/* ═══════════════════════════════════════════════════
+   ── LIGHT THEME ──
+   ═══════════════════════════════════════════════════ */
+
+:root[data-theme="light"] .cell {
+    background: #e8e8e8;
+    border-color: #d0d0d0;
+}
+
+:root[data-theme="light"] .cell.today {
+    border-color: #aaa;
+}
+
+:root[data-theme="light"] .habit.good .cell.active {
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme="light"] .habit.good .cell.skipped {
+    background:
+        repeating-linear-gradient(
+            135deg,
+            transparent 0px,
+            transparent 2px,
+            var(--good-cell-skipped) 2px,
+            var(--good-cell-skipped) 4px
+        ),
+        #f5f5f5;
+}
+
+:root[data-theme="light"] .habit.good .cell.half {
+    --half-empty: #e8e8e8;
+}
+
+:root[data-theme="light"] .habit.bad .cell.half {
+    --half-empty: #e8e8e8;
+}
+
+:root[data-theme="light"] .habit {
+    background: #ffffff;
+    border-color: #e0e0e0;
+}
+
+:root[data-theme="light"] .habit.bad {
+    border-color: #f1c4c4;
+}
+
+:root[data-theme="light"] .habit.drag-over {
+    border-color: #5b9cf5;
+    background: #f5f5f5;
+}
+
+:root[data-theme="light"] .habit-drag-handle {
+    color: #999999;
+}
+
+:root[data-theme="light"] .habit-header {
+    color: #1a1a1a;
+}
+
+:root[data-theme="light"] .habit-checkbox {
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="light"] .habit-checkbox svg {
+    color: #999;
+}
+
+:root[data-theme="light"] .habit-checkbox.skipped,
+:root[data-theme="light"] .habit-checkbox.bad-checkbox.done {
+    border-color: rgba(255, 69, 58, 0.5);
+    background: rgba(255, 69, 58, 0.1);
+}
+
+:root[data-theme="light"] .habit-checkbox.bad-checkbox {
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="light"] .habit-checkbox.half {
+    --half-empty: #e8e8e8;
+}
+
+:root[data-theme="light"] .habit-icon {
+    background: #f0f0f0;
+    color: #333;
+}
+
+:root[data-theme="light"] .habit-icon:hover {
+    background: #e4e4e4;
+}
+
+:root[data-theme="light"] .habit-icon svg {
+    stroke: #333;
+}
+
+:root[data-theme="light"] .habit-name {
+    color: #1a1a1a;
+}
+
+:root[data-theme="light"] .weekday-label {
+    color: #999999;
+}
+
+:root[data-theme="light"] .heatmap.show-scroll {
+    scrollbar-color: #ccc transparent;
+}
+
+:root[data-theme="light"] .heatmap:hover::-webkit-scrollbar-thumb {
+    background: #ccc;
+}
+
+:root[data-theme="light"] .heatmap::-webkit-scrollbar-thumb:hover {
+    background: #5b9cf5;
+}
+
+:root[data-theme="light"] .export-btn,
+:root[data-theme="light"] .import-btn,
+:root[data-theme="light"] .sync-btn,
+:root[data-theme="light"] .stats-btn,
+:root[data-theme="light"] .notification-btn,
+:root[data-theme="light"] .archive-btn,
+:root[data-theme="light"] .settings-btn,
+:root[data-theme="light"] .add-btn {
+    background: #ffffff;
+    color: #888;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme="light"] .export-btn:hover {
+    color: #4ac06a;
+}
+
+:root[data-theme="light"] .import-btn:hover {
+    color: #f5a623;
+}
+
+:root[data-theme="light"] .sync-btn:hover {
+    color: #9b59b6;
+}
+
+:root[data-theme="light"] .sync-btn.syncing {
+    color: #5b9cf5;
+}
+
+:root[data-theme="light"] .stats-btn:hover {
+    color: #e74c3c;
+}
+
+:root[data-theme="light"] .notification-btn:hover {
+    color: #f39c12;
+}
+
+:root[data-theme="light"] .archive-btn:hover {
+    color: #e74c3c;
+}
+
+:root[data-theme="light"] .add-btn {
+    background: #ffffff;
+    color: #999;
+}
+
+:root[data-theme="light"] .add-btn:hover {
+    color: #1abc9c;
+}
+
+:root[data-theme="light"] .settings-btn:hover {
+    color: #5b9cf5;
+}
+
+:root[data-theme="light"] .cell.has-note::after {
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Shift+drag: масове відмічання клітинок heatmap */
+body.habits-painting {
+  cursor: cell;
+  user-select: none;
+}
+
+body.habits-painting .cell {
+  cursor: cell;
+}

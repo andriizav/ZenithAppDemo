@@ -1,0 +1,65 @@
+@keyframes habits-settings-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes habits-settings-pop {
+    from { opacity: 0; transform: scale(0.94) translateY(8px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Вибір візуалу «напів» у налаштуваннях */
+.settings-modal .half-style-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    cursor: pointer;
+    border: 1px solid #555;
+    --half-empty: var(--bg-editor);
+}
+
+.settings-modal .half-style-swatch.selected {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+}
+
+:root[data-theme="light"] .settings-modal .half-style-swatch {
+    border-color: #ccc;
+    --half-empty: #e8e8e8;
+}
+
+:root[data-theme="light"] .settings-modal .half-style-swatch.selected {
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.25);
+}
+
+:root[data-theme="light"] .reminder-card-sub {
+    color: #8a909a;
+}
+
+:root[data-theme="light"] .reminder-switch-track {
+    background: #cfd4da;
+}
+
+:root[data-theme="light"] .reminder-switch-thumb {
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="light"] .reminder-time-label {
+    color: #8a909a;
+}
+
+:root[data-theme="light"] .reminder-time-icon {
+    color: #9aa0a8;
+}
+
+:root[data-theme="light"] .reminder-time-input {
+    background: #ffffff;
+    border-color: #d8dde3;
+    color: var(--text-primary);
+}
+
+:root[data-theme="light"] .reminder-time-input::-webkit-calendar-picker-indicator {
+    filter: none;
+}
+
+/* ════════════════════════════════════════════════════════════════

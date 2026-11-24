@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Quickadd Quads — варіанти</title>
+<style>
+  :root{
+    --bg-primary:#1a1a1a;
+    --bg-secondary:#212121;
+    --bg-hover:#2c2c2c;
+    --border:#333333;
+    --text-primary:#e6e6e6;
+    --text-secondary:#999999;
+    --text-muted:#666666;
+    --accent:#5b9cf5;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 40px 24px 100px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .sub { color: var(--text-muted); font-size: 13px; margin-bottom: 40px; }
+  .variant {
+    margin-bottom: 48px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .variant:last-child { border-bottom: none; }
+  .variant-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .variant-badge {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    background: rgba(91,156,245,0.14);
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  .variant-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  /* ============ base quickadd (current) ============ */
+  .tasks-quickadd {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #232323;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 8px 8px 14px;
+  }
+  .tasks-quickadd-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    padding: 4px 0;
+    outline: none;
+    resize: none;
+    overflow: hidden;
+    line-height: 1.4;
+  }
+  .tasks-quickadd-input::placeholder { color: var(--text-muted); }
+  .tasks-quickadd-send {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .tasks-quickadd-send:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .tasks-quickadd-send svg { width: 16px; height: 16px; }
+
+  /* ============ Variant 1: bigger hit-area, same visual ============ */
+  .v1-quads {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+    padding: 0 4px;
+    border-left: 1px solid var(--border);
+    margin-left: 2px;
+  }
+  .v1-quad {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .v1-quad::after {
+    content: '';
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: color-mix(in srgb, var(--quadrant-color) 35%, transparent);
+    transition: transform 0.12s, background 0.12s, border-color 0.12s;
+  }
+  .v1-quad:hover::after { transform: scale(1.15); }
+  .v1-quad.active::after {
+    background: var(--quadrant-color);
+    border-color: color-mix(in srgb, var(--quadrant-color) 60%, white 0%);
+  }
+  .v1-quad:hover { background: var(--bg-hover); }
+
+  /* ============ Variant 2: segmented control above input ============ */
+  .v2-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .v2-segments {
+    display: flex;
+    gap: 4px;
+  }
+  .v2-seg {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 4px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #232323;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+  }
+  .v2-seg-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--quadrant-color);
+    flex-shrink: 0;
+  }
+  .v2-seg:hover { background: var(--bg-hover); }
+  .v2-seg.active {
+    background: color-mix(in srgb, var(--quadrant-color) 16%, #232323);
+    border-color: var(--quadrant-color);
+    color: var(--text-primary);
+  }
+
+  /* ============ Variant 3: 2x2 grid ============ */
+  .v3-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2px;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    padding: 3px;
+    border-left: 1px solid var(--border);
+    margin-left: 2px;
+    padding-left: 8px;
+  }
+  .v3-quad {
+    width: 18px;
+    height: 18px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--quadrant-color) 35%, transparent);
+    cursor: pointer;
+    transition: transform 0.12s, background 0.12s, border-color 0.12s;
+  }
+  .v3-quad:hover { transform: scale(1.1); }
+  .v3-quad.active {
+    background: var(--quadrant-color);
+    border-color: color-mix(in srgb, var(--quadrant-color) 60%, white 0%);
+  }
+
+  /* ============ Variant 4: split button + dropdown ============ */
+  .v4-split {
+    display: flex;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: visible;
+    position: relative;
+  }
+  .v4-main {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 8px 0 0 8px;
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+  }
+  .v4-main::before {
+    content: '';
+    position: absolute;
+    left: 4px; top: 4px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--quadrant-color, #e05555);
+  }
+  .v4-main svg { width: 15px; height: 15px; margin-left: 6px; }
+  .v4-caret {
+    width: 20px;
+    height: 30px;
+    border: none;
+    border-left: 1px solid var(--border);
+    border-radius: 0 8px 8px 0;
+    background: var(--bg-hover);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .v4-caret:hover, .v4-main:hover { filter: brightness(1.15); }
+  .v4-dropdown {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    right: 0;
+    background: #2a2a2e;
+    border: 1px solid #3a3a3e;
+    border-radius: 10px;
+    padding: 5px;
+    min-width: 190px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .v4-opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .v4-opt:hover { background: rgba(255,255,255,0.08); }
+  .v4-opt-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--quadrant-color); flex-shrink: 0; }
+  .v4-opt.active { color: var(--accent); }
+
+  .send-icon, .caret-icon { display:block; }
+</style>
+</head>
+<body>
+
+<h1>Варіанти розміщення вибору квадранта</h1>
+<div class="sub">Дані з реального quick-add тулбару (кольори квадрантів, шрифти, --border/--bg-hover тощо). Клікайте кружечки/сегменти — стан active перемикається по кожному варіанту незалежно.</div>
+
+<!-- VARIANT 1 -->
+<div class="variant">
+  <div class="variant-title">1. Збільшена hit-area (мінімальна правка)<span class="variant-badge">без зміни вигляду</span></div>
+  <div class="variant-desc">Той самий вигляд 14px кружечків, але клікабельна зона — 26×26px невидимою кнопкою навколо. Layout і висота тулбару не міняються.</div>
+  <div class="tasks-quickadd">
+    <textarea class="tasks-quickadd-input" placeholder="Нова задача..." rows="1"></textarea>
+    <div class="v1-quads">
+      <button type="button" class="v1-quad active" data-quad="do" style="--quadrant-color:#e05555" title="Терміново і важливо"></button>
+      <button type="button" class="v1-quad" data-quad="schedule" style="--quadrant-color:#f0a040" title="Важливо, але не терміново"></button>
+      <button type="button" class="v1-quad" data-quad="delegate" style="--quadrant-color:#5b9cf5" title="Терміново, але не важливо"></button>
+      <button type="button" class="v1-quad" data-quad="delete" style="--quadrant-color:#666666" title="Не терміново і не важливо"></button>
+    </div>
+    <button type="button" class="tasks-quickadd-send" title="Додати">
+      <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- VARIANT 2 -->
+<div class="variant">
+  <div class="variant-title">2. Сегментований рядок над полем<span class="variant-badge">рекомендовано</span></div>
+  <div class="variant-desc">4 підписані сегменти на всю ширину над textarea. Найбільша ціль кліку, видно назву квадранта, активний стан читається одразу по фону.</div>
+  <div class="v2-wrap">
+    <div class="v2-segments">
+      <button type="button" class="v2-seg active" data-quad="do" style="--quadrant-color:#e05555"><span class="v2-seg-dot"></span>Терміново</button>
+      <button type="button" class="v2-seg" data-quad="schedule" style="--quadrant-color:#f0a040"><span class="v2-seg-dot"></span>Заплановано</button>
+      <button type="button" class="v2-seg" data-quad="delegate" style="--quadrant-color:#5b9cf5"><span class="v2-seg-dot"></span>Делегувати</button>
+      <button type="button" class="v2-seg" data-quad="delete" style="--quadrant-color:#666666"><span class="v2-seg-dot"></span>Видалити</button>
+    </div>
+    <div class="tasks-quickadd">
+      <textarea class="tasks-quickadd-input" placeholder="Нова задача..." rows="1"></textarea>
+      <button type="button" class="tasks-quickadd-send" title="Додати">
+        <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- VARIANT 3 -->
+<div class="variant">
+  <div class="variant-title">3. Сітка 2×2 праворуч<span class="variant-badge">компактно</span></div>
+  <div class="variant-desc">Квадрантики впритул у сітці 2×2, на місці старого ряду кружечків. Не додає висоти тулбару, кожна ціль клікання вдвічі більша.</div>
+  <div class="tasks-quickadd">
+    <textarea class="tasks-quickadd-input" placeholder="Нова задача..." rows="1"></textarea>
+    <div class="v3-grid">
+      <button type="button" class="v3-quad active" data-quad="do" style="--quadrant-color:#e05555" title="Терміново і важливо"></button>
+      <button type="button" class="v3-quad" data-quad="schedule" style="--quadrant-color:#f0a040" title="Важливо, але не терміново"></button>
+      <button type="button" class="v3-quad" data-quad="delegate" style="--quadrant-color:#5b9cf5" title="Терміново, але не важливо"></button>
+      <button type="button" class="v3-quad" data-quad="delete" style="--quadrant-color:#666666" title="Не терміново і не важливо"></button>
+    </div>
+    <button type="button" class="tasks-quickadd-send" title="Додати">
+      <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- VARIANT 4 -->
+<div class="variant">
+  <div class="variant-title">4. Спліт-кнопка з дропдауном<span class="variant-badge">найменше на екрані</span></div>
+  <div class="variant-desc">Кнопка "Додати" показує обраний квадрант кольоровою крапкою; стрілочка відкриває список з назвами для зміни. Приберіть tooltip-hover, натисніть каретку щоб побачити дропдаун.</div>
+  <div class="tasks-quickadd">
+    <textarea class="tasks-quickadd-input" placeholder="Нова задача..." rows="1"></textarea>
+    <div class="v4-split">
+      <button type="button" class="v4-main" style="--quadrant-color:#e05555" title="Додати в «Терміново і важливо»">
+        <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+      <button type="button" class="v4-caret" id="v4-caret-btn" title="Обрати квадрант">
+        <svg class="caret-icon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="v4-dropdown" id="v4-dropdown" style="display:none">
+        <div class="v4-opt active" data-quad="do"><span class="v4-opt-dot" style="--quadrant-color:#e05555"></span>Терміново і важливо</div>
+        <div class="v4-opt" data-quad="schedule"><span class="v4-opt-dot" style="--quadrant-color:#f0a040"></span>Важливо, не терміново</div>
+        <div class="v4-opt" data-quad="delegate"><span class="v4-opt-dot" style="--quadrant-color:#5b9cf5"></span>Терміново, не важливо</div>
+        <div class="v4-opt" data-quad="delete"><span class="v4-opt-dot" style="--quadrant-color:#666666"></span>Не терміново, не важливо</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.v1-quads, .v3-grid, .v2-segments').forEach(group => {
+    group.addEventListener('click', e => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      group.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  const caretBtn = document.getElementById('v4-caret-btn');
+  const dropdown = document.getElementById('v4-dropdown');
+  caretBtn.addEventListener('click', () => {
+    dropdown.style.display = dropdown.style.display === 'none' ? 'flex' : 'none';
+  });
+  dropdown.querySelectorAll('.v4-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      dropdown.querySelectorAll('.v4-opt').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      const color = getComputedStyle(opt.querySelector('.v4-opt-dot')).getPropertyValue('--quadrant-color') || opt.querySelector('.v4-opt-dot').style.getPropertyValue('--quadrant-color');
+      document.querySelector('.v4-main').style.setProperty('--quadrant-color', opt.querySelector('.v4-opt-dot').style.getPropertyValue('--quadrant-color'));
+      dropdown.style.display = 'none';
+    });
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.v4-split')) dropdown.style.display = 'none';
+  });
+</script>
+
+</body>
+</html>

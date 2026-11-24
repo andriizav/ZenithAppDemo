@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/mobile",
+      "destination": "/mobile/",
+      "permanent": false
+    }
+  ]
+}

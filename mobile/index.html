@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>ZenithApp | Mobile</title>
+  <link rel="icon" id="favicon-main" href="../data/favicon_dark.png" type="image/png">
+  <link rel="apple-touch-icon" id="favicon-ios" href="../data/favicon_dark.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../data/favicon_dark.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="../data/favicon_dark.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ZenithApp">
+  <script>
+    try{
+      var t=localStorage.getItem('app_theme_mobile');
+      if(!t){
+        if(/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent))t='light';
+        else t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'
+      }
+      document.documentElement.setAttribute('data-theme',t);
+      var favicon=document.getElementById('favicon-main');
+      var isDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if(favicon)favicon.href=(isDark?'../data/favicon_dark.png':'../data/favicon_light.png')+'?v='+Date.now()
+    }catch(e){}
+  </script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #1a1a1a;
+    }
+    /* Десктоп-прев'ю: показуємо мобільний застосунок у «рамці телефону» по
+       центру, щоб matchMedia/innerWidth усередині бачили мобільну ширину.
+       На реальному телефоні iframe НЕ використовується — index.html одразу
+       перекидає на app-view.html, який стає top-level документом і отримує
+       справжні env(safe-area-*) (усередині iframe вони не працюють). */
+    html.wide-frame, html.wide-frame body {
+      background: #e4e4e4;
+    }
+    html.wide-frame body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    html.wide-frame iframe#app-frame {
+      display: block;
+      width: 390px;
+      height: min(844px, 100vh);
+      border: 0;
+      background: #000;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+    }
+  </style>
+  <script>
+    // Вирішуємо ДО рендера body: широкий десктоп → рамка-iframe;
+    // вузький/мобільний → редірект на застосунок напряму (без iframe).
+    (function () {
+      var wide = false;
+      try { wide = (window.self === window.top && window.innerWidth >= 1024); } catch (e) {}
+      var target = 'app-view.html' + location.search + location.hash;
+      if (wide) {
+        document.documentElement.classList.add('wide-frame');
+        window.__zenithWide = target;
+      } else {
+        window.location.replace(target);
+      }
+    })();
+  </script>
+</head>
+<body>
+  <script>
+    // Лише десктоп-прев'ю: вставляємо iframe з рамкою телефону.
+    // (На мобільному сюди не доходить — вище вже стався redirect.)
+    if (window.__zenithWide) {
+      var f = document.createElement('iframe');
+      f.id = 'app-frame';
+      f.title = 'ZenithApp';
+      f.src = window.__zenithWide;
+      document.body.appendChild(f);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дизайни повідомлення «Ти молодець»</title>
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --bg-card: #212121;
+    --border: #333;
+    --text: #e8e8e8;
+    --text-muted: #999;
+    --accent: #5b9cf5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 32px 20px 80px;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--text-muted); font-size: 14px; margin: 0 0 28px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+    max-width: 1100px;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .card h2 { font-size: 15px; margin: 0; color: var(--text); }
+  .card .desc { font-size: 12px; color: var(--text-muted); margin: -8px 0 0; }
+  .preview {
+    position: relative;
+    height: 120px;
+    border-radius: 10px;
+    background: #161616;
+    border: 1px dashed #2c2c2c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .btn {
+    align-self: flex-start;
+    background: rgba(91,156,245,0.12);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn:hover { background: rgba(91,156,245,0.2); }
+
+  /* ===== ВАРІАНТ 1: Базовий тост (поточний) ===== */
+  .t1 {
+    background: #2c2c2c; color: #fff; padding: 12px 22px; border-radius: 10px;
+    font-size: 15px; box-shadow: 0 6px 20px rgba(0,0,0,.4);
+  }
+
+  /* ===== ВАРІАНТ 2: Акцентна плашка ===== */
+  .t2 {
+    background: linear-gradient(135deg, #5b9cf5, #7b6cf5);
+    color: #fff; padding: 14px 26px; border-radius: 12px;
+    font-size: 16px; font-weight: 600; box-shadow: 0 8px 24px rgba(91,156,245,.35);
+  }
+
+  /* ===== ВАРІАНТ 3: З іконкою-серцем ===== */
+  .t3 {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #212121; border: 1px solid #5b9cf5; color: #fff;
+    padding: 12px 20px; border-radius: 999px; font-size: 15px;
+  }
+  .t3 svg { color: #ff5b7f; }
+
+  /* ===== ВАРІАНТ 4: Мінімалістичний текст ===== */
+  .t4 {
+    color: var(--text); font-size: 18px; font-weight: 500; letter-spacing: .2px;
+    padding: 8px 4px; border-bottom: 2px solid var(--accent);
+  }
+
+  /* ===== ВАРІАНТ 5: Бейдж із галочкою ===== */
+  .t5 {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(74,192,106,.12); border: 1px solid #4ac06a; color: #4ac06a;
+    padding: 12px 20px; border-radius: 10px; font-size: 15px; font-weight: 600;
+  }
+  .t5 .check {
+    width: 22px; height: 22px; border-radius: 50%; background: #4ac06a; color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 13px;
+  }
+
+  /* ===== ВАРІАНТ 6: Спливаючий зверху ===== */
+  .t6 {
+    background: #fff; color: #1a1a1a; padding: 12px 22px; border-radius: 10px;
+    font-size: 15px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  }
+
+  /* ===== ВАРІАНТ 7: Неоновий ===== */
+  .t7 {
+    color: #5b9cf5; font-size: 16px; font-weight: 700; letter-spacing: 1px;
+    padding: 12px 24px; border: 1px solid #5b9cf5; border-radius: 8px;
+    text-shadow: 0 0 8px rgba(91,156,245,.6); box-shadow: 0 0 16px rgba(91,156,245,.25) inset;
+  }
+
+  /* ===== ВАРІАНТ 8: Великий емодзі-стиль ===== */
+  .t8 {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: #212121; border-radius: 16px; padding: 16px 24px; font-size: 16px; color: #fff;
+  }
+  .t8 .emoji { font-size: 30px; }
+
+  /* Анімація появи для демо */
+  @keyframes pop { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
+  .preview .show { animation: pop .3s ease-out; }
+</style>
+</head>
+<body>
+  <h1>Дизайни повідомлення «Ти молодець!»</h1>
+  <p class="sub">Натисни «Показати», щоб побачити варіант. Обери той, що сподобався — скажи мені номер.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>#1 Базовий тост</h2>
+      <p class="desc">Поточний стиль — темна плашка по центру.</p>
+      <div class="preview"><div class="t1" id="p1">Ти молодець!</div></div>
+      <button class="btn" onclick="show('p1')">Показати</button>
+    </div>
+
+    <div class="card">
+      <h2>#2 Акцентна плашка</h2>
+      <p class="desc">Градієнт синій→фіолетовий, напівжирний.</p>
+      <div class="preview"><div class="t2" id="p2">Ти молодець!</div></div>
+      <button class="btn" onclick="show('p2')">Показати</button>
+    </div>
+
+    <div class="card">
+      <h2>#3 З іконкою-серцем</h2>
+      <p class="desc">Пілюля з рожевим серцем.</p>
+      <div class="preview"><div class="t3" id="p3">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.9-10-9.2C.4 8.3 2 5 5.2 5c2 0 3.3 1.1 4 2.2.7-1.1 2-2.2 4-2.2C16.4 5 18 8.3 16.4 11.8 14 16.1 12 21 12 21z"/></svg>
+        Ти молодець!
+      </div></div>
+      <button class="btn" onclick="show('p3')">Показати</button>
+    </div>
+
+    <div class="card">
+      <h2>#4 Мінімалістичний</h2>
+      <p class="desc">Просто текст з акцентною лінією знизу.</p>
+      <div class="preview"><div class="t4" id="p4">Ти молодець!</div></div>
+      <button class="btn" onclick="show('p4')">Показати</button>
+    </div>
+
+    <div class="card">
+      <h2>#5 Бейдж із галочкою</h2>
+      <p class="desc">Зелена рамка + коло з галочкою.</p>
+      <div class="preview"><div class="t5" id="p5"><span class="check">✓</span>Ти молодець!</div></div>
+      <button class="btn" onclick="show('p5')">Показати</button>
+    </div>
+
+    <div class="card">
+      <h2>#6 Світла плашка</h2>
+      <p class="desc">Білий фон, темний текст — як спливаючий зверху.</p>
+      <div class="preview"><div class="t6" id="p6">Ти молодець!</div></div>
+      <button class="btn" onclick="show('p6')">Показати</button>
+    </div>
+
+    <div class="card">
+      <h2>#7 Неоновий</h2>
+      <p class="desc">Світіння синім, моноширинний акцент.</p>
+      <div class="preview"><div class="t7" id="p7">ТИ МОЛОДЕЦЬ!</div></div>
+      <button class="btn" onclick="show('p7')">Показати</button>
+    </div>
+
+    <div class="card">
+      <h2>#8 Емодзі-стиль</h2>
+      <p class="desc">Велике емодзі поруч із текстом.</p>
+      <div class="preview"><div class="t8" id="p8"><span class="emoji">🎉</span>Ти молодець!</div></div>
+      <button class="btn" onclick="show('p8')">Показати</button>
+    </div>
+  </div>
+
+  <script>
+    function show(id) {
+      const el = document.getElementById(id);
+      el.classList.remove('show');
+      void el.offsetWidth; // перезапуск анімації
+      el.classList.add('show');
+    }
+  </script>
+</body>
+</html>

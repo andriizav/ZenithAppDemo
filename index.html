@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
+  <meta name="color-scheme" content="dark">
+  <title>ZenithApp | Desktop</title>
+  <link rel="icon" id="favicon-main" href="data/favicon_default.png" type="image/png">
+  <link rel="apple-touch-icon" id="favicon-ios" href="data/favicon_ios.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="data/favicon_ios.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="data/favicon_ios.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ZenithApp">
+  <!-- Критичні стилі — блокують перший рендер (shell застосунку). -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/modals.css">
+  <link rel="stylesheet" href="css/gradient-button.css">
+  <!-- Стилі модулів: не блокують перший рендер. media="print" робить
+       завантаження неблокуючим, onload повертає media="all". Модулі
+       з'являються не раніше ніж їх JS, тож гонки стилів немає.
+       quill.snow.css підключає модуль нотаток (notes/styles.css) ліниво. -->
+  <link rel="stylesheet" href="tasks/tasks.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="tasks/drag-drop.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="timer/styles.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="habits/css/base.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="habits/css/stats.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="habits/css/cards.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="habits/css/modals.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="habits/css/statistics.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="habits/css/toast.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="habits/css/archive.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="habits/css/settings.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="habits/css/reminders.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="notes/styles.css" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="tasks/tasks.css">
+    <link rel="stylesheet" href="tasks/drag-drop.css">
+    <link rel="stylesheet" href="timer/styles.css">
+    <link rel="stylesheet" href="habits/css/base.css">
+    <link rel="stylesheet" href="habits/css/stats.css">
+    <link rel="stylesheet" href="habits/css/cards.css">
+    <link rel="stylesheet" href="habits/css/modals.css">
+    <link rel="stylesheet" href="habits/css/statistics.css">
+    <link rel="stylesheet" href="habits/css/toast.css">
+    <link rel="stylesheet" href="habits/css/archive.css">
+    <link rel="stylesheet" href="habits/css/settings.css">
+    <link rel="stylesheet" href="habits/css/reminders.css">
+    <link rel="stylesheet" href="notes/styles.css">
+  </noscript>
+  <link rel="preload" href="data/favicons/default.png" as="image">
+  <link rel="preload" href="js/app.js" as="script">
+  <link rel="preload" href="js/bookmarks.js" as="script">
+  <link rel="preconnect" href="https://www.google.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.google.com">
+  <link rel="preconnect" href="https://cdn.quilljs.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <style>
+    :root{--bg-primary:#1a1a1a;--border:#333333;--accent:#5b9cf5;color-scheme:dark}
+    html,body{background:#1a1a1a;margin:0}
+    #preloader{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg-primary);z-index:9999;display:flex;align-items:center;justify-content:center}
+    #preloader.hidden{opacity:0;visibility:hidden;transition:opacity .3s ease-out,visibility .3s}
+    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;will-change:transform}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    /* Світла тема —早期 applied */
+    :root[data-theme="light"]{--bg-primary:#ffffff;--bg-secondary:#f5f5f5;--bg-editor:#f0f0f0;--bg-hover:#ebebeb;--border:#e0e0e0;--text-primary:#1a1a1a;--text-secondary:#555555;--text-muted:#999999;--accent:#5b9cf5;--accent-bg:rgba(91,156,245,0.12);--success:#4ac06a;--warning:#f0a040;--danger:#e05555;--danger-hover:#d03030;color-scheme:light}
+    :root[data-theme="light"] body{background:#f0f0f0;color:#1a1a1a}
+    :root[data-theme="light"] .tabs{background:#fff}
+    :root[data-theme="light"] .tab{color:#555}
+    :root[data-theme="light"] .tab:hover{color:#1a1a1a}
+    :root[data-theme="light"] .tab.active{color:#1a1a1a}
+    :root[data-theme="light"] .tab.active:hover{color:#1a1a1a}
+    :root[data-theme="light"] .tab-count{background:#ebebeb;color:#999}
+    :root[data-theme="light"] .tab.active .tab-count{color:#fff;background:#5b9cf5}
+    :root[data-theme="light"] #preloader{background:#fff}
+    :root[data-theme="light"] .spinner{border-color:#e0e0e0;border-top-color:#5b9cf5}
+    :root[data-theme="light"] .theme-toggle{color:#999;opacity:0.4}
+    :root[data-theme="light"] .theme-toggle:hover{color:#1a1a1a;opacity:1}
+    :root[data-theme="light"] .bookmark-item{color:#1a1a1a}
+    :root[data-theme="light"] .bookmark-item:hover{background:#ebebeb;color:#1a1a1a}
+    :root[data-theme="light"] .bookmark-domain{color:#999}
+    :root[data-theme="light"] .bookmark-item:hover .bookmark-domain{color:#555}
+    :root[data-theme="light"] .search-input{background:#fff;border-color:#e0e0e0;color:#1a1a1a;box-shadow:none}
+    :root[data-theme="light"] .search-input::placeholder{color:#999}
+    :root[data-theme="light"] .search-input:focus{border-color:#5b9cf5;box-shadow:0 0 0 3px rgba(91,156,245,0.15)}
+    :root[data-theme="light"] .search-count{color:#999}
+    :root[data-theme="light"] .notes-modal{background:rgba(0,0,0,0.3)}
+    :root[data-theme="light"] .notes-modal-content{background:#fff;border-color:#e0e0e0;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+    :root[data-theme="light"] .notes-modal-header{border-bottom-color:#e0e0e0}
+    :root[data-theme="light"] .notes-modal-header h3{color:#1a1a1a}
+    :root[data-theme="light"] .notes-modal-close{color:#999}
+    :root[data-theme="light"] .notes-modal-close:hover{background:#ebebeb;color:#1a1a1a}
+    :root[data-theme="light"] .notes-modal-body{color:#1a1a1a}
+    :root[data-theme="light"] .notes-modal-footer{border-top-color:#e0e0e0}
+    :root[data-theme="light"] .gist-btn{background:#f5f5f5;border-color:#e0e0e0;color:#555}
+    :root[data-theme="light"] .gist-btn:hover:not(:disabled){background:#ebebeb;color:#1a1a1a}
+    :root[data-theme="light"] .gist-btn-primary{background:rgba(91,156,245,0.12);border-color:#5b9cf5;color:#5b9cf5}
+    :root[data-theme="light"] .gist-btn-primary:hover:not(:disabled){background:rgba(91,156,245,0.2);color:#5b9cf5}
+    :root[data-theme="light"] .tasks-quadrant{background:#fff;border-color:#e0e0e0}
+    :root[data-theme="light"] .tasks-quadrant-header{color:#1a1a1a}
+    :root[data-theme="light"] .tasks-quadrant-count{background:#ebebeb;color:#555}
+    :root[data-theme="light"] .tasks-task-text{color:#1a1a1a}
+    :root[data-theme="light"] .tasks-task-text.done{color:#999}
+    :root[data-theme="light"] .tasks-add-input{color:#1a1a1a}
+    :root[data-theme="light"] .tasks-add-input::placeholder{color:#999}
+    :root[data-theme="light"] .tasks-done-toggle{color:#999}
+    :root[data-theme="light"] .tasks-done-toggle:hover{color:#555;background:#ebebeb}
+    :root[data-theme="light"] .tasks-repeat-text-input{background:#f5f5f5;border-color:#e0e0e0;color:#1a1a1a}
+    :root[data-theme="light"] .tasks-repeat-text-input:focus{border-color:#5b9cf5;box-shadow:none}
+    :root[data-theme="light"] .tasks-repeat-options{background:#f5f5f5;border-color:#e0e0e0}
+    :root[data-theme="light"] .tasks-repeat-option{color:#555}
+    :root[data-theme="light"] .tasks-repeat-option:hover{color:#1a1a1a;background:#ebebeb}
+    :root[data-theme="light"] .tasks-repeat-option.active{background:rgba(91,156,245,0.12);color:#5b9cf5}
+    :root[data-theme="light"] .tasks-weekdays{background:#f5f5f5;border-color:#e0e0e0}
+    :root[data-theme="light"] .tasks-weekday{color:#555}
+    :root[data-theme="light"] .tasks-weekday:hover{background:#ebebeb;color:#1a1a1a}
+    :root[data-theme="light"] .tasks-weekday.active{background:rgba(91,156,245,0.12);color:#5b9cf5}
+    :root[data-theme="light"] .tasks-month-label{background:#f5f5f5;border-color:#e0e0e0;color:#1a1a1a}
+    :root[data-theme="light"] .tasks-month-wrap{background:#ebebeb;border-color:#e0e0e0}
+    :root[data-theme="light"] .tasks-month-input{color:#1a1a1a}
+    :root[data-theme="light"] .tasks-repeat-desc-input{background:#f5f5f5;border-color:#e0e0e0;color:#1a1a1a}
+    :root[data-theme="light"] .tasks-repeat-desc-input:focus{border-color:#5b9cf5;box-shadow:none}
+    :root[data-theme="light"] .tasks-subtask-text{color:#1a1a1a}
+    :root[data-theme="light"] .tasks-subtask-text:focus{background:#fff;box-shadow:0 0 0 1px #e0e0e0}
+    :root[data-theme="light"] .tasks-subtask-text.done{color:#999}
+    :root[data-theme="light"] .tasks-subtask-input{background:#fff;border-color:#e0e0e0;color:#1a1a1a}
+    :root[data-theme="light"] .tasks-subtask-input:focus{border-color:#5b9cf5}
+    :root[data-theme="light"] .tasks-settings-row{color:#1a1a1a}
+    :root[data-theme="light"] .tasks-settings-text{color:#1a1a1a}
+    :root[data-theme="light"] .tasks-settings-sub{color:#999}
+    :root[data-theme="light"] .tasks-switch-slider{background:#e0e0e0;border-color:#e0e0e0}
+    :root[data-theme="light"] .tasks-switch-slider::before{background:#fff}
+    :root[data-theme="light"] .tasks-switch input:checked+.tasks-switch-slider{background:rgba(91,156,245,0.2);border-color:#5b9cf5}
+    :root[data-theme="light"] .tasks-switch input:checked+.tasks-switch-slider::before{background:#5b9cf5}
+    :root[data-theme="light"] .tasks-icon-btn{color:#808080}
+    :root[data-theme="light"] .tasks-icon-btn:hover{color:#1a1a1a;background:#f5f5f5}
+    :root[data-theme="light"] .tasks-gear-dropdown,:root[data-theme="light"] .tasks-color-dropdown{background:#fff;border-color:#e0e0e0}
+    :root[data-theme="light"] .tasks-gear-option{color:#1a1a1a}
+    :root[data-theme="light"] .tasks-gear-option:hover{background:#f5f5f5}
+    :root[data-theme="light"] .tasks-color-swatch{border-color:#e0e0e0}
+    :root[data-theme="light"] .tasks-color-swatch[data-color=""]{background:#f5f5f5;border-color:#e0e0e0}
+    :root[data-theme="light"] .tasks-repeat-hint{background:#f5f5f5;border-color:#e0e0e0;color:#1a1a1a}
+    :root[data-theme="light"] .tasks-repeat-delete{color:#555}
+    :root[data-theme="light"] .tasks-repeat-delete:hover:not(:disabled){background:rgba(224,85,85,0.1);color:#e05555}
+    :root[data-theme="light"] .tasks-month-btn:hover:not(:disabled){color:#5b9cf5;background:rgba(91,156,245,0.12)}
+    :root[data-theme="light"] .tasks-month-btn:active:not(:disabled){color:#fff;background:#5b9cf5}
+    :root[data-theme="light"] .tasks-month-btn:disabled{color:#999}
+    :root[data-theme="light"] .tasks-collapsible-head{color:#999}
+    :root[data-theme="light"] .tasks-collapsible-head:hover{color:#1a1a1a}
+    :root[data-theme="light"] .tasks-collapsible-hint{color:#999;background:#ebebeb}
+    :root[data-theme="light"] .tasks-modal-title{color:#1a1a1a}
+    :root[data-theme="light"] .tasks-repeat-field-label{color:#999}
+    :root[data-theme="light"] .tasks-task-repeat{color:#999}
+    :root[data-theme="light"] .tasks-task-repeat:hover{color:#1a1a1a}
+    :root[data-theme="light"] .tasks-task-repeat.active{color:#666}
+    :root[data-theme="light"] .tasks-task-subtasks{color:#999}
+    :root[data-theme="light"] .tasks-task-subtasks:hover{color:#1a1a1a;background:#ebebeb}
+    :root[data-theme="light"] .tasks-container{background:transparent}
+    :root[data-theme="light"] .task-checkmark{border-color:#999}
+    :root[data-theme="light"] .tasks-checkbox:checked+.task-checkmark{background:#e0e0e0;border-color:#e0e0e0}
+    :root[data-theme="light"] .tasks-checkbox:checked+.task-checkmark::after{border-color:#999}
+    :root[data-theme="light"] .task-edit-input{background:#f5f5f5;border-color:#5b9cf5;color:#1a1a1a}
+    :root[data-theme="light"] .tasks-add-toggle{color:#999}
+    :root[data-theme="light"] .tasks-add-toggle:hover{background:#ebebeb;color:#5b9cf5}
+    :root[data-theme="light"] .tasks-add-send{color:#000}
+    :root[data-theme="light"] .tasks-add-send:hover{color:#5b9cf5}
+    :root[data-theme="light"] .tasks-quadrant.adding .tasks-add-input:hover,:root[data-theme="light"] .tasks-quadrant.adding .tasks-add-input:focus{border-color:#e0e0e0;background:#fff}
+    :root[data-theme="light"] .tasks-export-btn,:root[data-theme="light"] .tasks-import-btn,:root[data-theme="light"] .tasks-sync-btn,:root[data-theme="light"] .tasks-settings-btn{background:#fff;color:#666;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+    :root[data-theme="light"] .tasks-export-btn:hover{color:#4ac06a}
+    :root[data-theme="light"] .tasks-import-btn:hover{color:#f5a623}
+    :root[data-theme="light"] .tasks-sync-btn:hover{color:#5b9cf5}
+    :root[data-theme="light"] .tasks-settings-btn:hover{color:#5b9cf5}
+    :root[data-theme="light"] .gist-settings-btn{color:#1a1a1a;border-color:#e0e0e0}
+    :root[data-theme="light"] .gist-settings-btn:hover{background:#ebebeb;border-color:#5b9cf5}
+    :root[data-theme="light"] .gist-settings-label{color:#1a1a1a}
+    :root[data-theme="light"] .gist-settings-section label{color:#1a1a1a}
+    :root[data-theme="light"] .gist-settings-input{background:#f5f5f5;border-color:#e0e0e0;color:#1a1a1a}
+    :root[data-theme="light"] .gist-settings-input:focus{border-color:#5b9cf5}
+    :root[data-theme="light"] .gist-settings-hint{color:#555}
+    :root[data-theme="light"] .gist-settings-hint code{background:#f0f0f0}
+    :root[data-theme="light"] .gist-status-info{background:rgba(91,156,245,0.1);color:#5b9cf5;border-color:#5b9cf5}
+    :root[data-theme="light"] .gist-status-success{background:rgba(74,192,106,0.1);color:#4ac06a;border-color:#4ac06a}
+    :root[data-theme="light"] .gist-status-error{background:rgba(224,85,85,0.1);color:#e05555;border-color:#e05555}
+  </style>
+  <link rel="stylesheet" href="login/login.css">
+  <script>
+    try{
+      var t=localStorage.getItem('app_theme');
+      if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+      document.documentElement.setAttribute('data-theme',t);
+      var favicon=document.getElementById('favicon-main');
+      var isDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if(favicon)favicon.href=(isDark?'data/favicon_dark.png':'data/favicon_light.png')+'?v='+Date.now()
+    }catch(e){}
+  </script>
+</head>
+<body>
+  <div id="preloader"><div class="spinner"></div></div>
+  <script src="shared/habits-quotes.js"></script>
+  <script src="login/login.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

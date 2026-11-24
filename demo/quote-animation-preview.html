@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Варіанти анімації цитати</title>
+<style>
+  :root {
+    --bg-primary:#1a1a1a; --accent:#5b9cf5; --text:#e8e8ea; --border:#333;
+  }
+  body {
+    background:#1a1a1a; color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    margin:0; padding:40px 20px;
+  }
+  h1 { font-size:18px; font-weight:600; margin:0 0 8px; }
+  p.sub { color:#888; font-size:13px; margin:0 0 32px; }
+  .variants { display:flex; flex-direction:column; gap:28px; align-items:center; }
+  .variant { text-align:center; }
+  .variant .label { color:#888; font-size:12px; margin-bottom:10px; }
+
+  /* база картки */
+  .q {
+    position:relative; width:fit-content; max-width:fit-content;
+    margin:0 auto; padding:14px 36px 14px 20px;
+    background:#212121; border:1px solid var(--border); border-radius:12px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.06);
+    font-size:14px; text-align:left; cursor:pointer; user-select:none;
+    -webkit-tap-highlight-color:transparent;
+    transition:transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .q:active { transform:scale(0.98); }
+  .q-mark {
+    position:absolute; top:-14px; left:8px;
+    font-family:Georgia,"Times New Roman",serif; font-size:70px; line-height:1;
+    color:var(--accent); opacity:0.20; pointer-events:none;
+  }
+  .q-text { position:relative; display:block; padding-left:30px; line-height:1.5; }
+
+  /* V1 — Fade */
+  .v1 .q-text { transition:opacity 0.15s ease; }
+  .v1 .q-text.swap { opacity:0; }
+
+  /* V2 — Fade + blur */
+  .v2 .q-text { transition:opacity 0.15s ease, filter 0.15s ease; }
+  .v2 .q-text.swap { opacity:0; filter:blur(4px); }
+
+  /* V3 — Slide left */
+  .v3 .q-text { transition:opacity 0.15s ease, transform 0.15s ease; }
+  .v3 .q-text.swap { opacity:0; transform:translateX(-12px); }
+  .v3 .q-text { transform:translateX(0); }
+
+  /* V4 — Slide up */
+  .v4 .q-text { transition:opacity 0.15s ease, transform 0.15s ease; }
+  .v4 .q-text.swap { opacity:0; transform:translateY(-8px); }
+
+  /* V5 — Flip (3D) */
+  .v5 .q { perspective:600px; }
+  .v5 .q-text { transition:opacity 0.18s ease, transform 0.18s ease; transform-origin:center; backface-visibility:hidden; }
+  .v5 .q-text.swap { opacity:0; transform:rotateX(60deg); }
+
+  /* V6 — Scale pop */
+  .v6 .q-text { transition:opacity 0.12s ease, transform 0.12s ease; }
+  .v6 .q-text.swap { opacity:0; transform:scale(0.92); }
+  .v6 .q-text { transform:scale(1); }
+
+  /* V7 — Fade + card glow pulse */
+  .v7 .q { transition:transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+  .v7 .q.pulse { box-shadow:0 0 0 1px var(--accent), 0 4px 24px rgba(91,156,245,0.25); border-color:var(--accent); }
+  .v7 .q-text { transition:opacity 0.15s ease; }
+  .v7 .q-text.swap { opacity:0; }
+
+  button.reset { margin-top:30px; background:#212121; color:var(--text); border:1px solid var(--border); border-radius:8px; padding:8px 16px; cursor:pointer; font-size:13px; }
+  button.reset:hover { border-color:var(--accent); }
+</style>
+</head>
+<body>
+  <h1>Варіанти анімації перемикання цитати</h1>
+  <p class="sub">Клікни на картку, щоб перемкнути. Обери найкращий.</p>
+
+  <div class="variants">
+    <div class="variant"><div class="label">V1 — Fade (просте згасання)</div>
+      <div class="q v1" data-v="1"><span class="q-mark">“</span><span class="q-text">Кожен день — нова можливість.</span></div></div>
+
+    <div class="variant"><div class="label">V2 — Fade + Blur</div>
+      <div class="q v2" data-v="2"><span class="q-mark">“</span><span class="q-text">Маленькі кроки ведуть до великих перемог.</span></div></div>
+
+    <div class="variant"><div class="label">V3 — Slide left</div>
+      <div class="q v3" data-v="3"><span class="q-mark">“</span><span class="q-text">Вір у себе — ти сильніший, ніж здається.</span></div></div>
+
+    <div class="variant"><div class="label">V4 — Slide up</div>
+      <div class="q v4" data-v="4"><span class="q-mark">“</span><span class="q-text">Почни там, де ти є. Зроби те, що можеш.</span></div></div>
+
+    <div class="variant"><div class="label">V5 — Flip 3D</div>
+      <div class="q v5" data-v="5"><span class="q-mark">“</span><span class="q-text">Успіх — сума малих зусиль щодня.</span></div></div>
+
+    <div class="variant"><div class="label">V6 — Scale pop</div>
+      <div class="q v6" data-v="6"><span class="q-mark">“</span><span class="q-text">Твоя єдина межа — це ти сам.</span></div></div>
+
+    <div class="variant"><div class="label">V7 — Fade + glow картки</div>
+      <div class="q v7" data-v="7"><span class="q-mark">“</span><span class="q-text">Розпочни. Просто почни.</span></div></div>
+  </div>
+
+  <div style="text-align:center"><button class="reset" onclick="location.reload()">Скинути</button></div>
+
+<script>
+  const quotes = [
+    "Кожен день — нова можливість.",
+    "Маленькі кроки ведуть до великих перемог.",
+    "Вір у себе — ти сильніший, ніж здається.",
+    "Почни там, де ти є. Зроби те, що можеш.",
+    "Успіх — сума малих зусиль щодня.",
+    "Твоя єдина межа — це ти сам.",
+    "Розпочни. Просто почни.",
+    "Дії створюють надихання, а не навпаки."
+  ];
+  let qi = 0;
+
+  document.querySelectorAll('.q').forEach(card => {
+    const textEl = card.querySelector('.q-text');
+    card.addEventListener('click', () => {
+      if (textEl.classList.contains('swap')) return;
+      textEl.classList.add('swap');
+      if (card.classList.contains('v7')) card.classList.add('pulse');
+      setTimeout(() => {
+        qi = (qi + 1) % quotes.length;
+        textEl.textContent = quotes[qi];
+        requestAnimationFrame(() => {
+          textEl.classList.remove('swap');
+          if (card.classList.contains('v7')) setTimeout(() => card.classList.remove('pulse'), 250);
+        });
+      }, 90);
+    });
+  });
+</script>
+</body>
+</html>

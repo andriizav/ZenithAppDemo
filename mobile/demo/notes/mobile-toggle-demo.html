@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="color-scheme" content="dark">
+<title>Перемикач виду — мобільні варіанти (демо)</title>
+<style>
+  :root{
+    --bg:#000; --group:#1c1c1e; --sep:rgba(255,255,255,.1);
+    --text:#fff; --label:#98989f; --tint:#5b9cf5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;
+    background:#111;color:var(--text);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+
+  .phone{width:390px;height:844px;max-height:94vh;background:var(--bg);border-radius:54px;border:11px solid #1a1a1a;
+    box-shadow:0 40px 90px rgba(0,0,0,.6),inset 0 0 0 2px #000;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:140px;height:32px;background:#000;border-radius:0 0 20px 20px;z-index:60}
+  .statusbar{height:54px;flex:0 0 auto;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 8px;font-size:14px;font-weight:600;z-index:55}
+  .statusbar svg{width:17px;height:17px}
+  .app{flex:1;overflow-y:auto;padding:6px 16px 30px}
+  .h{font-size:20px;font-weight:700;padding:10px 2px 16px}
+  .variant{margin-bottom:30px}
+  .vname{font-size:13px;color:var(--label);text-transform:uppercase;letter-spacing:.4px;font-weight:600;margin:0 2px 10px}
+
+  /* ---- shared content ---- */
+  .views{margin-top:14px}
+  .view{display:none}
+  .view.show{display:block}
+  .note{background:var(--group);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+  .note .t{font-size:15px;font-weight:600}
+  .note .p{font-size:13px;color:var(--label);margin-top:2px}
+  .editor{background:var(--group);border-radius:12px;padding:12px;min-height:120px;color:var(--label);font-size:14px;line-height:1.5}
+
+  /* ============ A. iOS Segmented Control ============ */
+  .seg-ios{position:relative;display:flex;background:rgba(120,120,128,.32);border-radius:9px;padding:2px;height:34px}
+  .seg-ios .thumb{position:absolute;top:2px;bottom:2px;left:2px;width:calc(50% - 2px);border-radius:7px;
+    background:#3a3a3c;box-shadow:0 1px 3px rgba(0,0,0,.4);transition:transform .25s cubic-bezier(.4,.2,.2,1)}
+  .seg-ios button{position:relative;z-index:1;flex:1;border:none;background:none;color:rgba(255,255,255,.55);
+    font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;transition:color .2s}
+  .seg-ios button.active{color:#fff}
+
+  /* ============ B. Android Material 3 Segmented ============ */
+  .seg-m3{display:flex;background:transparent;border:1px solid rgba(255,255,255,.24);border-radius:14px;padding:3px;height:42px}
+  .seg-m3 button{flex:1;border:none;background:none;color:rgba(255,255,255,.7);font-size:14px;font-weight:500;
+    font-family:inherit;cursor:pointer;border-radius:11px;transition:background .2s,color .2s}
+  .seg-m3 button.active{background:var(--tint);color:#fff}
+
+  /* ============ C. Android Tabs (underline) ============ */
+  .tabs-and{position:relative;display:flex;border-bottom:.5px solid var(--sep);height:42px}
+  .tabs-and button{flex:1;border:none;background:none;color:rgba(255,255,255,.6);font-size:14px;font-weight:500;
+    font-family:inherit;cursor:pointer;transition:color .2s}
+  .tabs-and button.active{color:var(--tint)}
+  .tabs-and .ind{position:absolute;bottom:0;left:0;height:2px;width:50%;background:var(--tint);
+    transition:transform .25s cubic-bezier(.4,.2,.2,1)}
+
+  /* ============ D. Minimal pill toggle ============ */
+  .pills{display:flex;gap:8px}
+  .pills button{flex:1;border:1px solid rgba(255,255,255,.16);background:transparent;color:rgba(255,255,255,.7);
+    font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;border-radius:999px;padding:11px 0;transition:.2s}
+  .pills button.active{background:var(--tint);border-color:var(--tint);color:#fff}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="notch"></div>
+  <div class="statusbar">
+    <span>9:41</span>
+    <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="10" rx="2"/><rect x="4" y="9" width="13" height="6" rx="1" fill="#000"/></svg>
+  </div>
+  <div class="app">
+    <div class="h">Перемикач виду</div>
+
+    <!-- A -->
+    <div class="variant">
+      <div class="vname">A · iOS Segmented Control</div>
+      <div class="seg-ios" data-toggle>
+        <div class="thumb"></div>
+        <button type="button" class="active" data-view="notes">Нотатки</button>
+        <button type="button" data-view="edit">Редагування</button>
+      </div>
+      <div class="views">
+        <div class="view show" data-panel="notes">
+          <div class="note"><div class="t">Ідеї проекту</div><div class="p">Нотатка · 2 рядки</div></div>
+          <div class="note"><div class="t">Список покупок</div><div class="p">Нотатка · 5 рядків</div></div>
+        </div>
+        <div class="view" data-panel="edit"><div class="editor">Текст нотатки для редагування…</div></div>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="variant">
+      <div class="vname">B · Android Material 3</div>
+      <div class="seg-m3" data-toggle>
+        <button type="button" class="active" data-view="notes">Нотатки</button>
+        <button type="button" data-view="edit">Редагування</button>
+      </div>
+      <div class="views">
+        <div class="view show" data-panel="notes">
+          <div class="note"><div class="t">Ідеї проекту</div><div class="p">Нотатка · 2 рядки</div></div>
+          <div class="note"><div class="t">Список покупок</div><div class="p">Нотатка · 5 рядків</div></div>
+        </div>
+        <div class="view" data-panel="edit"><div class="editor">Текст нотатки для редагування…</div></div>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="variant">
+      <div class="vname">C · Android Tabs (індикатор)</div>
+      <div class="tabs-and" data-toggle>
+        <button type="button" class="active" data-view="notes">Нотатки</button>
+        <button type="button" data-view="edit">Редагування</button>
+        <div class="ind"></div>
+      </div>
+      <div class="views">
+        <div class="view show" data-panel="notes">
+          <div class="note"><div class="t">Ідеї проекту</div><div class="p">Нотатка · 2 рядки</div></div>
+          <div class="note"><div class="t">Список покупок</div><div class="p">Нотатка · 5 рядків</div></div>
+        </div>
+        <div class="view" data-panel="edit"><div class="editor">Текст нотатки для редагування…</div></div>
+      </div>
+    </div>
+
+    <!-- D -->
+    <div class="variant">
+      <div class="vname">D · Мінімалістичні піли</div>
+      <div class="pills" data-toggle>
+        <button type="button" class="active" data-view="notes">Нотатки</button>
+        <button type="button" data-view="edit">Редагування</button>
+      </div>
+      <div class="views">
+        <div class="view show" data-panel="notes">
+          <div class="note"><div class="t">Ідеї проекту</div><div class="p">Нотатка · 2 рядки</div></div>
+          <div class="note"><div class="t">Список покупок</div><div class="p">Нотатка · 5 рядків</div></div>
+        </div>
+        <div class="view" data-panel="edit"><div class="editor">Текст нотатки для редагування…</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Один обробник на кожен перемикач. Активний стан -> data-view.
+  document.querySelectorAll("[data-toggle]").forEach((wrap)=>{
+    const btns=[...wrap.querySelectorAll("button")];
+    const views=wrap.parentElement.querySelectorAll(".view");
+    const thumb=wrap.querySelector(".thumb");
+    const ind=wrap.querySelector(".ind");
+    btns.forEach((b,i)=>{
+      b.addEventListener("click",()=>{
+        const v=b.dataset.view;
+        btns.forEach(x=>x.classList.toggle("active",x===b));
+        views.forEach(p=>p.classList.toggle("show",p.dataset.panel===v));
+        if(thumb) thumb.style.transform=`translateX(${i*100}%)`;
+        if(ind) ind.style.transform=`translateX(${i*100}%)`;
+        wrap.dataset.view=v; // синхронізуємо стан для JS
+      });
+    });
+  });
+</script>
+</body>
+</html>

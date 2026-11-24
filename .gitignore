@@ -1,0 +1,36 @@
+# Local state
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Environments
+.env
+.env.local
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+**/.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+*.log.*
+*.jsonl
+
+# Temp
+*.tmp
+*.bak
+nul

@@ -1,0 +1,129 @@
+/* ========== SYNC SETTINGS MODAL — extra styles ==========
+   Доповнення до базових .settings-modal / .modal-btn (styles.css)
+   та .gist-settings-* (styles.css). Тут лише те, чого там немає:
+   картки способу зберігання, панелі gist/file, danger zone.
+*/
+
+.sync-settings-modal .settings-modal-content {
+    max-width: 460px;
+}
+
+/* ---------- Картки вибору способу зберігання ---------- */
+
+.sync-method-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sync-method-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    background: transparent;
+}
+
+.sync-method-card:hover {
+    background: var(--bg-hover);
+}
+
+.sync-method-card.is-active {
+    border-color: var(--accent);
+    background: var(--accent-bg, rgba(91, 156, 245, 0.1));
+}
+
+.sync-method-card input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.sync-method-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.sync-method-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.sync-method-card-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.35;
+}
+
+/* ---------- Панелі gist / file ---------- */
+
+.sync-panel {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border);
+}
+
+.sync-gist-link-row {
+    margin-top: 8px;
+}
+
+.sync-gist-link {
+    font-size: 12px;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.sync-gist-link:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Danger zone (Скидання локальних даних) ---------- */
+
+.sync-danger-zone {
+    margin-top: 20px;
+    padding: 14px;
+    border: 1px solid #3a1f1f;
+    border-radius: 12px;
+    background: rgba(248, 81, 73, 0.06);
+}
+
+.sync-danger-zone-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #f85149;
+    margin-bottom: 6px;
+}
+
+.sync-danger-zone-header svg {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+}
+
+.sync-danger-zone-desc {
+    margin: 0 0 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+
+:root[data-theme="light"] .sync-method-card.is-active {
+    background: rgba(91, 156, 245, 0.12);
+}
+
+:root[data-theme="light"] .sync-danger-zone {
+    background: rgba(224, 85, 85, 0.06);
+    border-color: #f3caca;
+}

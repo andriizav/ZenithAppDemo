@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xbel PUBLIC "+//IDN python.org//DTD XML Bookmark Exchange Language 1.0//EN//XML" "http://pyxml.sourceforge.net/topics/dtds/xbel.dtd">
+<xbel version="1.0">
+<!--- highestId :10: for Floccus bookmark sync browser extension -->
+
+<bookmark href="https://www.figma.com/" id="1">
+  <title>Figma</title>
+</bookmark>
+<bookmark href="https://www.notion.so/" id="2">
+  <title>Notion</title>
+</bookmark>
+<bookmark href="https://vercel.com/" id="3">
+  <title>Vercel</title>
+</bookmark>
+<bookmark href="https://www.netlify.com/" id="4">
+  <title>Netlify</title>
+</bookmark>
+<bookmark href="https://supabase.com/" id="5">
+  <title>Supabase</title>
+</bookmark>
+</xbel>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="color-scheme" content="dark">
+  <title>ZenithApp | Mobile</title>
+  <link rel="icon" id="favicon-main" href="../data/favicon_dark.png" type="image/png">
+  <link rel="apple-touch-icon" id="favicon-ios" href="../data/favicon_dark.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../data/favicon_dark.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="../data/favicon_dark.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ZenithApp">
+  <link rel="stylesheet" href="../login/login.css">
+  <link rel="stylesheet" href="../css/gradient-button.css">
+  <link rel="preload" href="../data/favicons/default.png" as="image">
+  <link rel="preload" href="js/app.js" as="script">
+  <link rel="preload" href="js/bookmarks.js" as="script">
+  <link rel="preconnect" href="https://www.google.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.google.com">
+  <script src="../shared/delete-modal.js"></script>
+  <style>
+    :root{
+      --bg-primary:#1a1a1a;--bg-secondary:#212121;--border:#333333;
+      --text-primary:#e6e6e6;--text-secondary:#999;--accent:#5b9cf5;
+      --success:#4ac06a;--danger:#e05555;--dot-empty:#444;--tabbar-h:92px;
+      color-scheme:dark;
+      --font-sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg-primary);color:var(--text-primary);
+      font-family:var(--font-sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+      min-height:100vh;min-height:100dvh;touch-action:manipulation}
+    body{display:flex;flex-direction:column}
+    a{color:var(--accent);text-decoration:none}
+    button{font-family:inherit}
+    #preloader{position:fixed;top:0;left:0;width:100%;height:100vh;height:100dvh;background:var(--bg-primary);z-index:9999;display:flex;align-items:center;justify-content:center}
+    #preloader.hidden{opacity:0;visibility:hidden;transition:opacity .3s ease-out,visibility .3s}
+    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+  <script>
+    try{
+      var t=localStorage.getItem('app_theme_mobile');
+      if(!t){
+        if(/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent))t='light';
+        else t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'
+      }
+      document.documentElement.setAttribute('data-theme',t);
+      var favicon=document.getElementById('favicon-main');
+      var isDark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if(favicon)favicon.href=(isDark?'../data/favicon_dark.png':'../data/favicon_light.png')+'?v='+Date.now()
+    }catch(e){}
+    // iOS Safari ігнорує user-scalable=no у viewport-мета для pinch-zoom
+    // (Apple свідомо не блокує accessibility-жест), тож глушимо власне
+    // Safari-специфічні gesture-події — це не заважає одинарному/подвійному
+    // тапу в застосунку, бо ті обробляються через touchstart/touchend.
+    document.addEventListener('gesturestart', function(e){ e.preventDefault(); });
+    document.addEventListener('gesturechange', function(e){ e.preventDefault(); });
+  </script>
+</head>
+<body>
+  <div id="preloader"><div class="spinner"></div></div>
+  <script src="../shared/habits-quotes.js"></script>
+  <script src="js/mobile.js"></script>
+  <script src="shared/delete-modal.js"></script>
+  <script src="../login/login.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
